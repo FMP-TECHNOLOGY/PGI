@@ -1,0 +1,19 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace DataAccess.Entities;
+
+public partial class Periodicidad
+{
+    public int Id { get; set; }
+
+    public string? Nombre { get; set; } 
+
+    public int Valor { get; set; }
+
+    public bool Active { get; set; }
+
+    public int Userid { get; set; }
+
+    public DateTime Created { get; set; }
+}

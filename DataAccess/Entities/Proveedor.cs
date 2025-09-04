@@ -1,0 +1,29 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace DataAccess.Entities;
+
+public partial class Proveedor
+{
+    public int Id { get; set; }
+
+    public int CompaniaId { get; set; }
+
+    public string? Rnc { get; set; } 
+
+    public string? RazonSocial { get; set; } 
+
+    public string? Direccion { get; set; } 
+
+    public string? Telefono { get; set; } 
+
+    public bool Active { get; set; }
+
+    public int UserId { get; set; }
+
+    public DateTime Created { get; set; }
+
+    public string? CodigoIntegracion { get; set; }
+
+    public string? FederalTaxId { get; set; }
+}

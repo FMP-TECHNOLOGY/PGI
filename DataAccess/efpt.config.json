@@ -1,0 +1,262 @@
+﻿{
+   "CodeGenerationMode": 4,
+   "ContextClassName": "DGIContext",
+   "ContextNamespace": null,
+   "FilterSchemas": false,
+   "IncludeConnectionstring?": false,
+   "MinimumProductVersion": "2.6.0",
+   "ModelNamespace": "",
+   "OutputContextPath": null,
+   "OutputPath": "Entities",
+   "PreserveCasingWithRegex": true,
+   "ProjectRootNamespace": "DataAccess",
+   "Schemas": null,
+   "SelectedHandlebarsLanguage": 2,
+   "SelectedToBeGenerated": 0,
+   "T4TemplatePath": null,
+   "Tables": [
+      {
+         "Name": "accion",
+         "ObjectType": 0
+      },
+      {
+         "Name": "actividades",
+         "ObjectType": 0
+      },
+      {
+         "Name": "area",
+         "ObjectType": 0
+      },
+      {
+         "Name": "areastransversales",
+         "ObjectType": 0
+      },
+      {
+         "Name": "auditoria",
+         "ObjectType": 0
+      },
+      {
+         "Name": "cloudprovider",
+         "ObjectType": 0
+      },
+      {
+         "Name": "compania",
+         "ObjectType": 0
+      },
+      {
+         "Name": "credenciales",
+         "ObjectType": 0
+      },
+      {
+         "Name": "cuentaobjetal",
+         "ObjectType": 0
+      },
+      {
+         "Name": "detallesolicitudcompra",
+         "ObjectType": 0
+      },
+      {
+         "Name": "documentosevidencias",
+         "ObjectType": 0
+      },
+      {
+         "Name": "documentossolicitudcompra",
+         "ObjectType": 0
+      },
+      {
+         "Name": "ejesestrategicos",
+         "ObjectType": 0
+      },
+      {
+         "Name": "empleados",
+         "ObjectType": 0
+      },
+      {
+         "Name": "estadoacciones",
+         "ObjectType": 0
+      },
+      {
+         "Name": "estadosolicitud",
+         "ObjectType": 0
+      },
+      {
+         "Name": "evidencias",
+         "ObjectType": 0
+      },
+      {
+         "Name": "grupoparametros",
+         "ObjectType": 0
+      },
+      {
+         "Name": "imputacionespresupuestarias",
+         "ObjectType": 0
+      },
+      {
+         "Name": "indicador",
+         "ObjectType": 0
+      },
+      {
+         "Name": "indicadores",
+         "ObjectType": 0
+      },
+      {
+         "Name": "integraciones",
+         "ObjectType": 0
+      },
+      {
+         "Name": "integracionescredenciales",
+         "ObjectType": 0
+      },
+      {
+         "Name": "integracionlog",
+         "ObjectType": 0
+      },
+      {
+         "Name": "menu",
+         "ObjectType": 0
+      },
+      {
+         "Name": "objetivos",
+         "ObjectType": 0
+      },
+      {
+         "Name": "pacc",
+         "ObjectType": 0
+      },
+      {
+         "Name": "parametros",
+         "ObjectType": 0
+      },
+      {
+         "Name": "parametrosvalor",
+         "ObjectType": 0
+      },
+      {
+         "Name": "pei",
+         "ObjectType": 0
+      },
+      {
+         "Name": "periodicidad",
+         "ObjectType": 0
+      },
+      {
+         "Name": "poa",
+         "ObjectType": 0
+      },
+      {
+         "Name": "productointegracion",
+         "ObjectType": 0
+      },
+      {
+         "Name": "profitcenters",
+         "ObjectType": 0
+      },
+      {
+         "Name": "proveedor",
+         "ObjectType": 0
+      },
+      {
+         "Name": "proyecto",
+         "ObjectType": 0
+      },
+      {
+         "Name": "proyectoindicadores",
+         "ObjectType": 0
+      },
+      {
+         "Name": "riesgo",
+         "ObjectType": 0
+      },
+      {
+         "Name": "riesgoasociados",
+         "ObjectType": 0
+      },
+      {
+         "Name": "role",
+         "ObjectType": 0
+      },
+      {
+         "Name": "rolmenu",
+         "ObjectType": 0
+      },
+      {
+         "Name": "solicitudcompra",
+         "ObjectType": 0
+      },
+      {
+         "Name": "tipoimpuesto",
+         "ObjectType": 0
+      },
+      {
+         "Name": "tiporiesgo",
+         "ObjectType": 0
+      },
+      {
+         "Name": "umbrales",
+         "ObjectType": 0
+      },
+      {
+         "Name": "unidadmedida",
+         "ObjectType": 0
+      },
+      {
+         "Name": "user",
+         "ObjectType": 0
+      },
+      {
+         "Name": "usercompania",
+         "ObjectType": 0
+      },
+      {
+         "Name": "userestado",
+         "ObjectType": 0
+      },
+      {
+         "Name": "userrole",
+         "ObjectType": 0
+      },
+      {
+         "Name": "xactividades",
+         "ObjectType": 0
+      },
+      {
+         "Name": "xpacc",
+         "ObjectType": 0
+      },
+      {
+         "Name": "xproductos",
+         "ObjectType": 0
+      },
+      {
+         "Name": "xxactividades",
+         "ObjectType": 0
+      }
+   ],
+   "UiHint": null,
+   "UncountableWords": null,
+   "UseAsyncStoredProcedureCalls": true,
+   "UseBoolPropertiesWithoutDefaultSql": false,
+   "UseDatabaseNames": false,
+   "UseDatabaseNamesForRoutines": true,
+   "UseDateOnlyTimeOnly": true,
+   "UseDbContextSplitting": false,
+   "UseDecimalDataAnnotationForSprocResult": true,
+   "UseFluentApiOnly": true,
+   "UseHandleBars": false,
+   "UseHierarchyId": false,
+   "UseInflector": true,
+   "UseInternalAccessModifiersForSprocsAndFunctions": false,
+   "UseLegacyPluralizer": true,
+   "UseManyToManyEntity": true,
+   "UseNoDefaultConstructor": false,
+   "UseNoNavigations": false,
+   "UseNoObjectFilter": true,
+   "UseNodaTime": false,
+   "UseNullableReferences": true,
+   "UsePrefixNavigationNaming": false,
+   "UseSchemaFolders": false,
+   "UseSchemaNamespaces": false,
+   "UseSpatial": false,
+   "UseT4": true,
+   "UseT4Split": false
+}
