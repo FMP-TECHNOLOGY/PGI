@@ -5,9 +5,9 @@ namespace DataAccess.Entities;
 
 public partial class Accion
 {
-    public int Id { get; set; }
+    public string? Id { get; set; } 
 
-    public int CompaniaId { get; set; }
+    public string? CompaniaId { get; set; } 
 
     public string? NombreCorto { get; set; } 
 
@@ -19,7 +19,7 @@ public partial class Accion
 
     public string? Template { get; set; } 
 
-    public int EstadoId { get; set; }
+    public string? EstadoId { get; set; } 
 
     public bool RequiereJustificacion { get; set; }
 
@@ -31,5 +31,5 @@ public partial class Accion
 
     public DateTime Created { get; set; }
 
-    public virtual User User { get; set; } 
+    public int? ObjectType { get; set; }
 }

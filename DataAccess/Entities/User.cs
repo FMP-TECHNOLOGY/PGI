@@ -5,46 +5,59 @@ namespace DataAccess.Entities;
 
 public partial class User
 {
-    public int Id { get; set; }
+    public string? Id { get; set; } 
 
-    public string? Email { get; set; } 
+    public ulong Su { get; set; }
 
-    public string? Name { get; set; } 
+    public string? FullName { get; set; } 
 
-    public string? Password { get; set; } 
+    public string?NationalIdNumber { get; set; }
 
-    public int AreaId { get; set; }
+    public string? Username { get; set; } 
 
-    public bool Active { get; set; }
+    public string?Address { get; set; }
 
-    public int Userid { get; set; }
+    public string?PicturePath { get; set; }
 
-    public DateTime Created { get; set; }
-    public virtual Compania Compania { get; set; }
+    public string?Phone { get; set; }
 
-    public virtual ICollection<Accion> Accions { get; set; } = new List<Accion>();
+    public string?Phone2 { get; set; }
 
-    public virtual ICollection<Actividade> Actividades { get; set; } = new List<Actividade>();
+    public ulong PhoneConfirmed { get; set; }
 
-    public virtual ICollection<Areastransversale> Areastransversales { get; set; } = new List<Areastransversale>();
+    public ulong Phone2Confirmed { get; set; }
 
-    public virtual ICollection<Auditoria> Auditorias { get; set; } = new List<Auditoria>();
+    public string?Email { get; set; }
 
-    public virtual ICollection<Credenciale> Credenciales { get; set; } = new List<Credenciale>();
+    public ulong EmailConfirmed { get; set; }
 
-    public virtual ICollection<Detallesolicitudcompra> Detallesolicitudcompras { get; set; } = new List<Detallesolicitudcompra>();
+    public ulong NotificationsEnabled { get; set; }
 
-    public virtual ICollection<Documentosevidencia> Documentosevidencias { get; set; } = new List<Documentosevidencia>();
+    public string? PasswordHash { get; set; } 
 
-    public virtual ICollection<Documentossolicitudcompra> Documentossolicitudcompras { get; set; } = new List<Documentossolicitudcompra>();
+    public ulong ResetPasswordNextLogin { get; set; }
 
-    public virtual ICollection<Ejesestrategico> Ejesestrategicoes { get; set; } = new List<Ejesestrategico>();
+    public ulong PasswordExpires { get; set; }
 
-    public virtual ICollection<Estadoaccione> Estadoacciones { get; set; } = new List<Estadoaccione>();
+    public DateTime? PasswordExpirationDate { get; set; }
 
-    public virtual ICollection<Estadosolicitud> Estadosolicituds { get; set; } = new List<Estadosolicitud>();
+    public ulong LockoutEnabled { get; set; }
 
-    public virtual ICollection<Evidencia> Evidencias { get; set; } = new List<Evidencia>();
+    public DateTime? LockoutDueDate { get; set; }
 
-    public virtual ICollection<Grupoparametro> Grupoparametroes { get; set; } = new List<Grupoparametro>();
+    public int ObjectType { get; set; }
+
+    public int AccessFailedCount { get; set; }
+
+    public ulong Active { get; set; }
+
+    public long LogInstance { get; set; }
+
+    public DateTime? CreatedAt { get; set; }
+
+    public DateTime? UpdatedAt { get; set; }
+
+    public string?CreatedBy { get; set; }
+
+    public string?UpdatedBy { get; set; }
 }

@@ -5,7 +5,7 @@ namespace DataAccess.Entities;
 
 public partial class Periodicidad
 {
-    public int Id { get; set; }
+    public string? Id { get; set; } 
 
     public string? Nombre { get; set; } 
 
@@ -16,4 +16,6 @@ public partial class Periodicidad
     public int Userid { get; set; }
 
     public DateTime Created { get; set; }
+
+    public int? ObjectType { get; set; }
 }

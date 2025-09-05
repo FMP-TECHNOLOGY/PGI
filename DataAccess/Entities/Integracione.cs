@@ -5,7 +5,7 @@ namespace DataAccess.Entities;
 
 public partial class Integracione
 {
-    public int Id { get; set; }
+    public string? Id { get; set; } 
 
     public string? Descripcion { get; set; } 
 
@@ -14,4 +14,6 @@ public partial class Integracione
     public int Userid { get; set; }
 
     public DateTime Created { get; set; }
+
+    public int? ObjectType { get; set; }
 }

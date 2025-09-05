@@ -5,9 +5,9 @@ namespace DataAccess.Entities;
 
 public partial class Parametro
 {
-    public int Id { get; set; }
+    public string? Id { get; set; } 
 
-    public int GrupoParametroId { get; set; }
+    public string? GrupoParametroId { get; set; } 
 
     public string? ParametroId { get; set; } 
 
@@ -20,4 +20,6 @@ public partial class Parametro
     public DateTime Created { get; set; }
 
     public bool OfuscarValor { get; set; }
+
+    public int? ObjectType { get; set; }
 }

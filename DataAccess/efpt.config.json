@@ -3,7 +3,7 @@
    "ContextClassName": "DGIContext",
    "ContextNamespace": null,
    "FilterSchemas": false,
-   "IncludeConnectionstring?": false,
+   "IncludeConnectionString": false,
    "MinimumProductVersion": "2.6.0",
    "ModelNamespace": "",
    "OutputContextPath": null,
@@ -49,6 +49,10 @@
       },
       {
          "Name": "cuentaobjetal",
+         "ObjectType": 0
+      },
+      {
+         "Name": "departamento",
          "ObjectType": 0
       },
       {
@@ -112,11 +116,19 @@
          "ObjectType": 0
       },
       {
+         "Name": "logs",
+         "ObjectType": 0
+      },
+      {
          "Name": "menu",
          "ObjectType": 0
       },
       {
          "Name": "objetivos",
+         "ObjectType": 0
+      },
+      {
+         "Name": "objtype",
          "ObjectType": 0
       },
       {
@@ -137,6 +149,10 @@
       },
       {
          "Name": "periodicidad",
+         "ObjectType": 0
+      },
+      {
+         "Name": "permissions",
          "ObjectType": 0
       },
       {
@@ -172,7 +188,11 @@
          "ObjectType": 0
       },
       {
-         "Name": "role",
+         "Name": "rolepermissions",
+         "ObjectType": 0
+      },
+      {
+         "Name": "roles",
          "ObjectType": 0
       },
       {
@@ -181,6 +201,10 @@
       },
       {
          "Name": "solicitudcompra",
+         "ObjectType": 0
+      },
+      {
+         "Name": "sucursal",
          "ObjectType": 0
       },
       {
@@ -200,19 +224,19 @@
          "ObjectType": 0
       },
       {
-         "Name": "user",
-         "ObjectType": 0
-      },
-      {
          "Name": "usercompania",
          "ObjectType": 0
       },
       {
-         "Name": "userestado",
+         "Name": "userpermissions",
          "ObjectType": 0
       },
       {
-         "Name": "userrole",
+         "Name": "users",
+         "ObjectType": 0
+      },
+      {
+         "Name": "usertokens",
          "ObjectType": 0
       },
       {
@@ -247,9 +271,9 @@
    "UseInflector": true,
    "UseInternalAccessModifiersForSprocsAndFunctions": false,
    "UseLegacyPluralizer": true,
-   "UseManyToManyEntity": true,
+   "UseManyToManyEntity": false,
    "UseNoDefaultConstructor": false,
-   "UseNoNavigations": false,
+   "UseNoNavigations": true,
    "UseNoObjectFilter": true,
    "UseNodaTime": false,
    "UseNullableReferences": true,

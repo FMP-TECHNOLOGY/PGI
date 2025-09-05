@@ -5,7 +5,7 @@
 <#@ assembly name="Microsoft.Extensions.DependencyInjection.Abstractions" #>
 <#@ parameter name="Model" type="Microsoft.EntityFrameworkCore.Metadata.IModel" #>
 <#@ parameter name="Options" type="Microsoft.EntityFrameworkCore.Scaffolding.ModelCodeGenerationOptions" #>
-<#@ parameter name="NamespaceHint" type="System.string?" #>
+<#@ parameter name="NamespaceHint" type="System.String" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Text" #>
@@ -26,7 +26,7 @@
     var annotationCodeGenerator = services.GetRequiredService<IAnnotationCodeGenerator>();
     var code = services.GetRequiredService<ICSharpHelper>();
 
-    var usings = new List<string?>
+    var usings = new List<string>
     {
         "System",
         "System.Collections.Generic",
@@ -34,12 +34,12 @@
     };
 
     if (NamespaceHint != Options.ModelNamespace
-        && !string?.IsNullOrEmpty(Options.ModelNamespace))
+        && !string.IsNullOrEmpty(Options.ModelNamespace))
     {
         usings.Add(Options.ModelNamespace);
     }
 
-    if (!string?.IsNullOrEmpty(NamespaceHint))
+    if (!string.IsNullOrEmpty(NamespaceHint))
     {
 #>
 namespace <#= NamespaceHint #>;
@@ -79,14 +79,14 @@ public partial class <#= Options.ContextName #> : DbContext
 #>
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 <#
-    if (!Options.SuppressConnectionstring?Warning)
+    if (!Options.SuppressConnectionStringWarning)
     {
 #>
-#warning To protect potentially sensitive information in your connection string?, you should move it out of source code. You can avoid scaffolding the connection string? by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection string?s, see http://go.microsoft.com/fwlink/?LinkId=723263.
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
 <#
     }
 #>
-        => optionsBuilder<#= code.Fragment(providerCode.GenerateUseProvider(Options.Connectionstring?), indent: 3) #>;
+        => optionsBuilder<#= code.Fragment(providerCode.GenerateUseProvider(Options.ConnectionString), indent: 3) #>;
 
 <#
     }
@@ -107,12 +107,12 @@ public partial class <#= Options.ContextName #> : DbContext
         anyConfiguration = true;
     }
 
-    string?Builder mainEnvironment;
+    StringBuilder mainEnvironment;
     foreach (var entityType in Model.GetEntityTypes().Where(e => !e.IsSimpleManyToManyJoinEntityType()))
     {
         // Save all previously generated code, and start generating into a new temporary environment
         mainEnvironment = GenerationEnvironment;
-        GenerationEnvironment = new string?Builder();
+        GenerationEnvironment = new StringBuilder();
 
         if (anyConfiguration)
         {
@@ -230,9 +230,9 @@ public partial class <#= Options.ContextName #> : DbContext
             }
 
             var left = skipNavigation.ForeignKey;
-            var leftFluentApiCalls = left.GetFluentApiCalls(annotationCodeGenerator, usestring?s: true);
+            var leftFluentApiCalls = left.GetFluentApiCalls(annotationCodeGenerator, useStrings: true);
             var right = skipNavigation.Inverse.ForeignKey;
-            var rightFluentApiCalls = right.GetFluentApiCalls(annotationCodeGenerator, usestring?s: true);
+            var rightFluentApiCalls = right.GetFluentApiCalls(annotationCodeGenerator, useStrings: true);
             var joinEntityType = skipNavigation.JoinEntityType;
 
             if (leftFluentApiCalls != null)
@@ -246,7 +246,7 @@ public partial class <#= Options.ContextName #> : DbContext
             }
 #>
             entity.HasMany(d => d.<#= skipNavigation.Name #>).WithMany(p => p.<#= skipNavigation.Inverse.Name #>)
-                .UsingEntity<Dictionary<string?, object>>(
+                .UsingEntity<Dictionary<string, object>>(
                     <#= code.Literal(joinEntityType.Name) #>,
                     r => r.HasOne<<#= right.PrincipalEntityType.Name #>>().WithMany()<#= code.Fragment(rightFluentApiCalls, indent: 6) #>,
                     l => l.HasOne<<#= left.PrincipalEntityType.Name #>>().WithMany()<#= code.Fragment(leftFluentApiCalls, indent: 6) #>,
@@ -319,7 +319,7 @@ public partial class <#= Options.ContextName #> : DbContext
     foreach (var sequence in Model.GetSequences())
     {
         var needsType = sequence.Type != typeof(long);
-        var needsSchema = !string?.IsNullOrEmpty(sequence.Schema) && sequence.Schema != sequence.Model.GetDefaultSchema();
+        var needsSchema = !string.IsNullOrEmpty(sequence.Schema) && sequence.Schema != sequence.Model.GetDefaultSchema();
         var sequenceFluentApiCalls = sequence.GetFluentApiCalls(annotationCodeGenerator);
 #>
         modelBuilder.HasSequence<#= needsType ? $"<{code.Reference(sequence.Type)}>" : "" #>(<#= code.Literal(sequence.Name) #><#= needsSchema ? $", {code.Literal(sequence.Schema)}" : "" #>)<#= code.Fragment(sequenceFluentApiCalls, indent: 3) #>;
@@ -338,7 +338,7 @@ public partial class <#= Options.ContextName #> : DbContext
 }
 <#
     mainEnvironment = GenerationEnvironment;
-    GenerationEnvironment = new string?Builder();
+    GenerationEnvironment = new StringBuilder();
 
     foreach (var ns in usings.Distinct().OrderBy(x => x, new NamespaceComparer()))
     {

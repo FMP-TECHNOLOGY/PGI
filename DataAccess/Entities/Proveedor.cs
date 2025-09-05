@@ -5,9 +5,9 @@ namespace DataAccess.Entities;
 
 public partial class Proveedor
 {
-    public int Id { get; set; }
+    public string? Id { get; set; } 
 
-    public int CompaniaId { get; set; }
+    public string? CompaniaId { get; set; } 
 
     public string? Rnc { get; set; } 
 
@@ -23,7 +23,9 @@ public partial class Proveedor
 
     public DateTime Created { get; set; }
 
-    public string? CodigoIntegracion { get; set; }
+    public string?CodigoIntegracion { get; set; }
 
-    public string? FederalTaxId { get; set; }
+    public string?FederalTaxId { get; set; }
+
+    public int? ObjectType { get; set; }
 }

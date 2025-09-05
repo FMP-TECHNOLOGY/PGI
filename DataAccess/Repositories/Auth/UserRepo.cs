@@ -1,6 +1,7 @@
-﻿using PGI.DataAccess.DbContenxts;
-using PGI.DataAccess.Entities;
+﻿
 using Microsoft.EntityFrameworkCore;
+using DataAccess.Entities;
+using DataAccess;
 
 namespace PGI.DataAccess.Repositories.Auth
 {
@@ -15,19 +16,21 @@ namespace PGI.DataAccess.Repositories.Auth
 
     public class UserRepo : GenericRepo<User>, IUser
     {
-        public UserRepo(AppDBContext context) : base(context)
+        public UserRepo(PGIContext context) : base(context)
         {
         }
 
-        public override User UpdateSaving(User entity)
+        public  User UpdateSaving(User entity)
         {
-            var user = base.UpdateSaving(entity);
+            var user = base.UpdateSaving(null,entity);
 
             return user;
         }
 
         public User? FindByUsername(string? username)
         {
+           
+                 
             return (from t0 in EntityDbSet
                     where t0.Username == username
                     select t0).FirstOrDefault();
@@ -63,16 +66,16 @@ namespace PGI.DataAccess.Repositories.Auth
             .ToList();*/
 
         public override User? Get(params object[] keys)
-            => Find(x => x.Id == keys.FirstOrDefault()?.Tostring?());
+            => Find(x => x.Id == keys.FirstOrDefault().ToString());
 
         /* public void UpdateCompany(string? userId, int companyId)
          {
-             var user = FindValidById(userId) ?? throw new BadRequestException("Invalid user");
+             var user = FindValidById(userId) ?throw new BadRequestException("Invalid user");
 
              if (!user.Active || user.LockoutEnabled || user.LockoutDueDate != null)
                  throw new BadRequestException("Invalid user");
 
-             var companiesRepo = Companies.Find(x => x.Id == companyId && x.Active) ?? throw new BadRequestException("Invalid Company");
+             var companiesRepo = Companies.Find(x => x.Id == companyId && x.Active) ?throw new BadRequestException("Invalid Company");
 
              user.CompanyId = companyId;
 
@@ -83,13 +86,13 @@ namespace PGI.DataAccess.Repositories.Auth
         {
             try
             {
-                var user = Get(userId) ?? throw new BadRequestException("Invalid user");
+                var user = Get(userId) ?throw new BadRequestException("Invalid user");
                 var userCompanies = UserCompanies.FindAll(x => x.UserId == user.Id);
 
                 // ADDING ROLES
                 companies.ForEach(companiesRepo =>
                 {
-                    var mCompany = Companies.Get(companiesRepo.Id) ?? throw new BadRequestException($"Invalid companiesRepo {companiesRepo.Id}");
+                    var mCompany = Companies.Get(companiesRepo.Id) ?throw new BadRequestException($"Invalid companiesRepo {companiesRepo.Id}");
 
                     var userHasCompany = userCompanies.Any(x => x.UserId == user.Id && x.CompanyId == mCompany.Id);
 

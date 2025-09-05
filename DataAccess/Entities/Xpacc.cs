@@ -5,17 +5,17 @@ namespace DataAccess.Entities;
 
 public partial class Xpacc
 {
-    public string? Poa { get; set; }
+    public string?Poa { get; set; }
 
-    public string? Producto { get; set; }
+    public string?Producto { get; set; }
 
-    public string? Actividad { get; set; }
+    public string?Actividad { get; set; }
 
     public float? CodigoCompra { get; set; }
 
-    public string? Descripcion { get; set; }
+    public string?Descripcion { get; set; }
 
-    public string? UnidMed { get; set; }
+    public string?UnidMed { get; set; }
 
     public float? Enero { get; set; }
 
@@ -43,23 +43,25 @@ public partial class Xpacc
 
     public float? CostoUnitario { get; set; }
 
-    public string? CuentaObjetal { get; set; }
+    public string?CuentaObjetal { get; set; }
 
-    public string? Tipo { get; set; }
+    public string?Tipo { get; set; }
 
-    public int? AreaId { get; set; }
+    public string?AreaId { get; set; }
 
-    public int? ProyectoId { get; set; }
+    public string?ProyectoId { get; set; }
 
-    public int? ActividadId { get; set; }
+    public string?ActividadId { get; set; }
 
-    public string? CodigoIntegracion { get; set; }
+    public string?CodigoIntegracion { get; set; }
 
-    public string? CodigoProyecto { get; set; }
+    public string?CodigoProyecto { get; set; }
 
-    public string? NombreActividad { get; set; }
+    public string?NombreActividad { get; set; }
 
-    public int Id { get; set; }
+    public string? Id { get; set; } 
 
-    public string? CuentaObjetalNormalizada { get; set; }
+    public string?CuentaObjetalNormalizada { get; set; }
+
+    public int? ObjectType { get; set; }
 }

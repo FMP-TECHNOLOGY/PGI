@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace DataAccess.Entities;
 
-public partial class Imputacionespresupuestaria
+public partial class ImputacionesPresupuestaria
 {
     public long Cuenta { get; set; }
 
@@ -16,4 +16,6 @@ public partial class Imputacionespresupuestaria
     public int UserId { get; set; }
 
     public DateTime Created { get; set; }
+
+    public int? ObjectType { get; set; }
 }

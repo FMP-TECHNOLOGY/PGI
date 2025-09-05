@@ -56,7 +56,7 @@ namespace API_PGI.Workers
                                        from t2 in gj.DefaultIfEmpty()
                                        where t2 == null
                                        select t0)
-                                       .ToList() ?? new();
+                                       .ToList() ?new();
 
             var permissions = permissionsToCreate.Select(p => new Permission()
             {

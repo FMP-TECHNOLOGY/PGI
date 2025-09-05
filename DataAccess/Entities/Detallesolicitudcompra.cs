@@ -3,15 +3,15 @@ using System.Collections.Generic;
 
 namespace DataAccess.Entities;
 
-public partial class Detallesolicitudcompra
+public partial class DetalleSolicitudCompra
 {
-    public int Id { get; set; }
+    public string? Id { get; set; } 
 
-    public int SolicitudId { get; set; }
+    public string? SolicitudId { get; set; } 
 
-    public int PaccId { get; set; }
+    public string? PaccId { get; set; } 
 
-    public string? Especificaciones { get; set; }
+    public string?Especificaciones { get; set; }
 
     public string? CuentaObjetal { get; set; } 
 
@@ -25,21 +25,21 @@ public partial class Detallesolicitudcompra
 
     public decimal? CostoRecepcion { get; set; }
 
-    public string? ProveedorId { get; set; }
+    public string?ProveedorId { get; set; }
 
-    public string? OrdenCompra { get; set; }
+    public string?OrdenCompra { get; set; }
 
-    public string? NumeroProceso { get; set; }
+    public string?NumeroProceso { get; set; }
 
     public DateTime? FechaAdjudicacion { get; set; }
 
     public decimal? PorcentajeDescuento { get; set; }
 
-    public string? UmbralCode { get; set; }
+    public string?UmbralCode { get; set; }
 
-    public string? TipoImpuestoCode { get; set; }
+    public string?TipoImpuestoCode { get; set; }
 
-    public int? Estadoid { get; set; }
+    public string?Estadoid { get; set; }
 
     public int? LineNumSolicitud { get; set; }
 
@@ -53,5 +53,5 @@ public partial class Detallesolicitudcompra
 
     public DateTime Created { get; set; }
 
-    public virtual User User { get; set; } 
+    public int? ObjectType { get; set; }
 }

@@ -1,16 +1,18 @@
-﻿using PGI.DataAccess.DbContenxts;
-using PGI.DataAccess.Entities;
+﻿
+
+using DataAccess;
+using DataAccess.Entities;
 
 namespace PGI.DataAccess.Repositories.Auth
 {
-    public interface IUserCompany : IGenericRepo<UserCompany>
+    public interface IUserCompany : IGenericRepo<UserCompania>
     {
 
     }
 
-    public class UserCompanyRepo : GenericRepo<UserCompany>, IUserCompany
+    public class UserCompanyRepo : GenericRepo<UserCompania>, IUserCompany
     {
-        public UserCompanyRepo(AppDBContext context) : base(context)
+        public UserCompanyRepo(PGIContext context) : base(context)
         {
         }
     }

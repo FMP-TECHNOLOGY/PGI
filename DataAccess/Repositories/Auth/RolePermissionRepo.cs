@@ -1,6 +1,6 @@
-﻿using PGI.Common.Exceptions;
-using PGI.DataAccess.DbContenxts;
-using PGI.DataAccess.Entities;
+﻿using DataAccess;
+using DataAccess.Entities;
+using Microsoft.IdentityModel.SecurityTokenService;
 
 namespace PGI.DataAccess.Repositories.Auth
 {
@@ -14,7 +14,7 @@ namespace PGI.DataAccess.Repositories.Auth
     {
         private readonly IPermission permissionRepo;
         private readonly IRole roleRepo;
-        public RolePermissionRepo(AppDBContext context,
+        public RolePermissionRepo(PGIContext context,
                                         IRole roleRepo,
                                         IPermission permissionRepo) : base(context)
         {
@@ -24,7 +24,7 @@ namespace PGI.DataAccess.Repositories.Auth
 
         public void AddPermission(string? roleId, string? permissionId)
         {
-            if (Exists(x => x.PermissionId == permissionId && x.RoleId == roleId))
+            if (Find(x => x.PermissionId == permissionId && x.RoleId == roleId)==null)
                 throw new BadRequestException("Already assigned permission");
 
             var role = roleRepo.Find(x => x.Id == roleId && x.Active)
@@ -33,7 +33,7 @@ namespace PGI.DataAccess.Repositories.Auth
             var permission = permissionRepo.Find(x => x.Id == permissionId && x.Active)
                 ?? throw new BadRequestException("Invalid or locked permission");
 
-            AddSaving(new RolePermission()
+            AddSaving(null, new RolePermission()
             {
                 PermissionId = permissionId,
                 RoleId = roleId,
@@ -45,7 +45,7 @@ namespace PGI.DataAccess.Repositories.Auth
         public void RemovePermission(string? roleId, string? permissionId)
         {
             var rolePermission = Find(x => x.RoleId == roleId && x.PermissionId == permissionId)
-                ?? throw new NotFoundException("Role-Permission not found");
+                ?? throw new Exception("Role-Permission not found");
 
 
             RemoveSaving(rolePermission);

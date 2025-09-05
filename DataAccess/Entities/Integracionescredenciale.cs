@@ -3,15 +3,15 @@ using System.Collections.Generic;
 
 namespace DataAccess.Entities;
 
-public partial class Integracionescredenciale
+public partial class IntegracionesCredenciale
 {
-    public int Id { get; set; }
+    public string? Id { get; set; } 
 
-    public int CompaniaId { get; set; }
+    public string? CompaniaId { get; set; } 
 
-    public int IntegracionId { get; set; }
+    public string? IntegracionId { get; set; } 
 
-    public int CredencialId { get; set; }
+    public string? CredencialId { get; set; } 
 
     public string? Url { get; set; } 
 
@@ -20,4 +20,6 @@ public partial class Integracionescredenciale
     public DateTime Created { get; set; }
 
     public DateTime? UltimaEjecucion { get; set; }
+
+    public int? ObjectType { get; set; }
 }

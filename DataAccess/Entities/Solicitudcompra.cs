@@ -3,13 +3,15 @@ using System.Collections.Generic;
 
 namespace DataAccess.Entities;
 
-public partial class Solicitudcompra
+public partial class SolicitudCompra
 {
-    public int Id { get; set; }
+    public string? Id { get; set; } 
 
-    public int CompaniaId { get; set; }
+    public string? CompaniaId { get; set; } 
 
-    public int PoaId { get; set; }
+    public string? PoaId { get; set; } 
 
     public string? Codigo { get; set; } 
+
+    public int? ObjectType { get; set; }
 }

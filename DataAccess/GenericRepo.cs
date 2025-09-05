@@ -175,6 +175,28 @@ namespace DataAccess
             var result = Save();
 
             return entity;
+        } 
+        public virtual T RemoveSaving( T entity)
+        {
+            var keys = GetPrimaryKeys(entity);
+
+            if (keys == null)
+            {
+                throw new Exception("El valor a eliminar no existe");
+            }
+
+            T source = Get(keys);
+
+            if (source == null)
+            {
+                throw new Exception("El valor a eliminar no existe");
+            }
+
+
+            context.Remove(source);
+            var result = Save();
+
+            return entity;
         }
         public virtual T UpdateSaving(T source, T entity)
         {
@@ -249,7 +271,7 @@ namespace DataAccess
                         // ERROR DE REFERENCIA
                         case MySqlConnector.MySqlErrorCode.NoReferencedRow2:
 
-                            new Log().Error(ex);
+                            new LogData().Error(ex);
                             var foreignKeyField = Regex.Match(ex.Message, "FOREIGN KEY \\(`(.*?)`\\)").Groups[1].Value;
 
                             // = Regex.Match(ex.Message, "'.*?'").Value;
@@ -258,14 +280,14 @@ namespace DataAccess
 
                         default:
 
-                            new Log().Error(ex);
+                            new LogData().Error(ex);
 
                             throw new Exception($"Ocurrió un error procesando su solicitud ({ex.ErrorCode}), {ex.Message}");
                     }
                 }
             }
 
-            new Log().Error(e.Exception);
+            new LogData().Error(e.Exception);
 
             throw new Exception($"Ocurrió un error procesando su solicitud ({e.Exception.HResult})");
         }

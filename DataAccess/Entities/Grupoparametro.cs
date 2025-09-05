@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace DataAccess.Entities;
 
-public partial class Grupoparametro
+public partial class GrupoParametro
 {
-    public int Id { get; set; }
+    public string? Id { get; set; } 
 
     public string? Descripcion { get; set; } 
 
@@ -15,5 +15,5 @@ public partial class Grupoparametro
 
     public DateTime Created { get; set; }
 
-    public virtual User User { get; set; } 
+    public int? ObjectType { get; set; }
 }

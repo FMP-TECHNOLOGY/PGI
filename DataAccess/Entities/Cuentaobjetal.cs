@@ -14,4 +14,6 @@ public partial class Cuentaobjetal
     public int UserId { get; set; }
 
     public DateTime Created { get; set; }
+
+    public int? ObjectType { get; set; }
 }

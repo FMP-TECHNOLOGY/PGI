@@ -5,11 +5,11 @@ namespace DataAccess.Entities;
 
 public partial class Poa
 {
-    public int Id { get; set; }
+    public string? Id { get; set; } 
 
-    public int CompaniaId { get; set; }
+    public string? CompaniaId { get; set; } 
 
-    public int Ano { get; set; }
+    public string? Ano { get; set; } 
 
     public string? Descripcion { get; set; } 
 
@@ -22,4 +22,6 @@ public partial class Poa
     public int UserId { get; set; }
 
     public DateTime Created { get; set; }
+
+    public int? ObjectType { get; set; }
 }

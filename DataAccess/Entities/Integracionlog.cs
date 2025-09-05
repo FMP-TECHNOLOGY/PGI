@@ -5,15 +5,17 @@ namespace DataAccess.Entities;
 
 public partial class Integracionlog
 {
-    public int Id { get; set; }
+    public string? Id { get; set; } 
 
-    public int CompaniaId { get; set; }
+    public string? CompaniaId { get; set; } 
 
-    public int IntegracionId { get; set; }
+    public string? IntegracionId { get; set; } 
 
     public bool Existoso { get; set; }
 
-    public string? Mensaje { get; set; }
+    public string?Mensaje { get; set; }
 
     public DateTime Created { get; set; }
+
+    public int? ObjectType { get; set; }
 }

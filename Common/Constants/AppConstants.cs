@@ -14,6 +14,7 @@ namespace Common.Constants
 
         public const int VIN_LENGHT = 17;
         public const string API_KEY_TOKEN = "sdsd";
+        public const string BEARER_TOKEN = "Bearer";
 
     }
 }

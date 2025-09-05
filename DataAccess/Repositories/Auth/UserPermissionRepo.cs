@@ -1,8 +1,9 @@
-﻿using PGI.Common.Exceptions;
-using PGI.DataAccess.DbContenxts;
-using PGI.DataAccess.Entities;
+﻿
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using DataAccess.Entities;
+using DataAccess;
+using Microsoft.IdentityModel.SecurityTokenService;
 
 namespace PGI.DataAccess.Repositories.Auth
 {
@@ -17,7 +18,7 @@ namespace PGI.DataAccess.Repositories.Auth
         private readonly IUser usersRepo;
         private readonly IPermission permissionsRepo;
 
-        public UserPermissionRepo(AppDBContext context,
+        public UserPermissionRepo(PGIContext context,
                                   IUser usersRepo,
                                   IPermission permissionsRepo
             ) : base(context)
@@ -29,13 +30,13 @@ namespace PGI.DataAccess.Repositories.Auth
         public void AddPermission(string? username, string? permissionId)
         {
             var user = usersRepo.FindValidByUsername(username)
-                ?? throw new BadRequestException("Invalid or locked user");
+                ??throw new BadRequestException("Invalid or locked user");
 
-            if (Exists(x => x.PermissionId == permissionId && x.UserId == user.Id))
+            if (Find(x => x.PermissionId == permissionId && x.UserId == user.Id)==null)
                 throw new BadRequestException("Already assigned permission");
 
             var permission = permissionsRepo.Find(x => x.Id == permissionId && x.Active)
-                ?? throw new BadRequestException("Invalid or locked permission");
+                ??throw new BadRequestException("Invalid or locked permission");
 
             AddSaving(new UserPermission()
             {
@@ -52,30 +53,30 @@ namespace PGI.DataAccess.Repositories.Auth
                 ?? throw new BadRequestException("Invalid or locked user");
 
             var userPermission = Find(x => x.UserId == user.Id && x.PermissionId == permissionId)
-                ?? throw new NotFoundException("User-Permission not found");
+                ??throw new Exception("User-Permission not found");
 
             RemoveSaving(userPermission);
 
-            var apiKeyPermissions = GetUserApiKeyPermissions(user.Id);
+            //var apiKeyPermissions = GetUserApiKeyPermissions(user.Id);
 
-            if (!apiKeyPermissions.Any())
-                return;
+            //if (!apiKeyPermissions.Any())
+            //    return;
 
-            var apiKeyPermissionsRepo = context.GetService<IUserApiKeyPermission>()
-                  ?? throw new InvalidOperationException($"Cannot get {nameof(IUserApiKeyPermission)} repo");
+            //var apiKeyPermissionsRepo = context.GetService<IUserApiKeyPermission>()
+            //      ?throw new InvalidOperationException($"Cannot get {nameof(IUserApiKeyPermission)} repo");
 
-            apiKeyPermissions.ForEach(apiKeyPermission => apiKeyPermissionsRepo.RemovePermission(apiKeyPermission.ApiKeyId, apiKeyPermission.PermissionId));
+            //apiKeyPermissions.ForEach(apiKeyPermission => apiKeyPermissionsRepo.RemovePermission(apiKeyPermission.ApiKeyId, apiKeyPermission.PermissionId));
         }
 
-        private List<UserApiKeyPermission> GetUserApiKeyPermissions(string? userId)
-        {
-            return (from t0 in context.Set<UserApiKey>()
-                    join t1 in context.Set<UserApiKeyPermission>()
-                         on new { ApiKeyId = t0.Id, t0.UserId } equals new { t1.ApiKeyId, UserId = userId }
-                    select t1)
-                    .IgnoreAutoIncludes()
-                    .AsNoTracking()
-                    .ToList() ?? new List<UserApiKeyPermission>();
-        }
+        //private List<UserApiKeyPermission> GetUserApiKeyPermissions(string? userId)
+        //{
+        //    return (from t0 in context.Set<UserApiKey>()
+        //            join t1 in context.Set<UserApiKeyPermission>()
+        //                 on new { ApiKeyId = t0.Id, t0.UserId } equals new { t1.ApiKeyId, UserId = userId }
+        //            select t1)
+        //            .IgnoreAutoIncludes()
+        //            .AsNoTracking()
+        //            .ToList() ?new List<UserApiKeyPermission>();
+        //}
     }
 }

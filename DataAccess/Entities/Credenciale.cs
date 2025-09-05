@@ -5,9 +5,9 @@ namespace DataAccess.Entities;
 
 public partial class Credenciale
 {
-    public int Id { get; set; }
+    public string? Id { get; set; } 
 
-    public int CompaniaId { get; set; }
+    public string? CompaniaId { get; set; } 
 
     public string? Descripcion { get; set; } 
 
@@ -29,5 +29,5 @@ public partial class Credenciale
 
     public DateTime Created { get; set; }
 
-    public virtual User User { get; set; } 
+    public int? ObjectType { get; set; }
 }

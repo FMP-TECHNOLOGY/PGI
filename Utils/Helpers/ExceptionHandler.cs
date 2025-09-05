@@ -17,7 +17,7 @@ namespace Utils.Helpers
 
         int statusCode = StatusCodes.Status400BadRequest;
 
-        public string? GetMessage(Exception e, out int code)
+        public string?GetMessage(Exception e, out int code)
         {
 
             code = new int();

@@ -5,13 +5,15 @@ namespace DataAccess.Entities;
 
 public partial class Rolmenu
 {
-    public int Id { get; set; }
+    public string? Id { get; set; } 
 
-    public int MenuId { get; set; }
+    public string? MenuId { get; set; } 
 
-    public int RolId { get; set; }
+    public string? RolId { get; set; } 
 
     public int UserId { get; set; }
 
     public DateTime Created { get; set; }
+
+    public int? ObjectType { get; set; }
 }

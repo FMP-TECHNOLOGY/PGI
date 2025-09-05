@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace DataAccess.Entities;
 
-public partial class Productointegracion
+public partial class ProductoIntegracion
 {
-    public int Id { get; set; }
+    public string? Id { get; set; } 
 
-    public int CompaniaId { get; set; }
+    public string? CompaniaId { get; set; } 
 
     public string? Codigo { get; set; } 
 
@@ -19,11 +19,13 @@ public partial class Productointegracion
 
     public DateTime Created { get; set; }
 
-    public string? CodigoCatalogo { get; set; }
+    public string?CodigoCatalogo { get; set; }
 
-    public string? CuentaObjetal { get; set; }
+    public string?CuentaObjetal { get; set; }
 
-    public string? Itbis { get; set; }
+    public string?Itbis { get; set; }
 
-    public string? InventoryUoMentry { get; set; }
+    public string?InventoryUoMentry { get; set; }
+
+    public int? ObjectType { get; set; }
 }

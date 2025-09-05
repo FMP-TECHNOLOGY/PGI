@@ -5,15 +5,15 @@ namespace DataAccess.Entities;
 
 public partial class Pacc
 {
-    public int Id { get; set; }
+    public string? Id { get; set; } 
 
-    public int CompaniaId { get; set; }
+    public string? CompaniaId { get; set; } 
 
-    public int PoaId { get; set; }
+    public string? PoaId { get; set; } 
 
-    public int ProyectoId { get; set; }
+    public string? ProyectoId { get; set; } 
 
-    public int ActividadId { get; set; }
+    public string? ActividadId { get; set; } 
 
     public string? CodigoIntegracion { get; set; } 
 
@@ -62,4 +62,6 @@ public partial class Pacc
     public int UserId { get; set; }
 
     public DateTime Created { get; set; }
+
+    public int? ObjectType { get; set; }
 }

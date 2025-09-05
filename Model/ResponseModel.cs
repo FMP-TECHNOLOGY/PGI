@@ -14,7 +14,7 @@ namespace Model
         public int TotalCount { get; set; }
         public bool Error { get; set; }
         public int Code { get; set; }
-        public string? Message { get; set; }
+        public string?Message { get; set; }
         public object Result { get; set; }
 
         public static ResponseModel GetErrorResponse()

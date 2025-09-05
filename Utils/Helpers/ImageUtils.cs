@@ -17,7 +17,7 @@ namespace Utils.Helpers
         /// </summary>
         /// <param name="bytes"></param>
         /// <returns></returns>
-        public string? ToBase64(byte[] bytes)
+        public string?ToBase64(byte[] bytes)
         {
             try
             {
@@ -27,7 +27,7 @@ namespace Utils.Helpers
             }
             catch (Exception e)
             {
-                new Log().Error(e);
+                new LogData().Error(e);
             }
 
             return null;
@@ -49,7 +49,7 @@ namespace Utils.Helpers
             }
             catch (Exception e)
             {
-                new Log().Error(e);
+                new LogData().Error(e);
             }
             return null;
         }
@@ -95,7 +95,7 @@ namespace Utils.Helpers
             }
             catch (Exception e)
             {
-                new Log().Error(e);
+                new LogData().Error(e);
             }
 
             return null;
@@ -116,7 +116,7 @@ namespace Utils.Helpers
             }
             catch (Exception e)
             {
-                new Log().Error(e);
+                new LogData().Error(e);
             }
 
             return null;

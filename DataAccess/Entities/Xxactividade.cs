@@ -5,17 +5,17 @@ namespace DataAccess.Entities;
 
 public partial class Xxactividade
 {
-    public int Id { get; set; }
+    public string? Id { get; set; } 
 
-    public string? Producto { get; set; }
+    public string?Producto { get; set; }
 
-    public string? Numero { get; set; }
+    public string?Numero { get; set; }
 
-    public string? Actividad { get; set; }
+    public string?Actividad { get; set; }
 
-    public string? Peso { get; set; }
+    public string?Peso { get; set; }
 
-    public string? Tipo { get; set; }
+    public string?Tipo { get; set; }
 
     public decimal? PlanificadoEnero { get; set; }
 
@@ -39,9 +39,11 @@ public partial class Xxactividade
 
     public decimal? PlanificadoNoviembre { get; set; }
 
-    public string? PlanificadoDiciembre { get; set; }
+    public string?PlanificadoDiciembre { get; set; }
 
-    public int? Proyectoid { get; set; }
+    public string?Proyectoid { get; set; }
 
-    public int? ActividadId { get; set; }
+    public string?ActividadId { get; set; }
+
+    public int? ObjectType { get; set; }
 }

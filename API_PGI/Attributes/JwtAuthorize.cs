@@ -6,7 +6,7 @@ namespace API_PGI.Attributes
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
     public class JwtAuthorize : Attribute, IAuthorizationFilter
     {
-        public string? RequiredPermission { get; set; } = string?.Empty;
+        public string?RequiredPermission { get; set; } = string?.Empty;
         public bool AllowAnonymous { get; set; }
         public bool SuperUserRequired { get; set; }
         public bool ValidCompanyRequired { get; set; }
@@ -16,14 +16,14 @@ namespace API_PGI.Attributes
             if (AllowAnonymous) return;
 
             if (context.ActionDescriptor is ControllerActionDescriptor controllerActionDescriptor
-                && (controllerActionDescriptor.MethodInfo.GetCustomAttribute<JwtAuthorize>()?.AllowAnonymous ?? false))
+                && (controllerActionDescriptor.MethodInfo.GetCustomAttribute<JwtAuthorize>()?.AllowAnonymous ?false))
                 return;
 
             var authService = context.HttpContext.RequestServices.GetService<IAuth>()
-                ?? throw new Exception($"Cannot get {nameof(IAuth)} service");
+                ?throw new Exception($"Cannot get {nameof(IAuth)} service");
 
             var user = authService.CurrentUser
-                ?? throw new UnauthorizedException();
+                ?throw new UnauthorizedException();
 
             ValidateCompany(authService);
 

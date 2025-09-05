@@ -5,11 +5,11 @@ namespace DataAccess.Entities;
 
 public partial class Ejesestrategico
 {
-    public int Id { get; set; }
+    public string? Id { get; set; } 
 
-    public int CompaniaId { get; set; }
+    public string? CompaniaId { get; set; } 
 
-    public int PeiId { get; set; }
+    public string? PeiId { get; set; } 
 
     public string? Descripcion { get; set; } 
 
@@ -23,5 +23,5 @@ public partial class Ejesestrategico
 
     public DateTime Created { get; set; }
 
-    public virtual User User { get; set; } 
+    public int? ObjectType { get; set; }
 }

@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace DataAccess.Entities;
 
-public partial class Tipoimpuesto
+public partial class TipoImpuesto
 {
-    public int Id { get; set; }
+    public string? Id { get; set; } 
 
-    public int CompaniaId { get; set; }
+    public string? CompaniaId { get; set; } 
 
     public string? Code { get; set; } 
 
@@ -18,4 +18,6 @@ public partial class Tipoimpuesto
     public int UserId { get; set; }
 
     public DateTime Created { get; set; }
+
+    public int? ObjectType { get; set; }
 }

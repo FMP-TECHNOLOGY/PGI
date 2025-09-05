@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Utils.Helpers
 {
-    public class Log
+    public class LogData
     {
         private static readonly string? rootDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         private static readonly string? subDir = "Log";
@@ -18,7 +18,7 @@ namespace Utils.Helpers
 
         private static readonly object lckObject = new();
 
-        public Log()
+        public LogData()
         {
             fileName = $"log-{DateTime.Now:yyyyMMdd}.txt";
             logPath = $@"{path}{pathSeparator}{fileName}";

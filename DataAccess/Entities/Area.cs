@@ -5,11 +5,11 @@ namespace DataAccess.Entities;
 
 public partial class Area
 {
-    public int Id { get; set; }
+    public string? Id { get; set; } 
 
     public int CompaniaId { get; set; }
 
-    public string? Nombre { get; set; } 
+    public string? Descripcion { get; set; } 
 
     public string? CodigoIntegracion { get; set; } 
 
@@ -19,7 +19,11 @@ public partial class Area
 
     public DateTime Created { get; set; }
 
-    public string? IdProyecto { get; set; }
+    public string?IdProyecto { get; set; }
 
-    public string? CodigoPadre { get; set; }
+    public string?CodigoPadre { get; set; }
+
+    public string?DepartamentoId { get; set; }
+
+    public int? ObjectType { get; set; }
 }

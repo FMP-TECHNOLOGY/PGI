@@ -5,13 +5,13 @@ namespace DataAccess.Entities;
 
 public partial class Evidencia
 {
-    public int Id { get; set; }
+    public string? Id { get; set; } 
 
-    public int CompaniaId { get; set; }
+    public string? CompaniaId { get; set; } 
 
-    public int ProyectoId { get; set; }
+    public string? ProyectoId { get; set; } 
 
-    public int ActividadId { get; set; }
+    public string? ActividadId { get; set; } 
 
     public int Mes { get; set; }
 
@@ -23,5 +23,5 @@ public partial class Evidencia
 
     public DateTime Created { get; set; }
 
-    public virtual User User { get; set; } 
+    public int? ObjectType { get; set; }
 }

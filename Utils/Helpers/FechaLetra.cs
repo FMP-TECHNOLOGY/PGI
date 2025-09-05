@@ -36,7 +36,7 @@ namespace Utils.Helpers
             return "";
         }
 
-        public string? enletras(string? num, string? moneda, bool isDecimal)
+        public string?enletras(string? num, string? moneda, bool isDecimal)
         {
             string? res, dec = "";
             Int64 entero;
@@ -63,7 +63,7 @@ namespace Utils.Helpers
             return res;
         }
 
-        public string? enletrasInteres(string? num, string? moneda, bool isDecimal)
+        public string?enletrasInteres(string? num, string? moneda, bool isDecimal)
         {
             string? res, dec = "";
             Int64 entero;

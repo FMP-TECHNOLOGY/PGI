@@ -5,19 +5,19 @@ namespace DataAccess.Entities;
 
 public partial class Xproducto
 {
-    public int Id { get; set; }
+    public string? Id { get; set; } 
 
-    public string? Area { get; set; }
+    public string?Area { get; set; }
 
-    public string? Codigo { get; set; }
+    public string?Codigo { get; set; }
 
-    public string? EjeEstrategico { get; set; }
+    public string?EjeEstrategico { get; set; }
 
-    public string? ObjetivoEstrategico { get; set; }
+    public string?ObjetivoEstrategico { get; set; }
 
-    public string? Producto { get; set; }
+    public string?Producto { get; set; }
 
-    public string? Indicador { get; set; }
+    public string?Indicador { get; set; }
 
     public int? Meta { get; set; }
 
@@ -25,7 +25,7 @@ public partial class Xproducto
 
     public decimal? Peso { get; set; }
 
-    public string? RiesgosAsociados { get; set; }
+    public string?RiesgosAsociados { get; set; }
 
     public decimal? PlanificadoEnero { get; set; }
 
@@ -51,17 +51,19 @@ public partial class Xproducto
 
     public decimal? PlanificadoDiciembre { get; set; }
 
-    public int? AreaId { get; set; }
+    public string?AreaId { get; set; }
 
-    public int? IndicadorId { get; set; }
+    public string?IndicadorId { get; set; }
 
-    public int? ObjetivoId { get; set; }
+    public string?ObjetivoId { get; set; }
 
-    public int? ProyectoId { get; set; }
+    public string?ProyectoId { get; set; }
 
-    public string? Actividad { get; set; }
+    public string?Actividad { get; set; }
 
-    public string? Tipo { get; set; }
+    public string?Tipo { get; set; }
 
-    public string? PesoActividad { get; set; }
+    public string?PesoActividad { get; set; }
+
+    public int? ObjectType { get; set; }
 }

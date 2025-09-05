@@ -1,5 +1,5 @@
-﻿using PGI.DataAccess.DbContenxts;
-using PGI.DataAccess.Entities;
+﻿using DataAccess;
+using DataAccess.Entities;
 
 namespace PGI.DataAccess.Repositories.Auth
 {
@@ -10,7 +10,7 @@ namespace PGI.DataAccess.Repositories.Auth
 
     public class RoleRepo : GenericRepo<Role>, IRole
     {
-        public RoleRepo(AppDBContext context) : base(context)
+        public RoleRepo(PGIContext context) : base(context)
         {
         }
     }

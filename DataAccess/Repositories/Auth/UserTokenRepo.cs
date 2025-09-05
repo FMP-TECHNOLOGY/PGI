@@ -1,6 +1,6 @@
-﻿using PGI.Common.Utils;
-using PGI.DataAccess.DbContenxts;
-using PGI.DataAccess.Entities;
+﻿
+using DataAccess;
+using DataAccess.Entities;
 using System.IdentityModel.Tokens.Jwt;
 
 namespace PGI.DataAccess.Repositories.Auth
@@ -12,7 +12,7 @@ namespace PGI.DataAccess.Repositories.Auth
 
     public class UserTokenRepo : GenericRepo<UserToken>, IUserToken
     {
-        public UserTokenRepo(AppDBContext context) : base(context)
+        public UserTokenRepo(PGIContext context) : base(context)
         {
         }
 
@@ -21,7 +21,7 @@ namespace PGI.DataAccess.Repositories.Auth
             return AddSaving(new UserToken()
             {
                 UserId = user.Id,
-                AccessToken = string?.IsNullOrWhiteSpace(token)
+                AccessToken = string.IsNullOrWhiteSpace(token)
                             ? new JwtSecurityTokenHandler().WriteToken(securityToken)
                             : token,
                 Jti = securityToken?.Id,

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace DataAccess.Entities;
 
-public partial class Unidadmedida
+public partial class UnidadMedida
 {
-    public int Id { get; set; }
+    public string? Id { get; set; } 
 
     public string? Nombre { get; set; } 
 
@@ -16,4 +16,6 @@ public partial class Unidadmedida
     public int Userid { get; set; }
 
     public DateTime Created { get; set; }
+
+    public int? ObjectType { get; set; }
 }

@@ -3,13 +3,13 @@ using System.Collections.Generic;
 
 namespace DataAccess.Entities;
 
-public partial class Documentosevidencia
+public partial class DocumentosEvidencia
 {
-    public int Id { get; set; }
+    public string? Id { get; set; } 
 
-    public int CompaniaId { get; set; }
+    public string? CompaniaId { get; set; } 
 
-    public int EvidenciaId { get; set; }
+    public string? EvidenciaId { get; set; } 
 
     public string? NombreArchivo { get; set; } 
 
@@ -19,5 +19,5 @@ public partial class Documentosevidencia
 
     public DateTime Created { get; set; }
 
-    public virtual User User { get; set; } 
+    public int? ObjectType { get; set; }
 }
