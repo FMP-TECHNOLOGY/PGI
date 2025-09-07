@@ -27,13 +27,13 @@ public partial class PGIContext : DbContext
 
     public virtual DbSet<Auditoria> Auditorias { get; set; }
 
-    public virtual DbSet<Cloudprovider> Cloudproviders { get; set; }
+    public virtual DbSet<CloudProvider> Cloudproviders { get; set; }
 
     public virtual DbSet<Compania> Companias { get; set; }
 
     public virtual DbSet<Credenciale> Credenciales { get; set; }
 
-    public virtual DbSet<Cuentaobjetal> Cuentaobjetals { get; set; }
+    public virtual DbSet<CuentaObjetal> Cuentaobjetals { get; set; }
 
     public virtual DbSet<Departamento> Departamentoes { get; set; }
 
@@ -43,13 +43,13 @@ public partial class PGIContext : DbContext
 
     public virtual DbSet<DocumentosSolicitudCompra> Documentossolicitudcompras { get; set; }
 
-    public virtual DbSet<Ejesestrategico> Ejesestrategicos { get; set; }
+    public virtual DbSet<EjesEstrategico> Ejesestrategicos { get; set; }
 
     public virtual DbSet<Empleado> Empleados { get; set; }
 
-    public virtual DbSet<Estadoaccione> Estadoacciones { get; set; }
+    public virtual DbSet<EstadoAccione> Estadoacciones { get; set; }
 
-    public virtual DbSet<Estadosolicitud> Estadosolicituds { get; set; }
+    public virtual DbSet<EstadoSolicitud> Estadosolicituds { get; set; }
 
     public virtual DbSet<Evidencia> Evidencias { get; set; }
 
@@ -65,7 +65,7 @@ public partial class PGIContext : DbContext
 
     public virtual DbSet<IntegracionesCredenciale> Integracionescredenciales { get; set; }
 
-    public virtual DbSet<Integracionlog> Integracionlogs { get; set; }
+    public virtual DbSet<IntegracionLog> Integracionlogs { get; set; }
 
     public virtual DbSet<Log> Logs { get; set; }
 
@@ -91,13 +91,13 @@ public partial class PGIContext : DbContext
 
     public virtual DbSet<ProductoIntegracion> Productointegracions { get; set; }
 
-    public virtual DbSet<Profitcenter> Profitcenters { get; set; }
+    public virtual DbSet<ProfitCenter> Profitcenters { get; set; }
 
     public virtual DbSet<Proveedor> Proveedors { get; set; }
 
     public virtual DbSet<Proyecto> Proyectoes { get; set; }
 
-    public virtual DbSet<Proyectoindicadore> Proyectoindicadores { get; set; }
+    public virtual DbSet<ProyectoIndicadore> Proyectoindicadores { get; set; }
 
     public virtual DbSet<Riesgo> Riesgoes { get; set; }
 
@@ -107,7 +107,7 @@ public partial class PGIContext : DbContext
 
     public virtual DbSet<RolePermission> Rolepermissions { get; set; }
 
-    public virtual DbSet<Rolmenu> Rolmenus { get; set; }
+    public virtual DbSet<RolMenu> Rolmenus { get; set; }
 
     public virtual DbSet<SolicitudCompra> Solicitudcompras { get; set; }
 
@@ -307,7 +307,7 @@ public partial class PGIContext : DbContext
             entity.Property(e => e.ValorAnterior).HasColumnName("valorAnterior");
         });
 
-        modelBuilder.Entity<Cloudprovider>(entity =>
+        modelBuilder.Entity<CloudProvider>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
@@ -420,13 +420,13 @@ public partial class PGIContext : DbContext
                 .HasColumnName("username");
         });
 
-        modelBuilder.Entity<Cuentaobjetal>(entity =>
+        modelBuilder.Entity<CuentaObjetal>(entity =>
         {
-            entity.HasKey(e => e.Cuenta).HasName("PRIMARY");
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
 
             entity.ToTable("cuentaobjetal");
 
-            entity.Property(e => e.Cuenta).HasMaxLength(36);
+            entity.Property(e => e.Id).HasMaxLength(36);
             entity.Property(e => e.Active).HasColumnName("active");
             entity.Property(e => e.Created)
                 .HasColumnType("datetime")
@@ -532,7 +532,7 @@ public partial class PGIContext : DbContext
             entity.Property(e => e.TipoArchivo).HasMaxLength(100);
         });
 
-        modelBuilder.Entity<Ejesestrategico>(entity =>
+        modelBuilder.Entity<EjesEstrategico>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
@@ -623,7 +623,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("turno");
         });
 
-        modelBuilder.Entity<Estadoaccione>(entity =>
+        modelBuilder.Entity<EstadoAccione>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
@@ -639,7 +639,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("objectType");
         });
 
-        modelBuilder.Entity<Estadosolicitud>(entity =>
+        modelBuilder.Entity<EstadoSolicitud>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
@@ -808,7 +808,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("URL");
         });
 
-        modelBuilder.Entity<Integracionlog>(entity =>
+        modelBuilder.Entity<IntegracionLog>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
@@ -1057,7 +1057,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("objectType");
         });
 
-        modelBuilder.Entity<Profitcenter>(entity =>
+        modelBuilder.Entity<ProfitCenter>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
@@ -1136,7 +1136,7 @@ public partial class PGIContext : DbContext
             entity.Property(e => e.UnidadMedidaId).HasMaxLength(36);
         });
 
-        modelBuilder.Entity<Proyectoindicadore>(entity =>
+        modelBuilder.Entity<ProyectoIndicadore>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
@@ -1244,7 +1244,7 @@ public partial class PGIContext : DbContext
             entity.Property(e => e.UpdatedBy).HasMaxLength(36);
         });
 
-        modelBuilder.Entity<Rolmenu>(entity =>
+        modelBuilder.Entity<RolMenu>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 

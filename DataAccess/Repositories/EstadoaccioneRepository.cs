@@ -5,15 +5,15 @@ using System.Collections.Generic;
 namespace DataAccess.Repositories;
 
 
-    public interface IEstadoaccione : IGenericRepo<Estadoaccione>
+    public interface IEstadoAccione : IGenericRepo<EstadoAccione>
 {
 }
 
 
-public class EstadoaccioneRepository : GenericRepo<Estadoaccione>, IEstadoaccione
+public class EstadoAccioneRepository : GenericRepo<EstadoAccione>, IEstadoAccione
 {
 
-    public EstadoaccioneRepository(PGIContext context) : base(context)
+    public EstadoAccioneRepository(PGIContext context) : base(context)
     {
     }
 

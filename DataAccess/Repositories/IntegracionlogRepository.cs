@@ -5,15 +5,15 @@ using System.Collections.Generic;
 namespace DataAccess.Repositories;
 
 
-    public interface IIntegracionlog : IGenericRepo<Integracionlog>
+    public interface IIntegracionLog : IGenericRepo<IntegracionLog>
 {
 }
 
 
-public class IntegracionlogRepository : GenericRepo<Integracionlog>, IIntegracionlog
+public class IntegracionLogRepository : GenericRepo<IntegracionLog>, IIntegracionLog
 {
 
-    public IntegracionlogRepository(PGIContext context) : base(context)
+    public IntegracionLogRepository(PGIContext context) : base(context)
     {
     }
 

@@ -6,15 +6,15 @@ namespace DataAccess.Repositories;
 
 
 
-public interface IProfitcenter : IGenericRepo<Profitcenter>
+public interface IProfitCenter : IGenericRepo<ProfitCenter>
 {
 }
 
 
-public class ProfitcenterRepository : GenericRepo<Profitcenter>, IProfitcenter
+public class ProfitCenterRepository : GenericRepo<ProfitCenter>, IProfitCenter
 {
 
-    public ProfitcenterRepository(PGIContext context) : base(context)
+    public ProfitCenterRepository(PGIContext context) : base(context)
     {
     }
 

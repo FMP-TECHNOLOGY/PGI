@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace DataAccess.Entities;
 
-public partial class Profitcenter
+public partial class ProfitCenter
 {
     public string? Id { get; set; } 
 

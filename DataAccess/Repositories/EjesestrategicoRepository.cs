@@ -4,15 +4,15 @@ using System.Collections.Generic;
 namespace DataAccess.Entities;
 
 
-    public interface IEjesestrategico : IGenericRepo<Ejesestrategico>
+    public interface IEjesEstrategico : IGenericRepo<EjesEstrategico>
 {
 }
 
 
-public class EjesestrategicoRepository : GenericRepo<Ejesestrategico>, IEjesestrategico
+public class EjesEstrategicoRepository : GenericRepo<EjesEstrategico>, IEjesEstrategico
 {
 
-    public EjesestrategicoRepository(PGIContext context) : base(context)
+    public EjesEstrategicoRepository(PGIContext context) : base(context)
     {
     }
 

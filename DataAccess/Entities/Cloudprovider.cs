@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace DataAccess.Entities;
 
-public partial class Cloudprovider
+public partial class CloudProvider
 {
     public string? Id { get; set; } 
 

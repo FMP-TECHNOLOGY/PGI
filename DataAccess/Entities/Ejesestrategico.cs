@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace DataAccess.Entities;
 
-public partial class Ejesestrategico
+public partial class EjesEstrategico
 {
     public string? Id { get; set; } 
 

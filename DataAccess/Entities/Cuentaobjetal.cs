@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace DataAccess.Entities;
 
-public partial class Cuentaobjetal
+public partial class CuentaObjetal
 {
-    public string? Cuenta { get; set; } 
+    public string? Id { get; set; } 
 
     public string? Descripcion { get; set; } 
 

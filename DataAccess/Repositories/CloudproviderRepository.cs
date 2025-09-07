@@ -5,15 +5,15 @@ using System.Collections.Generic;
 namespace DataAccess.Repositories;
 
 
-    public interface ICloudprovider : IGenericRepo<Cloudprovider>
+    public interface ICloudProvider : IGenericRepo<CloudProvider>
 {
 }
 
 
-public class CloudproviderRepository : GenericRepo<Cloudprovider>, ICloudprovider
+public class CloudProviderRepository : GenericRepo<CloudProvider>, ICloudProvider
 {
 
-    public CloudproviderRepository(PGIContext context) : base(context)
+    public CloudProviderRepository(PGIContext context) : base(context)
     {
     }
 

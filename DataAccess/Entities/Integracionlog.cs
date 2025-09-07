@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace DataAccess.Entities;
 
-public partial class Integracionlog
+public partial class IntegracionLog
 {
     public string? Id { get; set; } 
 

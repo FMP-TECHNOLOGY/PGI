@@ -4,15 +4,15 @@ using System.Collections.Generic;
 
 namespace DataAccess.Repositories;
 
-    public interface IRolmenu : IGenericRepo<Rolmenu>
+    public interface IRolMenu : IGenericRepo<RolMenu>
 {
 }
 
 
-public class RolmenuRepository : GenericRepo<Rolmenu>, IRolmenu
+public class RolMenuRepository : GenericRepo<RolMenu>, IRolMenu
 {
 
-    public RolmenuRepository(PGIContext context) : base(context)
+    public RolMenuRepository(PGIContext context) : base(context)
     {
     }
 

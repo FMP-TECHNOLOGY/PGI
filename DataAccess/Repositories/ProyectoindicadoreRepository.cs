@@ -5,15 +5,15 @@ using System.Collections.Generic;
 namespace DataAccess.Repositories;
 
 
-    public interface IProyectoindicadore : IGenericRepo<Proyectoindicadore>
+    public interface IProyectoIndicadore : IGenericRepo<ProyectoIndicadore>
 {
 }
 
 
-public class ProyectoindicadoreRepository : GenericRepo<Proyectoindicadore>, IProyectoindicadore
+public class ProyectoIndicadoreRepository : GenericRepo<ProyectoIndicadore>, IProyectoIndicadore
 {
 
-    public ProyectoindicadoreRepository(PGIContext context) : base(context)
+    public ProyectoIndicadoreRepository(PGIContext context) : base(context)
     {
     }
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace DataAccess.Entities;
 
-public partial class Rolmenu
+public partial class RolMenu
 {
     public string? Id { get; set; } 
 

@@ -1,7 +1,8 @@
-﻿using System;
+﻿using DataAccess.Entities;
+using System;
 using System.Collections.Generic;
 
-namespace DataAccess.Entities;
+namespace DataAccess.Repositories;
 
 
 public interface IAccion : IGenericRepo<Accion>

@@ -5,15 +5,15 @@ using System.Collections.Generic;
 namespace DataAccess.Repositories;
 
  
-    public interface ICuentaobjetal : IGenericRepo<Cuentaobjetal>
+    public interface ICuentaObjetal : IGenericRepo<CuentaObjetal>
 {
 }
 
 
-public class CuentaobjetalRepository : GenericRepo<Cuentaobjetal>, ICuentaobjetal
+public class CuentaObjetalRepository : GenericRepo<CuentaObjetal>, ICuentaObjetal
 {
 
-    public CuentaobjetalRepository(PGIContext context) : base(context)
+    public CuentaObjetalRepository(PGIContext context) : base(context)
     {
     }
 
