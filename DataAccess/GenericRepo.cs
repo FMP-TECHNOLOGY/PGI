@@ -12,13 +12,15 @@ using Utils.Helpers;
 
 namespace DataAccess
 {
-    public interface IGenericRepo<T> : IDisposable where T : class
+    public interface IGenericRepo<T> where T : class
     {
         public T Get(params object[] keys);
         public List<T> GetAll();
         public T Add(T entity);
-        public T AddSaving(User user, T entity);
-        public T UpdateSaving(User user, T entity);
+        public T AddSaving(T entity);
+        public T UpdateSaving(T entity);
+
+        //public T UpdateSaving(User user, T entity);
         IEnumerable<T> UpdateRange(IEnumerable<T> items);
         public T Find(Func<T, bool> predicate);
         public List<T> FindAll(Func<T, bool> predicate);
@@ -68,7 +70,7 @@ namespace DataAccess
             return entity;
         }
 
-        public virtual T AddSaving(User user, T entity)
+        public virtual T AddSaving(T entity)
         {
             Add(entity);
             Save();
@@ -169,7 +171,7 @@ namespace DataAccess
 
         }
 
-        public virtual T UpdateSaving(User user, T entity)
+        public virtual T UpdateSaving(T entity)
         {
             Update(entity);
             var result = Save();

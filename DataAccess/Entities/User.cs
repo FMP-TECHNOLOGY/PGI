@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace DataAccess.Entities;
+﻿namespace DataAccess.Entities;
 
 public partial class User
 {
@@ -60,4 +57,9 @@ public partial class User
     public string?CreatedBy { get; set; }
 
     public string?UpdatedBy { get; set; }
+
+    public bool IsLocked()
+    {
+        throw new NotImplementedException();
+    }
 }
