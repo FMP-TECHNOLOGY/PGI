@@ -33,7 +33,7 @@ namespace API_PGI.Controllers.Menus
         {
             try
             {
-                _Menu.AddSaving(_Auth.CurrentUser, entity);
+                _Menu.AddSaving( entity);
 
 
                 return Ok(new ResponseModel()
@@ -57,7 +57,7 @@ namespace API_PGI.Controllers.Menus
             try
             {
 
-                _Menu.UpdateSaving(_Auth.CurrentUser, entity);
+                _Menu.UpdateSaving( entity);
 
                 return Ok(new ResponseModel()
                 {

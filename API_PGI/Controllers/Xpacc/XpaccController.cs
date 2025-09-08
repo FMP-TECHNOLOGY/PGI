@@ -33,7 +33,7 @@ namespace API_PGI.Controllers.Xpaccs
         {
             try
             {
-                _Xpacc.AddSaving(_Auth.CurrentUser, entity);
+                _Xpacc.AddSaving( entity);
 
 
                 return Ok(new ResponseModel()
@@ -57,7 +57,7 @@ namespace API_PGI.Controllers.Xpaccs
             try
             {
 
-                _Xpacc.UpdateSaving(_Auth.CurrentUser, entity);
+                _Xpacc.UpdateSaving( entity);
 
                 return Ok(new ResponseModel()
                 {

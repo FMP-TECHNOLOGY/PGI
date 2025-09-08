@@ -33,7 +33,7 @@ namespace API_PGI.Controllers.Riesgos
         {
             try
             {
-                _Riesgo.AddSaving(_Auth.CurrentUser, entity);
+                _Riesgo.AddSaving( entity);
 
 
                 return Ok(new ResponseModel()
@@ -57,7 +57,7 @@ namespace API_PGI.Controllers.Riesgos
             try
             {
 
-                _Riesgo.UpdateSaving(_Auth.CurrentUser, entity);
+                _Riesgo.UpdateSaving( entity);
 
                 return Ok(new ResponseModel()
                 {

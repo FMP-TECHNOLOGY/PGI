@@ -33,7 +33,7 @@ namespace API_PGI.Controllers.Indicadors
         {
             try
             {
-                _Indicador.AddSaving(_Auth.CurrentUser, entity);
+                _Indicador.AddSaving( entity);
 
 
                 return Ok(new ResponseModel()
@@ -57,7 +57,7 @@ namespace API_PGI.Controllers.Indicadors
             try
             {
 
-                _Indicador.UpdateSaving(_Auth.CurrentUser, entity);
+                _Indicador.UpdateSaving( entity);
 
                 return Ok(new ResponseModel()
                 {

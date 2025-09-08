@@ -21,5 +21,6 @@ public partial class Parametro
 
     public bool OfuscarValor { get; set; }
 
+    public Guid? CompaniaId { get; set; }
     public int? ObjectType { get; set; }
 }

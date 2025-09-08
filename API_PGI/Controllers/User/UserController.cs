@@ -33,7 +33,7 @@ namespace API_PGI.Controllers.Users
         {
             try
             {
-                _User.AddSaving(_Auth.CurrentUser, entity);
+                _User.AddSaving( entity);
 
 
                 return Ok(new ResponseModel()
@@ -57,7 +57,7 @@ namespace API_PGI.Controllers.Users
             try
             {
 
-                _User.UpdateSaving(_Auth.CurrentUser, entity);
+                _User.UpdateSaving( entity);
 
                 return Ok(new ResponseModel()
                 {
@@ -80,8 +80,8 @@ namespace API_PGI.Controllers.Users
             try
             {
                 var builder = new QueryBuilder<User>()
-                             .AddQuery(gridifyQuery)
-                             .AddCondition($"{nameof(User.CompaniaId)}={_Auth.CurrentUser?.CompaniaId}")
+                             .AddQuery(gridifyQuery);
+                             //.AddCondition($"{nameof(User.CompaniaId)}={_Auth.CurrentUser?.CompaniaId}")
                 ;
                 if (gridifyQuery.PageSize == 0) gridifyQuery.PageSize = int.MaxValue;
                 if (gridifyQuery.Page == 0) gridifyQuery.Page = 1;

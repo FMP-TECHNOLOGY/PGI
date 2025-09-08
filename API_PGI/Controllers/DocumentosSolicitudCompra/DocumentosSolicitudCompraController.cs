@@ -33,7 +33,7 @@ namespace API_PGI.Controllers.DocumentosSolicitudCompras
         {
             try
             {
-                _DocumentosSolicitudCompra.AddSaving(_Auth.CurrentUser, entity);
+                _DocumentosSolicitudCompra.AddSaving( entity);
 
 
                 return Ok(new ResponseModel()
@@ -57,7 +57,7 @@ namespace API_PGI.Controllers.DocumentosSolicitudCompras
             try
             {
 
-                _DocumentosSolicitudCompra.UpdateSaving(_Auth.CurrentUser, entity);
+                _DocumentosSolicitudCompra.UpdateSaving( entity);
 
                 return Ok(new ResponseModel()
                 {
@@ -81,7 +81,7 @@ namespace API_PGI.Controllers.DocumentosSolicitudCompras
             {
                 var builder = new QueryBuilder<DocumentosSolicitudCompra>()
                              .AddQuery(gridifyQuery)
-                             .AddCondition($"{nameof(DocumentosSolicitudCompra.CompaniaId)}={_Auth.CurrentUser?.CompaniaId}")
+                             //.AddCondition($"{nameof(DocumentosSolicitudCompra.CompaniaId)}={_Auth.CurrentUser?.CompaniaId}")
                 ;
                 if (gridifyQuery.PageSize == 0) gridifyQuery.PageSize = int.MaxValue;
                 if (gridifyQuery.Page == 0) gridifyQuery.Page = 1;

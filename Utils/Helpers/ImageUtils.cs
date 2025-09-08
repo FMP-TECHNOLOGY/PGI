@@ -17,13 +17,13 @@ namespace Utils.Helpers
         /// </summary>
         /// <param name="bytes"></param>
         /// <returns></returns>
-        public string?ToBase64(byte[] bytes)
+        public string? ToBase64(byte[] bytes)
         {
             try
             {
                 if (bytes is null || bytes.Length == 0) return null;
 
-                return Convert.ToBase64string?(bytes);
+                return Convert.ToBase64String(bytes);
             }
             catch (Exception e)
             {
@@ -42,9 +42,9 @@ namespace Utils.Helpers
         {
             try
             {
-                if (string?.IsNullOrWhiteSpace(base64)) return null;
+                if (string.IsNullOrWhiteSpace(base64)) return null;
 
-                var bytes = Convert.FromBase64string?(base64);
+                var bytes = Convert.FromBase64String(base64);
                 return bytes;
             }
             catch (Exception e)
@@ -72,10 +72,10 @@ namespace Utils.Helpers
                 using (var image = new MagickImage(bytes))
                 {
 
-                    var mimetype = image.FormatInfo?.MimeType;
+                    //var mimetype = image.;
 
-                    if (string?.IsNullOrWhiteSpace(mimetype) || !"image".Equals(mimetype.Split("/", string?SplitOptions.RemoveEmptyEntries).FirstOrDefault()))
-                        throw new IOException("Wrong file format!;");
+                    //if (string.IsNullOrWhiteSpace(mimetype) || !"image".Equals(mimetype.Split("/", StringSplitOptions.RemoveEmptyEntries).FirstOrDefault()))
+                    //    throw new IOException("Wrong file format!;");
 
                     image.Quality=25;
                     image.Write(imageStream);

@@ -33,7 +33,7 @@ namespace API_PGI.Controllers.DetalleSolicitudCompras
         {
             try
             {
-                _DetalleSolicitudCompra.AddSaving(_Auth.CurrentUser, entity);
+                _DetalleSolicitudCompra.AddSaving( entity);
 
 
                 return Ok(new ResponseModel()
@@ -57,7 +57,7 @@ namespace API_PGI.Controllers.DetalleSolicitudCompras
             try
             {
 
-                _DetalleSolicitudCompra.UpdateSaving(_Auth.CurrentUser, entity);
+                _DetalleSolicitudCompra.UpdateSaving( entity);
 
                 return Ok(new ResponseModel()
                 {
@@ -81,7 +81,7 @@ namespace API_PGI.Controllers.DetalleSolicitudCompras
             {
                 var builder = new QueryBuilder<DetalleSolicitudCompra>()
                              .AddQuery(gridifyQuery)
-                             .AddCondition($"{nameof(DetalleSolicitudCompra.CompaniaId)}={_Auth.CurrentUser?.CompaniaId}")
+                             //.AddCondition($"{nameof(DetalleSolicitudCompra.CompaniaId)}={_Auth.CurrentUser?.CompaniaId}")
                 ;
                 if (gridifyQuery.PageSize == 0) gridifyQuery.PageSize = int.MaxValue;
                 if (gridifyQuery.Page == 0) gridifyQuery.Page = 1;

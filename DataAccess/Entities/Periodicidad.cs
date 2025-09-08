@@ -17,5 +17,6 @@ public partial class Periodicidad
 
     public DateTime Created { get; set; }
 
+    public Guid? CompaniaId { get; set; }
     public int? ObjectType { get; set; }
 }

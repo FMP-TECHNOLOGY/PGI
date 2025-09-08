@@ -33,7 +33,7 @@ namespace API_PGI.Controllers.Xactividades
         {
             try
             {
-                _Xactividade.AddSaving(_Auth.CurrentUser, entity);
+                _Xactividade.AddSaving( entity);
 
 
                 return Ok(new ResponseModel()
@@ -57,7 +57,7 @@ namespace API_PGI.Controllers.Xactividades
             try
             {
 
-                _Xactividade.UpdateSaving(_Auth.CurrentUser, entity);
+                _Xactividade.UpdateSaving( entity);
 
                 return Ok(new ResponseModel()
                 {

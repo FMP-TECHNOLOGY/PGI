@@ -33,7 +33,7 @@ namespace API_PGI.Controllers.CuentaObjetals
         {
             try
             {
-                _CuentaObjetal.AddSaving(_Auth.CurrentUser, entity);
+                _CuentaObjetal.AddSaving( entity);
 
 
                 return Ok(new ResponseModel()
@@ -57,7 +57,7 @@ namespace API_PGI.Controllers.CuentaObjetals
             try
             {
 
-                _CuentaObjetal.UpdateSaving(_Auth.CurrentUser, entity);
+                _CuentaObjetal.UpdateSaving( entity);
 
                 return Ok(new ResponseModel()
                 {
@@ -81,7 +81,7 @@ namespace API_PGI.Controllers.CuentaObjetals
             {
                 var builder = new QueryBuilder<CuentaObjetal>()
                              .AddQuery(gridifyQuery)
-                             .AddCondition($"{nameof(CuentaObjetal.CompaniaId)}={_Auth.CurrentUser?.CompaniaId}")
+                             //.AddCondition($"{nameof(CuentaObjetal.CompaniaId)}={_Auth.CurrentUser?.CompaniaId}")
                 ;
                 if (gridifyQuery.PageSize == 0) gridifyQuery.PageSize = int.MaxValue;
                 if (gridifyQuery.Page == 0) gridifyQuery.Page = 1;

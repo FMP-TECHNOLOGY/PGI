@@ -33,7 +33,7 @@ namespace API_PGI.Controllers.UnidadMedidas
         {
             try
             {
-                _UnidadMedida.AddSaving(_Auth.CurrentUser, entity);
+                _UnidadMedida.AddSaving( entity);
 
 
                 return Ok(new ResponseModel()
@@ -57,7 +57,7 @@ namespace API_PGI.Controllers.UnidadMedidas
             try
             {
 
-                _UnidadMedida.UpdateSaving(_Auth.CurrentUser, entity);
+                _UnidadMedida.UpdateSaving( entity);
 
                 return Ok(new ResponseModel()
                 {

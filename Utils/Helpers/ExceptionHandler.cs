@@ -17,7 +17,7 @@ namespace Utils.Helpers
 
         int statusCode = StatusCodes.Status400BadRequest;
 
-        public string?GetMessage(Exception e, out int code)
+        public string? GetMessage(Exception e, out int code)
         {
 
             code = new int();
@@ -27,7 +27,7 @@ namespace Utils.Helpers
             {
                 case LoginException:
                     var loginException = e as LoginException;
-                    code = loginException.ErrorCode;
+                    code = loginException.StatusCode;
                     message = loginException.Message;
                     break;
                 default:

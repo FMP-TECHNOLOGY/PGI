@@ -11,9 +11,9 @@ namespace API_PGI.Auth
     {
         public bool Sudo { get; set; } = false;
 
-        private readonly string[] Roles;
+        public readonly string[] Roles;
 
-        private readonly bool AllowAnonymous;
+        public readonly bool AllowAnonymous;
 
         public AuthorizeAttribute()
         {

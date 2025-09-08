@@ -33,7 +33,7 @@ namespace API_PGI.Controllers.UserCompanias
         {
             try
             {
-                _UserCompania.AddSaving(_Auth.CurrentUser, entity);
+                _UserCompania.AddSaving( entity);
 
 
                 return Ok(new ResponseModel()
@@ -57,7 +57,7 @@ namespace API_PGI.Controllers.UserCompanias
             try
             {
 
-                _UserCompania.UpdateSaving(_Auth.CurrentUser, entity);
+                _UserCompania.UpdateSaving( entity);
 
                 return Ok(new ResponseModel()
                 {

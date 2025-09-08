@@ -33,7 +33,7 @@ namespace API_PGI.Controllers.EjesEstrategicos
         {
             try
             {
-                _EjesEstrategico.AddSaving(_Auth.CurrentUser, entity);
+                _EjesEstrategico.AddSaving( entity);
 
 
                 return Ok(new ResponseModel()
@@ -57,7 +57,7 @@ namespace API_PGI.Controllers.EjesEstrategicos
             try
             {
 
-                _EjesEstrategico.UpdateSaving(_Auth.CurrentUser, entity);
+                _EjesEstrategico.UpdateSaving( entity);
 
                 return Ok(new ResponseModel()
                 {

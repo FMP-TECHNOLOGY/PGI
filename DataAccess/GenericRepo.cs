@@ -1,5 +1,6 @@
 ﻿using DataAccess.Entities;
 using Gridify;
+using Microsoft.EntityFrameworkCore;
 using PGI.DataAccess.Repositories.Auth;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,8 @@ namespace DataAccess
 {
     public interface IGenericRepo<T> where T : class
     {
+        public DbSet<T> EntityDbSet { get; init; }
+
         public T Get(params object[] keys);
         public List<T> GetAll();
         public T Add(T entity);
@@ -40,10 +43,12 @@ namespace DataAccess
         private const int MYSQL_CUSTOM_ERROR_CODE = 99999;
 
         protected PGIContext context;
+        public DbSet<T> EntityDbSet { get; init; }
 
         public GenericRepo(PGIContext context)
         {
             this.context = context;
+            EntityDbSet = context.Set<T>();
 
             this.context.SaveChangesFailed += Context_SaveChangesFailed;
         }
@@ -177,8 +182,8 @@ namespace DataAccess
             var result = Save();
 
             return entity;
-        } 
-        public virtual T RemoveSaving( T entity)
+        }
+        public virtual T RemoveSaving(T entity)
         {
             var keys = GetPrimaryKeys(entity);
 

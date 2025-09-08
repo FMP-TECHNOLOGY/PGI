@@ -33,7 +33,7 @@ namespace API_PGI.Controllers.TipoImpuestos
         {
             try
             {
-                _TipoImpuesto.AddSaving(_Auth.CurrentUser, entity);
+                _TipoImpuesto.AddSaving( entity);
 
 
                 return Ok(new ResponseModel()
@@ -57,7 +57,7 @@ namespace API_PGI.Controllers.TipoImpuestos
             try
             {
 
-                _TipoImpuesto.UpdateSaving(_Auth.CurrentUser, entity);
+                _TipoImpuesto.UpdateSaving( entity);
 
                 return Ok(new ResponseModel()
                 {

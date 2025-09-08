@@ -33,7 +33,7 @@ namespace API_PGI.Controllers.Credenciales
         {
             try
             {
-                _Credenciale.AddSaving(_Auth.CurrentUser, entity);
+                _Credenciale.AddSaving( entity);
 
 
                 return Ok(new ResponseModel()
@@ -57,7 +57,7 @@ namespace API_PGI.Controllers.Credenciales
             try
             {
 
-                _Credenciale.UpdateSaving(_Auth.CurrentUser, entity);
+                _Credenciale.UpdateSaving( entity);
 
                 return Ok(new ResponseModel()
                 {

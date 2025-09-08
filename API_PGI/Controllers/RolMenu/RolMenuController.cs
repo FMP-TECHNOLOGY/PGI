@@ -33,7 +33,7 @@ namespace API_PGI.Controllers.RolMenus
         {
             try
             {
-                _RolMenu.AddSaving(_Auth.CurrentUser, entity);
+                _RolMenu.AddSaving( entity);
 
 
                 return Ok(new ResponseModel()
@@ -57,7 +57,7 @@ namespace API_PGI.Controllers.RolMenus
             try
             {
 
-                _RolMenu.UpdateSaving(_Auth.CurrentUser, entity);
+                _RolMenu.UpdateSaving( entity);
 
                 return Ok(new ResponseModel()
                 {

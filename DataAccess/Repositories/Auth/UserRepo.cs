@@ -40,13 +40,14 @@ namespace PGI.DataAccess.Repositories.Auth
             => EntityDbSet//.AsNoTrackingWithIdentityResolution()
                           //.Include(x => x.Roles)
                           //.Include(x => x.ModulePermissions)
-            .Include(x => x.Companies)
+            //.Include(x => x.Companies)
             .FirstOrDefault(x => x.Id == userId && x.Active && x.LockoutEnabled == false && x.LockoutDueDate == null);
 
         public User? FindValidByUsername(string? username)
             => (from t0 in EntityDbSet
                 where t0.Username == username
-                select t0).Include(x => x.Companies)
+                select t0)
+            //.Include(x => x.Companies)
             .FirstOrDefault(x => x.Active && x.LockoutEnabled == false && x.LockoutDueDate == null);
 
         public override User? Find(Func<User, bool> predicate)

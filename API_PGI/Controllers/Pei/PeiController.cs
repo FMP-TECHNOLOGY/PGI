@@ -33,7 +33,7 @@ namespace API_PGI.Controllers.Peis
         {
             try
             {
-                _Pei.AddSaving(_Auth.CurrentUser, entity);
+                _Pei.AddSaving( entity);
 
 
                 return Ok(new ResponseModel()
@@ -57,7 +57,7 @@ namespace API_PGI.Controllers.Peis
             try
             {
 
-                _Pei.UpdateSaving(_Auth.CurrentUser, entity);
+                _Pei.UpdateSaving( entity);
 
                 return Ok(new ResponseModel()
                 {

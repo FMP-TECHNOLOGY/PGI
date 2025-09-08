@@ -33,7 +33,7 @@ namespace API_PGI.Controllers.Departamentos
         {
             try
             {
-                _Departamento.AddSaving(_Auth.CurrentUser, entity);
+                _Departamento.AddSaving( entity);
 
 
                 return Ok(new ResponseModel()
@@ -57,7 +57,7 @@ namespace API_PGI.Controllers.Departamentos
             try
             {
 
-                _Departamento.UpdateSaving(_Auth.CurrentUser, entity);
+                _Departamento.UpdateSaving( entity);
 
                 return Ok(new ResponseModel()
                 {

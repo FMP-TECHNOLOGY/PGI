@@ -33,7 +33,7 @@ namespace API_PGI.Controllers.ParametrosValors
         {
             try
             {
-                _ParametrosValor.AddSaving(_Auth.CurrentUser, entity);
+                _ParametrosValor.AddSaving( entity);
 
 
                 return Ok(new ResponseModel()
@@ -57,7 +57,7 @@ namespace API_PGI.Controllers.ParametrosValors
             try
             {
 
-                _ParametrosValor.UpdateSaving(_Auth.CurrentUser, entity);
+                _ParametrosValor.UpdateSaving( entity);
 
                 return Ok(new ResponseModel()
                 {

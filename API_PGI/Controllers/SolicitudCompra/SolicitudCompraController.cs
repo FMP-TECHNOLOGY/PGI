@@ -33,7 +33,7 @@ namespace API_PGI.Controllers.SolicitudCompras
         {
             try
             {
-                _SolicitudCompra.AddSaving(_Auth.CurrentUser, entity);
+                _SolicitudCompra.AddSaving( entity);
 
 
                 return Ok(new ResponseModel()
@@ -57,7 +57,7 @@ namespace API_PGI.Controllers.SolicitudCompras
             try
             {
 
-                _SolicitudCompra.UpdateSaving(_Auth.CurrentUser, entity);
+                _SolicitudCompra.UpdateSaving( entity);
 
                 return Ok(new ResponseModel()
                 {

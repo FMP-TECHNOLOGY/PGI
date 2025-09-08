@@ -33,7 +33,7 @@ namespace API_PGI.Controllers.RiesgoAsociados
         {
             try
             {
-                _RiesgoAsociado.AddSaving(_Auth.CurrentUser, entity);
+                _RiesgoAsociado.AddSaving( entity);
 
 
                 return Ok(new ResponseModel()
@@ -57,7 +57,7 @@ namespace API_PGI.Controllers.RiesgoAsociados
             try
             {
 
-                _RiesgoAsociado.UpdateSaving(_Auth.CurrentUser, entity);
+                _RiesgoAsociado.UpdateSaving( entity);
 
                 return Ok(new ResponseModel()
                 {

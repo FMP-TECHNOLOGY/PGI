@@ -33,7 +33,7 @@ namespace API_PGI.Controllers.Objetivos
         {
             try
             {
-                _Objetivo.AddSaving(_Auth.CurrentUser, entity);
+                _Objetivo.AddSaving( entity);
 
 
                 return Ok(new ResponseModel()
@@ -57,7 +57,7 @@ namespace API_PGI.Controllers.Objetivos
             try
             {
 
-                _Objetivo.UpdateSaving(_Auth.CurrentUser, entity);
+                _Objetivo.UpdateSaving( entity);
 
                 return Ok(new ResponseModel()
                 {

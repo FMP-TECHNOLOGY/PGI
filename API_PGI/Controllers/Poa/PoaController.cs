@@ -33,7 +33,7 @@ namespace API_PGI.Controllers.Poas
         {
             try
             {
-                _Poa.AddSaving(_Auth.CurrentUser, entity);
+                _Poa.AddSaving( entity);
 
 
                 return Ok(new ResponseModel()
@@ -57,7 +57,7 @@ namespace API_PGI.Controllers.Poas
             try
             {
 
-                _Poa.UpdateSaving(_Auth.CurrentUser, entity);
+                _Poa.UpdateSaving( entity);
 
                 return Ok(new ResponseModel()
                 {

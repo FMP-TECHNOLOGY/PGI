@@ -33,7 +33,7 @@ namespace API_PGI.Controllers.UserTokens
         {
             try
             {
-                _UserToken.AddSaving(_Auth.CurrentUser, entity);
+                _UserToken.AddSaving( entity);
 
 
                 return Ok(new ResponseModel()
@@ -57,7 +57,7 @@ namespace API_PGI.Controllers.UserTokens
             try
             {
 
-                _UserToken.UpdateSaving(_Auth.CurrentUser, entity);
+                _UserToken.UpdateSaving( entity);
 
                 return Ok(new ResponseModel()
                 {

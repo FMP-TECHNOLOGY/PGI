@@ -33,7 +33,7 @@ namespace API_PGI.Controllers.Sucursals
         {
             try
             {
-                _Sucursal.AddSaving(_Auth.CurrentUser, entity);
+                _Sucursal.AddSaving( entity);
 
 
                 return Ok(new ResponseModel()
@@ -57,7 +57,7 @@ namespace API_PGI.Controllers.Sucursals
             try
             {
 
-                _Sucursal.UpdateSaving(_Auth.CurrentUser, entity);
+                _Sucursal.UpdateSaving( entity);
 
                 return Ok(new ResponseModel()
                 {

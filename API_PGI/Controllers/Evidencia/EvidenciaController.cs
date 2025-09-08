@@ -33,7 +33,7 @@ namespace API_PGI.Controllers.Evidencias
         {
             try
             {
-                _Evidencia.AddSaving(_Auth.CurrentUser, entity);
+                _Evidencia.AddSaving( entity);
 
 
                 return Ok(new ResponseModel()
@@ -57,7 +57,7 @@ namespace API_PGI.Controllers.Evidencias
             try
             {
 
-                _Evidencia.UpdateSaving(_Auth.CurrentUser, entity);
+                _Evidencia.UpdateSaving( entity);
 
                 return Ok(new ResponseModel()
                 {

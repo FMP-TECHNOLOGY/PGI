@@ -33,7 +33,7 @@ namespace API_PGI.Controllers.Roles
         {
             try
             {
-                _Role.AddSaving(_Auth.CurrentUser, entity);
+                _Role.AddSaving( entity);
 
 
                 return Ok(new ResponseModel()
@@ -57,7 +57,7 @@ namespace API_PGI.Controllers.Roles
             try
             {
 
-                _Role.UpdateSaving(_Auth.CurrentUser, entity);
+                _Role.UpdateSaving( entity);
 
                 return Ok(new ResponseModel()
                 {

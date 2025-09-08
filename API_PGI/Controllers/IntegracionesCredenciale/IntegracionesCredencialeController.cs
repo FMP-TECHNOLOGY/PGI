@@ -17,23 +17,15 @@ namespace API_PGI.Controllers.Accions
     [Route("[controller]")]
     [ApiController]
     [Authorize]
-    public class AccionController : ControllerBase
+    public class AccionController(IAccion accion, IAuth auth) : ControllerBase
     {
-        private readonly IAccion _Accion;
-        private IAuth _Auth { get; }
-
-        public AccionController(IAccion accion, IAuth auth)
-        {
-            _Accion = accion;
-            _Auth = auth;
-        }
 
         [HttpPost]
         public IActionResult post([FromBody] Accion entity)
         {
             try
             {
-                _Accion.AddSaving(_Auth.CurrentUser, entity);
+                accion.AddSaving(entity);
 
 
                 return Ok(new ResponseModel()
@@ -57,7 +49,7 @@ namespace API_PGI.Controllers.Accions
             try
             {
 
-                _Accion.UpdateSaving(_Auth.CurrentUser, entity);
+                accion.UpdateSaving(entity);
 
                 return Ok(new ResponseModel()
                 {
@@ -81,12 +73,12 @@ namespace API_PGI.Controllers.Accions
             {
                 var builder = new QueryBuilder<Accion>()
                              .AddQuery(gridifyQuery)
-                             .AddCondition($"{nameof(Accion.CompaniaId)}={_Auth.CurrentUser?.CompaniaId}")
+                             .AddCondition($"{nameof(Accion.CompaniaId)}={auth.CurrentCompany?.Id}")
                 ;
                 if (gridifyQuery.PageSize == 0) gridifyQuery.PageSize = int.MaxValue;
                 if (gridifyQuery.Page == 0) gridifyQuery.Page = 1;
 
-                var items = _Accion.GetPaginated(gridifyQuery);
+                var items = accion.GetPaginated(gridifyQuery);
                 return Ok(new ResponseModel()
                 {
 
@@ -107,12 +99,13 @@ namespace API_PGI.Controllers.Accions
             }
 
         }
+        
         [HttpGet("Get/{id}")]
         public IActionResult GetAll(string id)
         {
             try
             {
-                var valor = _Accion.Find(x => x.Id == id);
+                var valor = accion.Find(x => x.Id == id);
 
                 return Ok(new ResponseModel()
                 {

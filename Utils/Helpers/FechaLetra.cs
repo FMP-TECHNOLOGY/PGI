@@ -56,7 +56,7 @@ namespace Utils.Helpers
             decimales = Convert.ToInt32(Math.Round((nro - entero) * 100, 2));
             if (decimales >= 0 && isDecimal)
             {
-                dec = " " + moneda + " CON " + (decimales.Tostring?() == "0" ? "00" : decimales.Tostring?()) + "/100";
+                dec = " " + moneda + " CON " + (decimales.ToString() == "0" ? "00" : decimales.ToString()) + "/100";
             }
 
             res = toText(Convert.ToDouble(entero)) + dec;
@@ -83,7 +83,7 @@ namespace Utils.Helpers
             decimales = Convert.ToInt32(Math.Round((nro - entero) * 100, 2));
             if (decimales >= 0 && isDecimal)
             {
-                dec = " " + moneda + " PUNTO " + decimales.Tostring?();
+                dec = " " + moneda + " PUNTO " + decimales.ToString();
             }
 
             res = toText(Convert.ToDouble(entero)) + dec;

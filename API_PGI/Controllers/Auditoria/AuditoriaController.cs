@@ -33,7 +33,7 @@ namespace API_PGI.Controllers.Auditorias
         {
             try
             {
-                _Auditoria.AddSaving(_Auth.CurrentUser, entity);
+                _Auditoria.AddSaving( entity);
 
 
                 return Ok(new ResponseModel()
@@ -57,7 +57,7 @@ namespace API_PGI.Controllers.Auditorias
             try
             {
 
-                _Auditoria.UpdateSaving(_Auth.CurrentUser, entity);
+                _Auditoria.UpdateSaving(entity);
 
                 return Ok(new ResponseModel()
                 {
@@ -80,8 +80,8 @@ namespace API_PGI.Controllers.Auditorias
             try
             {
                 var builder = new QueryBuilder<Auditoria>()
-                             .AddQuery(gridifyQuery)
-                             .AddCondition($"{nameof(Auditoria.CompaniaId)}={_Auth.CurrentUser?.CompaniaId}")
+                             .AddQuery(gridifyQuery);
+                             //.AddCondition($"{nameof(Auditoria.CompaniaId)}={_Auth.CurrentUser?.CompaniaId}")
                 ;
                 if (gridifyQuery.PageSize == 0) gridifyQuery.PageSize = int.MaxValue;
                 if (gridifyQuery.Page == 0) gridifyQuery.Page = 1;

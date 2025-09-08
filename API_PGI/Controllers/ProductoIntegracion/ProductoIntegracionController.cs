@@ -33,7 +33,7 @@ namespace API_PGI.Controllers.ProductoIntegracions
         {
             try
             {
-                _ProductoIntegracion.AddSaving(_Auth.CurrentUser, entity);
+                _ProductoIntegracion.AddSaving( entity);
 
 
                 return Ok(new ResponseModel()
@@ -57,7 +57,7 @@ namespace API_PGI.Controllers.ProductoIntegracions
             try
             {
 
-                _ProductoIntegracion.UpdateSaving(_Auth.CurrentUser, entity);
+                _ProductoIntegracion.UpdateSaving( entity);
 
                 return Ok(new ResponseModel()
                 {

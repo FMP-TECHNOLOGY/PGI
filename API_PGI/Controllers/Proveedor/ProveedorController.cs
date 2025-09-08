@@ -33,7 +33,7 @@ namespace API_PGI.Controllers.Proveedors
         {
             try
             {
-                _Proveedor.AddSaving(_Auth.CurrentUser, entity);
+                _Proveedor.AddSaving( entity);
 
 
                 return Ok(new ResponseModel()
@@ -57,7 +57,7 @@ namespace API_PGI.Controllers.Proveedors
             try
             {
 
-                _Proveedor.UpdateSaving(_Auth.CurrentUser, entity);
+                _Proveedor.UpdateSaving( entity);
 
                 return Ok(new ResponseModel()
                 {

@@ -42,8 +42,9 @@ namespace PGI.DataAccess.Repositories.Auth
             {
                 PermissionId = permissionId,
                 UserId = user.Id,
-                Permission = permission,
-                User = user,
+                //Permission = permission,
+                
+                //User = user,
             });
         }
 

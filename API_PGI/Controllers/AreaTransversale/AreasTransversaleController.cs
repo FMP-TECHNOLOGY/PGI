@@ -33,7 +33,7 @@ namespace API_PGI.Controllers.AreasTransversales
         {
             try
             {
-                _AreasTransversale.AddSaving(_Auth.CurrentUser, entity);
+                _AreasTransversale.AddSaving( entity);
 
 
                 return Ok(new ResponseModel()
@@ -57,7 +57,7 @@ namespace API_PGI.Controllers.AreasTransversales
             try
             {
 
-                _AreasTransversale.UpdateSaving(_Auth.CurrentUser, entity);
+                _AreasTransversale.UpdateSaving( entity);
 
                 return Ok(new ResponseModel()
                 {

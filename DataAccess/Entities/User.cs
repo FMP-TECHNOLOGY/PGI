@@ -57,5 +57,6 @@ public partial class User
     public string?CreatedBy { get; set; }
 
     public string?UpdatedBy { get; set; }
+    public Guid? CompaniaId { get; set; }
 
 }

@@ -33,5 +33,6 @@ public partial class UserToken
 
     public string?UpdatedBy { get; set; }
 
+    public Guid? CompaniaId { get; set; }
     public int? ObjectType { get; set; }
 }

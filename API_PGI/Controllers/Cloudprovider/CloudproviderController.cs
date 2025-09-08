@@ -8,127 +8,127 @@ using PGI.DataAccess.Repositories.Auth;
 
 namespace API_PGI.Controllers.Cloudproviders
 {
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [Route("[controller]")]
-    [ApiController]
-    [Authorize]
-    public class CloudproviderController : ControllerBase
-    {
-        private readonly ICloudprovider _Cloudprovider;
-        private IAuth _Auth { get; }
+    //    [ProducesResponseType(StatusCodes.Status200OK)]
+    //    [ProducesResponseType(StatusCodes.Status201Created)]
+    //    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    //    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    //    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    //    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    //    [Route("[controller]")]
+    //    [ApiController]
+    //    [Authorize]
+    //    public class CloudproviderController : ControllerBase
+    //    {
+    //        private readonly ICloudprovider _Cloudprovider;
+    //        private IAuth _Auth { get; }
 
-        public CloudproviderController(ICloudprovider Cloudprovider, IAuth auth)
-        {
-            _Cloudprovider = Cloudprovider;
-            _Auth = auth;
-        }
+    //        public CloudproviderController(ICloudprovider Cloudprovider, IAuth auth)
+    //        {
+    //            _Cloudprovider = Cloudprovider;
+    //            _Auth = auth;
+    //        }
 
-        [HttpPost]
-        public IActionResult post([FromBody] CloudProvider entity)
-        {
-            try
-            {
-                _Cloudprovider.AddSaving(_Auth.CurrentUser, entity);
-
-
-                return Ok(new ResponseModel()
-                {
-                    Result = "Guardado"
-                });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new ResponseModel()
-                {
-                    Error = true,
-                    Message = ex.Message
-                });
-            }
-
-        }
-        [HttpPut]
-        public IActionResult Put([FromBody] CloudProvider entity)
-        {
-            try
-            {
-
-                _Cloudprovider.UpdateSaving(_Auth.CurrentUser, entity);
-
-                return Ok(new ResponseModel()
-                {
-                    Result = "Guardado"
-                });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new ResponseModel()
-                {
-                    Error = true,
-                    Message = ex.Message
-                });
-            }
-
-        }
-        [HttpGet("GetAll")]
-        public IActionResult GetAll([FromQuery] GridifyQuery gridifyQuery)
-        {
-            try
-            {
-                var builder = new QueryBuilder<CloudProvider>()
-                             .AddQuery(gridifyQuery)
-                             .AddCondition($"{nameof(CloudProvider.CompaniaId)}={_Auth.CurrentUser?.CompaniaId}")
-                ;
-                if (gridifyQuery.PageSize == 0) gridifyQuery.PageSize = int.MaxValue;
-                if (gridifyQuery.Page == 0) gridifyQuery.Page = 1;
-
-                var items = _Cloudprovider.GetPaginated(gridifyQuery);
-                return Ok(new ResponseModel()
-                {
-
-                    TotalCount = items.Count,
-                    Result = items.Data,
-                });
-                //  }
-            }
-            catch (Exception ex)
-            {
-
-                return BadRequest(new ResponseModel()
-                {
-
-                    Error = true,
-                    Result = ex.Message
-                });
-            }
-
-        }
-        [HttpGet("Get/{id}")]
-        public IActionResult GetAll(string id)
-        {
-            try
-            {
-                var valor = _Cloudprovider.Find(x => x.Id == id);
-
-                return Ok(new ResponseModel()
-                {
-                    Result = valor
-                });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new ResponseModel()
-                {
-                    Error = true,
-                    Message = ex.Message
-                });
-            }
+    //        [HttpPost]
+    //        public IActionResult post([FromBody] CloudProvider entity)
+    //        {
+    //            try
+    //            {
+    //                _Cloudprovider.AddSaving( entity);
 
 
-        }
-    }
+    //                return Ok(new ResponseModel()
+    //                {
+    //                    Result = "Guardado"
+    //                });
+    //            }
+    //            catch (Exception ex)
+    //            {
+    //                return BadRequest(new ResponseModel()
+    //                {
+    //                    Error = true,
+    //                    Message = ex.Message
+    //                });
+    //            }
+
+    //        }
+    //        [HttpPut]
+    //        public IActionResult Put([FromBody] CloudProvider entity)
+    //        {
+    //            try
+    //            {
+
+    //                _Cloudprovider.UpdateSaving( entity);
+
+    //                return Ok(new ResponseModel()
+    //                {
+    //                    Result = "Guardado"
+    //                });
+    //            }
+    //            catch (Exception ex)
+    //            {
+    //                return BadRequest(new ResponseModel()
+    //                {
+    //                    Error = true,
+    //                    Message = ex.Message
+    //                });
+    //            }
+
+    //        }
+    //        [HttpGet("GetAll")]
+    //        public IActionResult GetAll([FromQuery] GridifyQuery gridifyQuery)
+    //        {
+    //            try
+    //            {
+    //                var builder = new QueryBuilder<CloudProvider>()
+    //                             .AddQuery(gridifyQuery)
+    //                             .AddCondition($"{nameof(CloudProvider.CompaniaId)}={_Auth.CurrentUser?.CompaniaId}")
+    //                ;
+    //                if (gridifyQuery.PageSize == 0) gridifyQuery.PageSize = int.MaxValue;
+    //                if (gridifyQuery.Page == 0) gridifyQuery.Page = 1;
+
+    //                var items = _Cloudprovider.GetPaginated(gridifyQuery);
+    //                return Ok(new ResponseModel()
+    //                {
+
+    //                    TotalCount = items.Count,
+    //                    Result = items.Data,
+    //                });
+    //                //  }
+    //            }
+    //            catch (Exception ex)
+    //            {
+
+    //                return BadRequest(new ResponseModel()
+    //                {
+
+    //                    Error = true,
+    //                    Result = ex.Message
+    //                });
+    //            }
+
+    //        }
+    //        [HttpGet("Get/{id}")]
+    //        public IActionResult GetAll(string id)
+    //        {
+    //            try
+    //            {
+    //                var valor = _Cloudprovider.Find(x => x.Id == id);
+
+    //                return Ok(new ResponseModel()
+    //                {
+    //                    Result = valor
+    //                });
+    //            }
+    //            catch (Exception ex)
+    //            {
+    //                return BadRequest(new ResponseModel()
+    //                {
+    //                    Error = true,
+    //                    Message = ex.Message
+    //                });
+    //            }
+
+
+    //        }
+    //    }
 }

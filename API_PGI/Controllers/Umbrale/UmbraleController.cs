@@ -33,7 +33,7 @@ namespace API_PGI.Controllers.Umbrales
         {
             try
             {
-                _Umbrale.AddSaving(_Auth.CurrentUser, entity);
+                _Umbrale.AddSaving( entity);
 
 
                 return Ok(new ResponseModel()
@@ -57,7 +57,7 @@ namespace API_PGI.Controllers.Umbrales
             try
             {
 
-                _Umbrale.UpdateSaving(_Auth.CurrentUser, entity);
+                _Umbrale.UpdateSaving( entity);
 
                 return Ok(new ResponseModel()
                 {

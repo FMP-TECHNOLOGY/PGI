@@ -2,6 +2,7 @@ using API_PGI.Auth;
 using Auth.JWT;
 using DataAccess.Entities;
 using DataAccess.Repositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -179,12 +180,12 @@ app.UseSwagger();
 app.UseSwaggerUI();
 //}
 
-app.UseReDoc(c =>
-{
-    c.DocumentTitle = "REDOC API Documentation";
-    c.SpecUrl = "/swagger/v1/swagger.json";
+//app.UseReDoc(c =>
+//{
+//    c.DocumentTitle = "REDOC API Documentation";
+//    c.SpecUrl = "/swagger/v1/swagger.json";
 
-});
+//});
 app.UseCors("CORS_CONFIG");
 
 app.UseHttpsRedirection();

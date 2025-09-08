@@ -33,7 +33,7 @@ namespace API_PGI.Controllers.EstadoSolicituds
         {
             try
             {
-                _EstadoSolicitud.AddSaving(_Auth.CurrentUser, entity);
+                _EstadoSolicitud.AddSaving( entity);
 
 
                 return Ok(new ResponseModel()
@@ -57,7 +57,7 @@ namespace API_PGI.Controllers.EstadoSolicituds
             try
             {
 
-                _EstadoSolicitud.UpdateSaving(_Auth.CurrentUser, entity);
+                _EstadoSolicitud.UpdateSaving( entity);
 
                 return Ok(new ResponseModel()
                 {

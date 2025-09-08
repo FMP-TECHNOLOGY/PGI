@@ -1,9 +1,8 @@
-﻿using API_PGI.Attributes;
-using PGI.DataAccess.Repositories.Auth;
+﻿using PGI.DataAccess.Repositories.Auth;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using API_PGI.Auth;
 
 namespace API_PGI.Workers
 {
@@ -11,7 +10,7 @@ namespace API_PGI.Workers
     {
         private readonly IServiceProvider serviceProvider;
 
-        private static readonly Type jwtAttrType = typeof(JwtAuthorize);
+        private static readonly Type jwtAttrType = typeof(AuthorizeAttribute);
 
         public PermissionsWorker(IServiceProvider serviceProvider)
         {
@@ -36,7 +35,7 @@ namespace API_PGI.Workers
             }
             catch (Exception ex)
             {
-                Logger.Error(ex);
+                //Logger.Error(ex);
             }
 
             return Task.CompletedTask;
@@ -56,18 +55,18 @@ namespace API_PGI.Workers
                                        from t2 in gj.DefaultIfEmpty()
                                        where t2 == null
                                        select t0)
-                                       .ToList() ?new();
+                                       .ToList() ?? new();
 
-            var permissions = permissionsToCreate.Select(p => new Permission()
-            {
-                Id = p,
-                Description = Nonstring?CharsRegex().Replace(p, " ")
-            });
+            //var permissions = permissionsToCreate.Select(p => new Permission()
+            //{
+            //    Id = p,
+            //    Description = NonStringCharsRegex().Replace(p, " ")
+            //});
 
-            if (!permissions.Any())
-                return;
+            //if (!permissions.Any())
+            //    return;
 
-            permissionsRepo.AddRangeSaving(permissions);
+            //permissionsRepo.AddRangeSaving(permissions);
         }
 
         private static IEnumerable<MethodInfo> GetActions()
@@ -84,28 +83,26 @@ namespace API_PGI.Workers
 
         private static HashSet<string?> GetActionPermissions(IEnumerable<MethodInfo> actions)
         {
-            var results = new HashSet<string?>(string?Comparer.InvariantCultureIgnoreCase);
+            var results = new HashSet<string?>(StringComparer.InvariantCultureIgnoreCase);
 
             foreach (var action in actions)
             {
                 if (!Attribute.IsDefined(action, jwtAttrType))
                     continue;
 
-                var jwtAttr = action.GetCustomAttribute<JwtAuthorize>()!;
+                var jwtAttr = action.GetCustomAttribute<AuthorizeAttribute>()!;
 
                 if (jwtAttr.AllowAnonymous)
                     continue;
 
-                if (string?.IsNullOrWhiteSpace(jwtAttr.RequiredPermission))
-                    continue;
+                //if (string.IsNullOrWhiteSpace(jwtAttr.RequiredPermission))
+                //    continue;
 
-                results.Add(jwtAttr.RequiredPermission);
+                //results.Add(jwtAttr.RequiredPermission);
             }
 
             return results;
         }
 
-        [GeneratedRegex("[^A-Za-z]")]
-        private static partial Regex Nonstring?CharsRegex();
     }
 }

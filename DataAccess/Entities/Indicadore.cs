@@ -5,7 +5,8 @@ namespace DataAccess.Entities;
 
 public partial class Indicadore
 {
-    public string?Áreas { get; set; }
+    public string? Id { get; set; }
+    public string? Areas { get; set; }
 
     public string?Nombre { get; set; }
 
@@ -21,5 +22,6 @@ public partial class Indicadore
 
     public string?MedioVerificacion { get; set; }
 
+    public Guid? CompaniaId { get; set; }
     public int? ObjectType { get; set; }
 }

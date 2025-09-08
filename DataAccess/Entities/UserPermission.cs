@@ -5,7 +5,10 @@ namespace DataAccess.Entities;
 
 public partial class UserPermission
 {
-    public string? UserId { get; set; } 
+    public string? Id { get; set; }
+
+    public string? UserId { get; set; }
+    public Guid? CompaniaId { get; set; }
 
     public string? PermissionId { get; set; } 
 

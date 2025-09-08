@@ -33,7 +33,7 @@ namespace API_PGI.Controllers.Areas
         {
             try
             {
-                _Area.AddSaving(_Auth.CurrentUser, entity);
+                _Area.AddSaving( entity);
 
 
                 return Ok(new ResponseModel()
@@ -57,7 +57,7 @@ namespace API_PGI.Controllers.Areas
             try
             {
 
-                _Area.UpdateSaving(_Auth.CurrentUser, entity);
+                _Area.UpdateSaving( entity);
 
                 return Ok(new ResponseModel()
                 {

@@ -33,7 +33,7 @@ namespace API_PGI.Controllers.Permissions
         {
             try
             {
-                _Permission.AddSaving(_Auth.CurrentUser, entity);
+                _Permission.AddSaving( entity);
 
 
                 return Ok(new ResponseModel()
@@ -57,7 +57,7 @@ namespace API_PGI.Controllers.Permissions
             try
             {
 
-                _Permission.UpdateSaving(_Auth.CurrentUser, entity);
+                _Permission.UpdateSaving( entity);
 
                 return Ok(new ResponseModel()
                 {

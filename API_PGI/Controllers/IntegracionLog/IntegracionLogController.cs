@@ -33,7 +33,7 @@ namespace API_PGI.Controllers.IntegracionLogs
         {
             try
             {
-                _IntegracionLog.AddSaving(_Auth.CurrentUser, entity);
+                _IntegracionLog.AddSaving( entity);
 
 
                 return Ok(new ResponseModel()
@@ -57,7 +57,7 @@ namespace API_PGI.Controllers.IntegracionLogs
             try
             {
 
-                _IntegracionLog.UpdateSaving(_Auth.CurrentUser, entity);
+                _IntegracionLog.UpdateSaving( entity);
 
                 return Ok(new ResponseModel()
                 {

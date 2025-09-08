@@ -33,7 +33,7 @@ namespace API_PGI.Controllers.Proyectos
         {
             try
             {
-                _Proyecto.AddSaving(_Auth.CurrentUser, entity);
+                _Proyecto.AddSaving( entity);
 
 
                 return Ok(new ResponseModel()
@@ -57,7 +57,7 @@ namespace API_PGI.Controllers.Proyectos
             try
             {
 
-                _Proyecto.UpdateSaving(_Auth.CurrentUser, entity);
+                _Proyecto.UpdateSaving( entity);
 
                 return Ok(new ResponseModel()
                 {

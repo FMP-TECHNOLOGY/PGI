@@ -33,7 +33,7 @@ namespace API_PGI.Controllers.EstadoAcciones
         {
             try
             {
-                _EstadoAccione.AddSaving(_Auth.CurrentUser, entity);
+                _EstadoAccione.AddSaving( entity);
 
 
                 return Ok(new ResponseModel()
@@ -57,7 +57,7 @@ namespace API_PGI.Controllers.EstadoAcciones
             try
             {
 
-                _EstadoAccione.UpdateSaving(_Auth.CurrentUser, entity);
+                _EstadoAccione.UpdateSaving( entity);
 
                 return Ok(new ResponseModel()
                 {

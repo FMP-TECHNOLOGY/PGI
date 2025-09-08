@@ -218,7 +218,7 @@ namespace PGI.DataAccess.Repositories.Auth
                 if (!IsValidPassword(login.password, user))
                     throw new LoginException("Invalid username or password");
 
-                var company = dBContext.GetService<ICompania>()?.Find(x => x.TaxIdNumber == login.CompanyRNC);
+                var company = dBContext.GetService<ICompania>()?.Find(x => x.Rnc == login.CompanyRNC);
 
                 if (!IsValidUserCompany(user, login.CompanyRNC, company))
                     throw new LoginException("Invalid company") { ErrorCode = "1002" };

@@ -5,6 +5,8 @@ namespace DataAccess.Entities;
 
 public partial class RolePermission
 {
+    public string? Id { get; set; }
+
     public string RoleId { get; set; } 
 
     public string? PermissionId { get; set; } 
@@ -19,5 +21,6 @@ public partial class RolePermission
 
     public string?UpdatedBy { get; set; }
 
+    public Guid? CompaniaId { get; set; }
     public int? ObjectType { get; set; }
 }

@@ -33,7 +33,7 @@ namespace API_PGI.Controllers.Xproductos
         {
             try
             {
-                _Xproducto.AddSaving(_Auth.CurrentUser, entity);
+                _Xproducto.AddSaving( entity);
 
 
                 return Ok(new ResponseModel()
@@ -57,7 +57,7 @@ namespace API_PGI.Controllers.Xproductos
             try
             {
 
-                _Xproducto.UpdateSaving(_Auth.CurrentUser, entity);
+                _Xproducto.UpdateSaving( entity);
 
                 return Ok(new ResponseModel()
                 {

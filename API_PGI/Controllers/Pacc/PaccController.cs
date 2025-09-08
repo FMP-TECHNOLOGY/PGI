@@ -33,7 +33,7 @@ namespace API_PGI.Controllers.Paccs
         {
             try
             {
-                _Pacc.AddSaving(_Auth.CurrentUser, entity);
+                _Pacc.AddSaving( entity);
 
 
                 return Ok(new ResponseModel()
@@ -57,7 +57,7 @@ namespace API_PGI.Controllers.Paccs
             try
             {
 
-                _Pacc.UpdateSaving(_Auth.CurrentUser, entity);
+                _Pacc.UpdateSaving( entity);
 
                 return Ok(new ResponseModel()
                 {

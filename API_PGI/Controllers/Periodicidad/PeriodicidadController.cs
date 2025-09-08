@@ -33,7 +33,7 @@ namespace API_PGI.Controllers.Periodicidads
         {
             try
             {
-                _Periodicidad.AddSaving(_Auth.CurrentUser, entity);
+                _Periodicidad.AddSaving( entity);
 
 
                 return Ok(new ResponseModel()
@@ -57,7 +57,7 @@ namespace API_PGI.Controllers.Periodicidads
             try
             {
 
-                _Periodicidad.UpdateSaving(_Auth.CurrentUser, entity);
+                _Periodicidad.UpdateSaving( entity);
 
                 return Ok(new ResponseModel()
                 {

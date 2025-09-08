@@ -33,7 +33,7 @@ namespace API_PGI.Controllers.Empleados
         {
             try
             {
-                _Empleado.AddSaving(_Auth.CurrentUser, entity);
+                _Empleado.AddSaving( entity);
 
 
                 return Ok(new ResponseModel()
@@ -57,7 +57,7 @@ namespace API_PGI.Controllers.Empleados
             try
             {
 
-                _Empleado.UpdateSaving(_Auth.CurrentUser, entity);
+                _Empleado.UpdateSaving( entity);
 
                 return Ok(new ResponseModel()
                 {

@@ -5,6 +5,7 @@ namespace DataAccess.Entities;
 
 public partial class ImputacionesPresupuestaria
 {
+    public string? Id { get; set; }
     public long Cuenta { get; set; }
 
     public string? Descripcion { get; set; } 

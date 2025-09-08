@@ -5,7 +5,8 @@ namespace DataAccess.Entities;
 
 public partial class Permission
 {
-    public string Id { get; set; } 
+    public string Id { get; set; }
+    public Guid? CompaniaId { get; set; }
 
     public string? Description { get; set; } 
 

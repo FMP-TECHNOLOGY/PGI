@@ -2,6 +2,7 @@
 using DataAccess;
 using DataAccess.Entities;
 using System.IdentityModel.Tokens.Jwt;
+using Utils.Helpers;
 
 namespace PGI.DataAccess.Repositories.Auth
 {
@@ -25,7 +26,7 @@ namespace PGI.DataAccess.Repositories.Auth
                             ? new JwtSecurityTokenHandler().WriteToken(securityToken)
                             : token,
                 Jti = securityToken?.Id,
-                Hash = CryptoHelper.Hash(token),
+                Hash = Utilities.Hash(token),
                 Typ = securityToken!.Header.Typ,
                 Alg = securityToken!.SignatureAlgorithm,
                 Exp = securityToken.ValidTo,

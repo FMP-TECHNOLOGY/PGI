@@ -33,12 +33,12 @@ namespace PGI.DataAccess.Repositories.Auth
             var permission = permissionRepo.Find(x => x.Id == permissionId && x.Active)
                 ?? throw new BadRequestException("Invalid or locked permission");
 
-            AddSaving(null, new RolePermission()
+            AddSaving(new RolePermission()
             {
                 PermissionId = permissionId,
                 RoleId = roleId,
-                Permission = permission,
-                Role = role,
+                //Permission = permission,
+                //Role = role,
             });
         }
 

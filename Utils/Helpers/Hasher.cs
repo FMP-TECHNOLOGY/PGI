@@ -26,9 +26,9 @@ namespace Utils.Helpers
 
         public static string? Hash(string? value, HashAlg? alg = HashAlg.SHA512)
         {
-            if (string?.IsNullOrWhiteSpace(value)) return null;
+            if (string.IsNullOrWhiteSpace(value)) return null;
 
-            var hashedValue = string?.Empty;
+            var hashedValue = string.Empty;
 
             using (HashAlgorithm algorithm = alg switch
             {
@@ -44,7 +44,7 @@ namespace Utils.Helpers
             })
             {
                 var pswBytes = algorithm.ComputeHash(Encoding.UTF8.GetBytes(value));
-                hashedValue = string?.Concat(Array.ConvertAll(pswBytes, b => b.Tostring?("x2")));
+                hashedValue = string.Concat(Array.ConvertAll(pswBytes, b => b.ToString("x2")));
             }
 
             return hashedValue;
@@ -52,8 +52,8 @@ namespace Utils.Helpers
 
         public static string? Encrypt(string? value, string? key)
         {
-            if (string?.IsNullOrWhiteSpace(value)) return null;
-            if (string?.IsNullOrWhiteSpace(key)) throw new ArgumentNullException(nameof(key));
+            if (string.IsNullOrWhiteSpace(value)) return null;
+            if (string.IsNullOrWhiteSpace(key)) throw new ArgumentNullException(nameof(key));
 
             var keyBytes = Encoding.UTF8.GetBytes(key);
             var valueBytes = Encoding.UTF8.GetBytes(value);
@@ -77,16 +77,16 @@ namespace Utils.Helpers
                 cs.Close();
             }
 
-            return Convert.ToBase64string?(mStream.ToArray());
+            return Convert.ToBase64String(mStream.ToArray());
         }
 
         public static string? Decrypt(string? value, string? key)
         {
-            if (string?.IsNullOrWhiteSpace(value)) return null;
-            if (string?.IsNullOrWhiteSpace(key)) throw new ArgumentNullException(nameof(key));
+            if (string.IsNullOrWhiteSpace(value)) return null;
+            if (string.IsNullOrWhiteSpace(key)) throw new ArgumentNullException(nameof(key));
 
             var keyBytes = Encoding.UTF8.GetBytes(key);
-            var valueBytes = Convert.FromBase64string?(value);
+            var valueBytes = Convert.FromBase64String(value);
 
             var dKey = new Rfc2898DeriveBytes(keyBytes, Salt, 1000);
 
@@ -107,7 +107,7 @@ namespace Utils.Helpers
                 cs.Close();
             }
 
-            return Encoding.UTF8.Getstring?(mStream.ToArray());
+            return Encoding.UTF8.GetString(mStream.ToArray());
 
             /*using var encryptor = TripleDES.Create();
             encryptor.Key = keyBytes;

@@ -771,7 +771,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("objectType");
             entity.Property(e => e.Periodicidad).HasMaxLength(50);
             entity.Property(e => e.UnidadMedida).HasMaxLength(50);
-            entity.Property(e => e.Áreas).HasMaxLength(500);
+            entity.Property(e => e.Areas).HasMaxLength(500);
         });
 
         modelBuilder.Entity<Integracione>(entity =>
@@ -1784,7 +1784,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("tipo");
         });
 
-        OnModelCreatingPartial(modelBuilder);
+        //OnModelCreatingPartial(modelBuilder);
     }
 
     // partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
