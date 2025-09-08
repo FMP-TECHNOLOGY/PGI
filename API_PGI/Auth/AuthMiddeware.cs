@@ -13,28 +13,14 @@ namespace API_PGI.Auth
         }
         public async Task Invoke(HttpContext context, IAuth auth)
         {
-            //new Log().Error(context.Connection.RemoteIpAddress?.ToString());
-
             var token = context.Request.Headers[AppConstants.AUTHORIZATION]
                 .FirstOrDefault()?
                 .Split(" ", 2, StringSplitOptions.RemoveEmptyEntries)
-                .Last();
-            //new Log().Error(token);
+                .LastOrDefault();
 
-            if (!string.IsNullOrWhiteSpace(token))
-            {
-                //new Log().Error(token);
-
-                var user = auth.FindUserByToken(token, context.Connection.RemoteIpAddress?.ToString());
-                //new Log().Error(user?.Username);
-
-                //var user = auth.FindUserByToken(token, context.Request.HttpContext.Connection.RemoteIpAddress?.ToString());
-                //new Log().Error(context.Connection.RemoteIpAddress?.ToString());
-                if (user != null && auth.IsValidToken(token))
-                    auth.CurrentUser = user;
-
-            }
-
+            if (!string.IsNullOrWhiteSpace(token))            
+                auth.SetCurrentCredentials(token, AppConstants.BEARER_TOKEN, context.Connection.RemoteIpAddress);
+                
             await next(context);
         }
 

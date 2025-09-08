@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Controllers;
+﻿using Common.Exceptions;
+using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace API_PGI.Attributes
@@ -6,7 +7,7 @@ namespace API_PGI.Attributes
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
     public class JwtAuthorize : Attribute, IAuthorizationFilter
     {
-        public string?RequiredPermission { get; set; } = string?.Empty;
+        public string RequiredPermission { get; set; } = string.Empty;
         public bool AllowAnonymous { get; set; }
         public bool SuperUserRequired { get; set; }
         public bool ValidCompanyRequired { get; set; }
@@ -20,17 +21,17 @@ namespace API_PGI.Attributes
                 return;
 
             var authService = context.HttpContext.RequestServices.GetService<IAuth>()
-                ?throw new Exception($"Cannot get {nameof(IAuth)} service");
+                ??throw new Exception($"Cannot get {nameof(IAuth)} service");
 
             var user = authService.CurrentUser
-                ?throw new UnauthorizedException();
+                ??throw new CustomException(401);
 
             ValidateCompany(authService);
 
             if (SuperUserRequired && !user.Su)
                 throw new ForbiddenException();
 
-            if (user.Su || string?.IsNullOrWhiteSpace(RequiredPermission))
+            if (user.Su || string.IsNullOrWhiteSpace(RequiredPermission))
                 return;
 
             var hasPermission = user.Permissions.Any(permission => permission.Id == RequiredPermission);

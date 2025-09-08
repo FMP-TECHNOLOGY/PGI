@@ -25,9 +25,9 @@ namespace PGI.DataAccess.Repositories.Auth
 
         //IUserApiKeyPermission UserApiKeyPermissions { get; }
         void SetCurrentCredentials(string? authToken, string? location, IPAddress? ipAddress = null, string? userAgent = null);
-        Task<JwtResponse> Login(Login login, string? host = null);
-        //Task<bool> Register(RegisterDto registerDto);
-        Task<JwtResponse> RefreshToken(string? host = null);
+        JwtResponse Login(Login login, string? host = null);
+        bool Register(RegisterDto registerDto);
+        //JwtResponse RefreshToken(string? host = null);
         User FindUserByToken(string? authToken, string? location, IPAddress? ipAddress = null);
         string? FindCompanyRNCByToken(string? authToken, string? location);
         void UpdateUserRoles(string? userId, List<Role> roles);
@@ -198,7 +198,7 @@ namespace PGI.DataAccess.Repositories.Auth
 
         }
 
-        public Task<JwtResponse> Login(Login login, string? host = null)
+        public JwtResponse Login(Login login, string? host = null)
         {
             User? user = null;
 
@@ -209,12 +209,12 @@ namespace PGI.DataAccess.Repositories.Auth
                 user = Users.FindByUsername(login.username)
                     ?? throw new LoginException("Invalid username or password");
 
-                if (user.LockoutDueDate is not null && DateTime.Now > user.LockoutDueDate)
-                    ResetLockout(user);
+                //if (user.LockoutDueDate is not null && DateTime.Now > user.LockoutDueDate)
+                //    ResetLockout(user);
 
-                if ((user.Active == 0 || user.LockoutEnabled == 0 /*|| user.IsLocked()*/) && user.LockoutDueDate < DateTime.Now)
-                    throw new LoginException("Inactive User or Locked") { ErrorCode = "1001" };
-
+                //if ((user.Active == 0 || user.LockoutEnabled == 0 /*|| user.IsLocked()*/) && user.LockoutDueDate < DateTime.Now)
+                //    throw new LoginException("Inactive User or Locked") { ErrorCode = "1001" };
+                if(!user.Active)
                 if (!IsValidPassword(login.password, user))
                     throw new LoginException("Invalid username or password");
 
@@ -227,11 +227,11 @@ namespace PGI.DataAccess.Repositories.Auth
 
                 UserTokens.SaveToken(user, securityToken!, token, host);
 
-                return Task.FromResult(new JwtResponse()
+                return new JwtResponse()
                 {
                     Token = token,
                     Expiration = securityToken!.ValidTo.ToLocalTime()
-                });
+                };
             }
             catch (LoginException ex)
             {
@@ -262,33 +262,33 @@ namespace PGI.DataAccess.Repositories.Auth
         private bool IsValidUserCompany(User user, string? companyRNC, Compania? company)
         {
             if (string.IsNullOrWhiteSpace(companyRNC))
-                return true;
+                return false;
 
             if (company is null)
                 return false;
 
-            if (user.Su == 1)
+            if (user.Su)
                 return true;
 
             if (!company.Active)
                 return false;
 
             //var isCurrentCompany = user.Company?.TaxIdNumber == companyRNC;
-            var hasCompany = UserCompanies.Find(x => x.CompaniaId.ToString() == company.Id && x.UserId.ToString() == user.Id) != null;
+            var hasCompany = UserCompanies.Find(x => x.CompaniaId == company.Id && x.UserId == user.Id) != null;
 
             return hasCompany;
         }
 
-        private void ResetLockout(User user)
-        {
-            try
-            {
-                //user.ResetLockout();
+        //private void ResetLockout(User user)
+        //{
+        //    try
+        //    {
+        //        //user.ResetLockout();
 
-                //Users.UpdateSaving(user);
-            }
-            catch { }
-        }
+        //        //Users.UpdateSaving(user);
+        //    }
+        //    catch { }
+        //}
 
         private void IncreateLoginTries(User user)
         {
@@ -298,7 +298,7 @@ namespace PGI.DataAccess.Repositories.Auth
 
                 if (user.AccessFailedCount >= 3)
                 {
-                    user.LockoutEnabled = 1;
+                    user.LockoutEnabled = true;
                     user.LockoutDueDate = DateTime.Now.AddHours(12);
                 }
 

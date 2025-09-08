@@ -4,7 +4,7 @@ public partial class User
 {
     public string? Id { get; set; } 
 
-    public ulong Su { get; set; }
+    public bool Su { get; set; }
 
     public string? FullName { get; set; } 
 
@@ -26,19 +26,19 @@ public partial class User
 
     public string?Email { get; set; }
 
-    public ulong EmailConfirmed { get; set; }
+    public bool EmailConfirmed { get; set; }
 
-    public ulong NotificationsEnabled { get; set; }
+    public bool NotificationsEnabled { get; set; }
 
     public string? PasswordHash { get; set; } 
 
-    public ulong ResetPasswordNextLogin { get; set; }
+    public bool ResetPasswordNextLogin { get; set; }
 
-    public ulong PasswordExpires { get; set; }
+    public bool PasswordExpires { get; set; }
 
     public DateTime? PasswordExpirationDate { get; set; }
 
-    public ulong LockoutEnabled { get; set; }
+    public bool LockoutEnabled { get; set; }
 
     public DateTime? LockoutDueDate { get; set; }
 
@@ -46,7 +46,7 @@ public partial class User
 
     public int AccessFailedCount { get; set; }
 
-    public ulong Active { get; set; }
+    public bool Active { get; set; }
 
     public long LogInstance { get; set; }
 
@@ -58,8 +58,4 @@ public partial class User
 
     public string?UpdatedBy { get; set; }
 
-    public bool IsLocked()
-    {
-        throw new NotImplementedException();
-    }
 }
