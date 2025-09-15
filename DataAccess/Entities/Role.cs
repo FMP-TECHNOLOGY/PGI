@@ -15,7 +15,7 @@ public partial class Role
 
     public long LogInstance { get; set; }
 
-    public int ObjectType { get; set; }
+    public int? ObjectType { get; }
 
     public DateTime? CreatedAt { get; set; }
 
@@ -24,5 +24,5 @@ public partial class Role
     public string?CreatedBy { get; set; }
 
     public string?UpdatedBy { get; set; }
-    public Guid? CompaniaId { get; set; }
+    //public string? CompaniaId { get; set; }
 }

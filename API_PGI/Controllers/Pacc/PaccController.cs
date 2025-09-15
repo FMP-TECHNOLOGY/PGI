@@ -16,7 +16,7 @@ namespace API_PGI.Controllers.Paccs
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [Route("[controller]")]
     [ApiController]
-    [Authorize]
+    [JwtAuthorize]
     public class PaccController : ControllerBase
     {
         private readonly IPacc _Pacc;
@@ -86,12 +86,12 @@ namespace API_PGI.Controllers.Paccs
                 if (gridifyQuery.PageSize == 0) gridifyQuery.PageSize = int.MaxValue;
                 if (gridifyQuery.Page == 0) gridifyQuery.Page = 1;
 
-                var items = _Pacc.GetPaginated(gridifyQuery);
+                var items = _Pacc.FindAll(gridifyQuery);
                 return Ok(new ResponseModel()
                 {
 
                     TotalCount = items.Count,
-                    Result = items.Data,
+                    Result = items,
                 });
                 //  }
             }

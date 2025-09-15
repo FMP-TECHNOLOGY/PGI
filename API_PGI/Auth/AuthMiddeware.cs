@@ -11,17 +11,24 @@ namespace API_PGI.Auth
         {
             this.next = next;
         }
+
         public async Task Invoke(HttpContext context, IAuth auth)
         {
-            var token = context.Request.Headers[AppConstants.AUTHORIZATION]
-                .FirstOrDefault()?
-                .Split(" ", 2, StringSplitOptions.RemoveEmptyEntries)
-                .LastOrDefault();
+            Auth(context, auth);
 
-            if (!string.IsNullOrWhiteSpace(token))            
-                auth.SetCurrentCredentials(token, AppConstants.BEARER_TOKEN, context.Connection.RemoteIpAddress);
-                
             await next(context);
+        }
+
+        private static void Auth(HttpContext context, IAuth auth)
+        {
+            var authHeader = context.GetAuthorization(out string location);
+
+            if (string.IsNullOrWhiteSpace(authHeader))
+                return;
+
+            var userAgent = context.Request.GetTypedHeaders().Headers.UserAgent.SingleOrDefault();
+
+            auth.SetCurrentCredentials(authHeader, location, context.Connection.RemoteIpAddress, userAgent);
         }
 
     }

@@ -16,7 +16,7 @@ namespace API_PGI.Controllers.ImputacionesPresupuestarias
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [Route("[controller]")]
     [ApiController]
-    [Authorize]
+    [JwtAuthorize]
     public class ImputacionesPresupuestariaController : ControllerBase
     {
         private readonly IImputacionesPresupuestaria _ImputacionesPresupuestaria;
@@ -86,12 +86,12 @@ namespace API_PGI.Controllers.ImputacionesPresupuestarias
                 if (gridifyQuery.PageSize == 0) gridifyQuery.PageSize = int.MaxValue;
                 if (gridifyQuery.Page == 0) gridifyQuery.Page = 1;
 
-                var items = _ImputacionesPresupuestaria.GetPaginated(gridifyQuery);
+                var items = _ImputacionesPresupuestaria.FindAll(gridifyQuery);
                 return Ok(new ResponseModel()
                 {
 
                     TotalCount = items.Count,
-                    Result = items.Data,
+                    Result = items,
                 });
                 //  }
             }

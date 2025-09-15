@@ -5,9 +5,8 @@ namespace DataAccess.Entities;
 
 public partial class Xpacc
 {
-    public Guid? CompaniaId { get; set; }
+    public string? CompaniaId { get; set; }
     public string?Poa { get; set; }
-
     public string?Producto { get; set; }
 
     public string?Actividad { get; set; }
@@ -64,5 +63,5 @@ public partial class Xpacc
 
     public string?CuentaObjetalNormalizada { get; set; }
 
-    public int? ObjectType { get; set; }
+    public int? ObjectType { get; }
 }

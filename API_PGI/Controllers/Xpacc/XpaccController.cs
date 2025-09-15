@@ -16,7 +16,7 @@ namespace API_PGI.Controllers.Xpaccs
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [Route("[controller]")]
     [ApiController]
-    [Authorize]
+    [JwtAuthorize]
     public class XpaccController : ControllerBase
     {
         private readonly IXpacc _Xpacc;
@@ -86,12 +86,12 @@ namespace API_PGI.Controllers.Xpaccs
                 if (gridifyQuery.PageSize == 0) gridifyQuery.PageSize = int.MaxValue;
                 if (gridifyQuery.Page == 0) gridifyQuery.Page = 1;
 
-                var items = _Xpacc.GetPaginated(gridifyQuery);
+                var items = _Xpacc.FindAll(gridifyQuery);
                 return Ok(new ResponseModel()
                 {
 
                     TotalCount = items.Count,
-                    Result = items.Data,
+                    Result = items,
                 });
                 //  }
             }

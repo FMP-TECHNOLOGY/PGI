@@ -16,7 +16,7 @@ namespace API_PGI.Controllers.Areas
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [Route("[controller]")]
     [ApiController]
-    [Authorize]
+    [JwtAuthorize]
     public class AreaController : ControllerBase
     {
         private readonly IArea _Area;
@@ -86,12 +86,12 @@ namespace API_PGI.Controllers.Areas
                 if (gridifyQuery.PageSize == 0) gridifyQuery.PageSize = int.MaxValue;
                 if (gridifyQuery.Page == 0) gridifyQuery.Page = 1;
 
-                var items = _Area.GetPaginated(gridifyQuery);
+                var items = _Area.FindAll(gridifyQuery);
                 return Ok(new ResponseModel()
                 {
 
                     TotalCount = items.Count,
-                    Result = items.Data,
+                    Result = items,
                 });
                 //  }
             }

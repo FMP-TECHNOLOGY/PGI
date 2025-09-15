@@ -10,7 +10,7 @@ namespace API_PGI.Workers
     {
         private readonly IServiceProvider serviceProvider;
 
-        private static readonly Type jwtAttrType = typeof(AuthorizeAttribute);
+        private static readonly Type jwtAttrType = typeof(JwtAuthorize);
 
         public PermissionsWorker(IServiceProvider serviceProvider)
         {
@@ -90,7 +90,7 @@ namespace API_PGI.Workers
                 if (!Attribute.IsDefined(action, jwtAttrType))
                     continue;
 
-                var jwtAttr = action.GetCustomAttribute<AuthorizeAttribute>()!;
+                var jwtAttr = action.GetCustomAttribute<JwtAuthorize>()!;
 
                 if (jwtAttr.AllowAnonymous)
                     continue;

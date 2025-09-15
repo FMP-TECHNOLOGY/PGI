@@ -16,7 +16,7 @@ namespace API_PGI.Controllers.UnidadMedidas
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [Route("[controller]")]
     [ApiController]
-    [Authorize]
+    [JwtAuthorize]
     public class UnidadMedidaController : ControllerBase
     {
         private readonly IUnidadMedida _UnidadMedida;
@@ -86,12 +86,12 @@ namespace API_PGI.Controllers.UnidadMedidas
                 if (gridifyQuery.PageSize == 0) gridifyQuery.PageSize = int.MaxValue;
                 if (gridifyQuery.Page == 0) gridifyQuery.Page = 1;
 
-                var items = _UnidadMedida.GetPaginated(gridifyQuery);
+                var items = _UnidadMedida.FindAll(gridifyQuery);
                 return Ok(new ResponseModel()
                 {
 
                     TotalCount = items.Count,
-                    Result = items.Data,
+                    Result = items,
                 });
                 //  }
             }

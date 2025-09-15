@@ -16,7 +16,7 @@ namespace API_PGI.Controllers.Peis
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [Route("[controller]")]
     [ApiController]
-    [Authorize]
+    [JwtAuthorize]
     public class PeiController : ControllerBase
     {
         private readonly IPei _Pei;
@@ -81,17 +81,17 @@ namespace API_PGI.Controllers.Peis
             {
                 var builder = new QueryBuilder<Pei>()
                              .AddQuery(gridifyQuery)
-                             .AddCondition($"{nameof(Pei.CompaniaId)}={_Auth.CurrentUser?.CompaniaId}")
+                             //.AddCondition($"{nameof(Pei.CompaniaId)}={_Auth.CurrentUser?.CompaniaId}")
                 ;
                 if (gridifyQuery.PageSize == 0) gridifyQuery.PageSize = int.MaxValue;
                 if (gridifyQuery.Page == 0) gridifyQuery.Page = 1;
 
-                var items = _Pei.GetPaginated(gridifyQuery);
+                var items = _Pei.FindAll(gridifyQuery);
                 return Ok(new ResponseModel()
                 {
 
                     TotalCount = items.Count,
-                    Result = items.Data,
+                    Result = items,
                 });
                 //  }
             }

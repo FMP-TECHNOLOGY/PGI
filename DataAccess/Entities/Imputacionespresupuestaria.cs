@@ -6,7 +6,7 @@ namespace DataAccess.Entities;
 public partial class ImputacionesPresupuestaria
 {
     public string? Id { get; set; }
-    public long Cuenta { get; set; }
+    public string CuentaObjetalId { get; set; }
 
     public string? Descripcion { get; set; } 
 
@@ -14,9 +14,9 @@ public partial class ImputacionesPresupuestaria
 
     public bool Active { get; set; }
 
-    public int UserId { get; set; }
+    public string?UserId { get; set; }
 
     public DateTime Created { get; set; }
 
-    public int? ObjectType { get; set; }
+    public int? ObjectType { get; }
 }

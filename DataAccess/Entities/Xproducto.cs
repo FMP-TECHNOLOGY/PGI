@@ -65,6 +65,6 @@ public partial class Xproducto
 
     public string?PesoActividad { get; set; }
 
-    public int? ObjectType { get; set; }
-    public Guid? CompaniaId { get; set; }
+    public int? ObjectType { get; }
+    public string? CompaniaId { get; set; }
 }

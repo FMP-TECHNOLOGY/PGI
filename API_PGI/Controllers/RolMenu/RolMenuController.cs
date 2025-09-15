@@ -16,7 +16,7 @@ namespace API_PGI.Controllers.RolMenus
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [Route("[controller]")]
     [ApiController]
-    [Authorize]
+    [JwtAuthorize]
     public class RolMenuController : ControllerBase
     {
         private readonly IRolMenu _RolMenu;
@@ -81,17 +81,17 @@ namespace API_PGI.Controllers.RolMenus
             {
                 var builder = new QueryBuilder<RolMenu>()
                              .AddQuery(gridifyQuery)
-                             .AddCondition($"{nameof(RolMenu.CompaniaId)}={_Auth.CurrentUser?.CompaniaId}")
+                             //.AddCondition($"{nameof(RolMenu.CompaniaId)}={_Auth.CurrentUser?.CompaniaId}")
                 ;
                 if (gridifyQuery.PageSize == 0) gridifyQuery.PageSize = int.MaxValue;
                 if (gridifyQuery.Page == 0) gridifyQuery.Page = 1;
 
-                var items = _RolMenu.GetPaginated(gridifyQuery);
+                var items = _RolMenu.FindAll(gridifyQuery);
                 return Ok(new ResponseModel()
                 {
 
                     TotalCount = items.Count,
-                    Result = items.Data,
+                    Result = items,
                 });
                 //  }
             }

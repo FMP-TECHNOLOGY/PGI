@@ -1,6 +1,7 @@
-﻿using DataAccess;
+﻿using Common.Exceptions;
+using DataAccess;
 using DataAccess.Entities;
-using Microsoft.IdentityModel.SecurityTokenService;
+//using Microsoft.IdentityModel.SecurityTokenService;
 
 namespace PGI.DataAccess.Repositories.Auth
 {
@@ -37,8 +38,8 @@ namespace PGI.DataAccess.Repositories.Auth
             {
                 PermissionId = permissionId,
                 RoleId = roleId,
-                //Permission = permission,
-                //Role = role,
+                Permission = permission,
+                Role = role,
             });
         }
 

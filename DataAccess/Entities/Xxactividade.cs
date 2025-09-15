@@ -6,7 +6,7 @@ namespace DataAccess.Entities;
 public partial class Xxactividade
 {
     public string? Id { get; set; }
-    public Guid? CompaniaId { get; set; }
+    public string? CompaniaId { get; set; }
 
     public string?Producto { get; set; }
 
@@ -46,5 +46,5 @@ public partial class Xxactividade
 
     public string?ActividadId { get; set; }
 
-    public int? ObjectType { get; set; }
+    public int? ObjectType { get; }
 }

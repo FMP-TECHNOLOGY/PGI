@@ -22,6 +22,6 @@ public partial class Indicadore
 
     public string?MedioVerificacion { get; set; }
 
-    public Guid? CompaniaId { get; set; }
-    public int? ObjectType { get; set; }
+    public string? CompaniaId { get; set; }
+    public int? ObjectType { get; }
 }

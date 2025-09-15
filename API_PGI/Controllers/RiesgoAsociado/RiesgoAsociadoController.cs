@@ -16,7 +16,7 @@ namespace API_PGI.Controllers.RiesgoAsociados
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [Route("[controller]")]
     [ApiController]
-    [Authorize]
+    [JwtAuthorize]
     public class RiesgoAsociadoController : ControllerBase
     {
         private readonly IRiesgoAsociado _RiesgoAsociado;
@@ -86,12 +86,12 @@ namespace API_PGI.Controllers.RiesgoAsociados
                 if (gridifyQuery.PageSize == 0) gridifyQuery.PageSize = int.MaxValue;
                 if (gridifyQuery.Page == 0) gridifyQuery.Page = 1;
 
-                var items = _RiesgoAsociado.GetPaginated(gridifyQuery);
+                var items = _RiesgoAsociado.FindAll(gridifyQuery);
                 return Ok(new ResponseModel()
                 {
 
                     TotalCount = items.Count,
-                    Result = items.Data,
+                    Result = items,
                 });
                 //  }
             }

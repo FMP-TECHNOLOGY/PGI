@@ -16,7 +16,7 @@ namespace API_PGI.Controllers.Accions
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [Route("[controller]")]
     [ApiController]
-    [Authorize]
+    [JwtAuthorize]
     public class AccionController(IAccion accion, IAuth auth) : ControllerBase
     {
 
@@ -78,12 +78,12 @@ namespace API_PGI.Controllers.Accions
                 if (gridifyQuery.PageSize == 0) gridifyQuery.PageSize = int.MaxValue;
                 if (gridifyQuery.Page == 0) gridifyQuery.Page = 1;
 
-                var items = accion.GetPaginated(gridifyQuery);
+                var items = accion.FindAll(gridifyQuery);
                 return Ok(new ResponseModel()
                 {
 
                     TotalCount = items.Count,
-                    Result = items.Data,
+                    Result = items,
                 });
                 //  }
             }

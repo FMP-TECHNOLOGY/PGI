@@ -16,7 +16,7 @@ namespace API_PGI.Controllers.Departamentos
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [Route("[controller]")]
     [ApiController]
-    [Authorize]
+    [JwtAuthorize]
     public class DepartamentoController : ControllerBase
     {
         private readonly IDepartamento _Departamento;
@@ -86,12 +86,12 @@ namespace API_PGI.Controllers.Departamentos
                 if (gridifyQuery.PageSize == 0) gridifyQuery.PageSize = int.MaxValue;
                 if (gridifyQuery.Page == 0) gridifyQuery.Page = 1;
 
-                var items = _Departamento.GetPaginated(gridifyQuery);
+                var items = _Departamento.FindAll(gridifyQuery);
                 return Ok(new ResponseModel()
                 {
 
                     TotalCount = items.Count,
-                    Result = items.Data,
+                    Result = items,
                 });
                 //  }
             }

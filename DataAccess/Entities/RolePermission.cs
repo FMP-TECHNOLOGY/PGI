@@ -21,6 +21,9 @@ public partial class RolePermission
 
     public string?UpdatedBy { get; set; }
 
-    public Guid? CompaniaId { get; set; }
-    public int? ObjectType { get; set; }
+    //public string? CompaniaId { get; set; }
+    public int? ObjectType { get; }
+    public required Role Role { get; set; }
+    public required Permission Permission { get; set; }
+
 }

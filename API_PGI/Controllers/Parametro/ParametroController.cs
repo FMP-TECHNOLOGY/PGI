@@ -16,7 +16,7 @@ namespace API_PGI.Controllers.Parametros
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [Route("[controller]")]
     [ApiController]
-    [Authorize]
+    [JwtAuthorize]
     public class ParametroController : ControllerBase
     {
         private readonly IParametro _Parametro;
@@ -86,12 +86,12 @@ namespace API_PGI.Controllers.Parametros
                 if (gridifyQuery.PageSize == 0) gridifyQuery.PageSize = int.MaxValue;
                 if (gridifyQuery.Page == 0) gridifyQuery.Page = 1;
 
-                var items = _Parametro.GetPaginated(gridifyQuery);
+                var items = _Parametro.FindAll(gridifyQuery);
                 return Ok(new ResponseModel()
                 {
 
                     TotalCount = items.Count,
-                    Result = items.Data,
+                    Result = items,
                 });
                 //  }
             }

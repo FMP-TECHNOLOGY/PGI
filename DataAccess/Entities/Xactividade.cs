@@ -6,7 +6,7 @@ namespace DataAccess.Entities;
 public partial class Xactividade
 {
     public string? Id { get; set; }
-    public Guid? CompaniaId { get; set; }
+    public string? CompaniaId { get; set; }
 
     public string?Area { get; set; }
 
@@ -44,5 +44,5 @@ public partial class Xactividade
 
     public string?PlanificadoDiciembre { get; set; }
 
-    public int? ObjectType { get; set; }
+    public int? ObjectType { get; }
 }

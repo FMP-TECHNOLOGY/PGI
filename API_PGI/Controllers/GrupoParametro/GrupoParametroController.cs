@@ -16,7 +16,7 @@ namespace API_PGI.Controllers.GrupoParametros
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [Route("[controller]")]
     [ApiController]
-    [Authorize]
+    [JwtAuthorize]
     public class GrupoParametroController : ControllerBase
     {
         private readonly IGrupoParametro _GrupoParametro;
@@ -86,12 +86,12 @@ namespace API_PGI.Controllers.GrupoParametros
                 if (gridifyQuery.PageSize == 0) gridifyQuery.PageSize = int.MaxValue;
                 if (gridifyQuery.Page == 0) gridifyQuery.Page = 1;
 
-                var items = _GrupoParametro.GetPaginated(gridifyQuery);
+                var items = _GrupoParametro.FindAll(gridifyQuery);
                 return Ok(new ResponseModel()
                 {
 
                     TotalCount = items.Count,
-                    Result = items.Data,
+                    Result = items,
                 });
                 //  }
             }

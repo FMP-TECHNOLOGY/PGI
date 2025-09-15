@@ -15,5 +15,5 @@ public partial class Sucursal
 
     public string? CompaniaId { get; set; } 
 
-    public int? ObjectType { get; set; }
+    public int? ObjectType { get; }
 }

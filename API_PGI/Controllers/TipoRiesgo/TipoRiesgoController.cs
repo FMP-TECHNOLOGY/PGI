@@ -16,7 +16,7 @@ namespace API_PGI.Controllers.TipoRiesgos
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [Route("[controller]")]
     [ApiController]
-    [Authorize]
+    [JwtAuthorize]
     public class TipoRiesgoController : ControllerBase
     {
         private readonly ITipoRiesgo _TipoRiesgo;
@@ -86,12 +86,12 @@ namespace API_PGI.Controllers.TipoRiesgos
                 if (gridifyQuery.PageSize == 0) gridifyQuery.PageSize = int.MaxValue;
                 if (gridifyQuery.Page == 0) gridifyQuery.Page = 1;
 
-                var items = _TipoRiesgo.GetPaginated(gridifyQuery);
+                var items = _TipoRiesgo.FindAll(gridifyQuery);
                 return Ok(new ResponseModel()
                 {
 
                     TotalCount = items.Count,
-                    Result = items.Data,
+                    Result = items,
                 });
                 //  }
             }

@@ -16,7 +16,7 @@ namespace API_PGI.Controllers.IntegracionLogs
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [Route("[controller]")]
     [ApiController]
-    [Authorize]
+    [JwtAuthorize]
     public class IntegracionLogController : ControllerBase
     {
         private readonly IIntegracionLog _IntegracionLog;
@@ -86,12 +86,12 @@ namespace API_PGI.Controllers.IntegracionLogs
                 if (gridifyQuery.PageSize == 0) gridifyQuery.PageSize = int.MaxValue;
                 if (gridifyQuery.Page == 0) gridifyQuery.Page = 1;
 
-                var items = _IntegracionLog.GetPaginated(gridifyQuery);
+                var items = _IntegracionLog.FindAll(gridifyQuery);
                 return Ok(new ResponseModel()
                 {
 
                     TotalCount = items.Count,
-                    Result = items.Data,
+                    Result = items,
                 });
                 //  }
             }

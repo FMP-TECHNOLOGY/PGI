@@ -16,7 +16,7 @@ namespace API_PGI.Controllers.Roles
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [Route("[controller]")]
     [ApiController]
-    [Authorize]
+    [JwtAuthorize]
     public class RoleController : ControllerBase
     {
         private readonly IRole _Role;
@@ -81,17 +81,17 @@ namespace API_PGI.Controllers.Roles
             {
                 var builder = new QueryBuilder<Role>()
                              .AddQuery(gridifyQuery)
-                             .AddCondition($"{nameof(Role.CompaniaId)}={_Auth.CurrentUser?.CompaniaId}")
+                           //  .AddCondition($"{nameof(Role.CompaniaId)}={_Auth.CurrentUser?.CompaniaId}")
                 ;
                 if (gridifyQuery.PageSize == 0) gridifyQuery.PageSize = int.MaxValue;
                 if (gridifyQuery.Page == 0) gridifyQuery.Page = 1;
 
-                var items = _Role.GetPaginated(gridifyQuery);
+                var items = _Role.FindAll(gridifyQuery);
                 return Ok(new ResponseModel()
                 {
 
                     TotalCount = items.Count,
-                    Result = items.Data,
+                    Result = items,
                 });
                 //  }
             }

@@ -16,7 +16,7 @@ namespace API_PGI.Controllers.UserTokens
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [Route("[controller]")]
     [ApiController]
-    [Authorize]
+    [JwtAuthorize]
     public class UserTokenController : ControllerBase
     {
         private readonly IUserToken _UserToken;
@@ -81,17 +81,17 @@ namespace API_PGI.Controllers.UserTokens
             {
                 var builder = new QueryBuilder<UserToken>()
                              .AddQuery(gridifyQuery)
-                             .AddCondition($"{nameof(UserToken.CompaniaId)}={_Auth.CurrentUser?.CompaniaId}")
+                             //.AddCondition($"{nameof(UserToken.CompaniaId)}={_Auth.CurrentUser?.CompaniaId}")
                 ;
                 if (gridifyQuery.PageSize == 0) gridifyQuery.PageSize = int.MaxValue;
                 if (gridifyQuery.Page == 0) gridifyQuery.Page = 1;
 
-                var items = _UserToken.GetPaginated(gridifyQuery);
+                var items = _UserToken.FindAll(gridifyQuery);
                 return Ok(new ResponseModel()
                 {
 
                     TotalCount = items.Count,
-                    Result = items.Data,
+                    Result = items,
                 });
                 //  }
             }

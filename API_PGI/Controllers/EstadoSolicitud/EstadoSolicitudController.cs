@@ -16,7 +16,7 @@ namespace API_PGI.Controllers.EstadoSolicituds
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [Route("[controller]")]
     [ApiController]
-    [Authorize]
+    [JwtAuthorize]
     public class EstadoSolicitudController : ControllerBase
     {
         private readonly IEstadoSolicitud _EstadoSolicitud;
@@ -86,12 +86,12 @@ namespace API_PGI.Controllers.EstadoSolicituds
                 if (gridifyQuery.PageSize == 0) gridifyQuery.PageSize = int.MaxValue;
                 if (gridifyQuery.Page == 0) gridifyQuery.Page = 1;
 
-                var items = _EstadoSolicitud.GetPaginated(gridifyQuery);
+                var items = _EstadoSolicitud.FindAll(gridifyQuery);
                 return Ok(new ResponseModel()
                 {
 
                     TotalCount = items.Count,
-                    Result = items.Data,
+                    Result = items,
                 });
                 //  }
             }

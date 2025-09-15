@@ -16,7 +16,7 @@ namespace API_PGI.Controllers.Cloudproviders
     //    [ProducesResponseType(StatusCodes.Status404NotFound)]
     //    [Route("[controller]")]
     //    [ApiController]
-    //    [Authorize]
+    //    [JwtAuthorize]
     //    public class CloudproviderController : ControllerBase
     //    {
     //        private readonly ICloudprovider _Cloudprovider;
@@ -86,12 +86,12 @@ namespace API_PGI.Controllers.Cloudproviders
     //                if (gridifyQuery.PageSize == 0) gridifyQuery.PageSize = int.MaxValue;
     //                if (gridifyQuery.Page == 0) gridifyQuery.Page = 1;
 
-    //                var items = _Cloudprovider.GetPaginated(gridifyQuery);
+    //                var items = _Cloudprovider.FindAll(gridifyQuery);
     //                return Ok(new ResponseModel()
     //                {
 
     //                    TotalCount = items.Count,
-    //                    Result = items.Data,
+    //                    Result = items,
     //                });
     //                //  }
     //            }

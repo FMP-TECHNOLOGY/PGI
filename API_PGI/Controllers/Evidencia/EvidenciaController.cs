@@ -16,7 +16,7 @@ namespace API_PGI.Controllers.Evidencias
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [Route("[controller]")]
     [ApiController]
-    [Authorize]
+    [JwtAuthorize]
     public class EvidenciaController : ControllerBase
     {
         private readonly IEvidencia _Evidencia;
@@ -86,12 +86,12 @@ namespace API_PGI.Controllers.Evidencias
                 if (gridifyQuery.PageSize == 0) gridifyQuery.PageSize = int.MaxValue;
                 if (gridifyQuery.Page == 0) gridifyQuery.Page = 1;
 
-                var items = _Evidencia.GetPaginated(gridifyQuery);
+                var items = _Evidencia.FindAll(gridifyQuery);
                 return Ok(new ResponseModel()
                 {
 
                     TotalCount = items.Count,
-                    Result = items.Data,
+                    Result = items,
                 });
                 //  }
             }

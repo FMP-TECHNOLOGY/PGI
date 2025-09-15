@@ -3,19 +3,120 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.Extensions.Logging;
+//using Microsoft.IdentityModel.SecurityTokenService;
 using Newtonsoft.Json;
+using Common.Exceptions;
+using Utils.Extensions;
 using static System.Reflection.Metadata.BlobBuilder;
+using Microsoft.Data.SqlClient;
+using Utils.Helpers;
+using DataAccess.ValueGenerators;
+using PGI.DataAccess.Repositories.Auth;
 
 namespace DataAccess.Entities;
 
 public partial class PGIContext : DbContext
 {
+    private List<Tuple<object, object?, EntityState>> TrackedEntries { get; } = new();
+
+    public virtual DbSet<Log> Logs { get; set; }
+
+    private readonly static Type _longType = typeof(long);
     public PGIContext(DbContextOptions<PGIContext> options)
         : base(options)
     {
         SavingChanges += AppDBContext_SavingChanges;
         SavedChanges += AppDBContext_SavedChanges;
+        SaveChangesFailed += AppDBContext_SaveChangesFailed;
     }
+    private void AppDBContext_SaveChangesFailed(object? sender, SaveChangesFailedEventArgs e)
+    {
+        var exception = new BadRequestException(e.Exception);
+
+        var ex =
+            e.Exception as SqlException ??
+            e.Exception.InnerException as SqlException;
+
+        if (e.Exception is DbUpdateConcurrencyException updateException)
+            exception = new BadRequestException($"Data updated by other user. '{string.Join(" | ", updateException.Entries.Select(e => e.Entity?.GetType().Name))}'", updateException);
+
+        if (ex is null)
+            goto throwException;
+
+        switch (ex.Number)
+        {
+            case 2627:
+                exception = new BadRequestException(ex.Message, ex);
+                break;
+        }
+
+    throwException:
+        throw exception;
+    }
+
+    private void AppDBContext_SavedChanges(object? sender, SavedChangesEventArgs e)
+    {
+        try
+        {
+            int trackedCount = TrackedEntries.Count;
+
+            if (trackedCount == 0) return;
+
+            Logs.AddRange(TrackedEntries.Select(x => new Log(x.Item1, x.Item2)
+            {
+                Action = Enum.GetName(x.Item3) ?? ""
+            }));
+
+            TrackedEntries.Clear();
+
+            if (trackedCount > 0)
+                SaveChanges();
+        }
+        catch (Exception ex)
+        {
+            LogData.Error(ex.Message);
+        }
+    }
+
+    private void AppDBContext_SavingChanges(object? sender, SavingChangesEventArgs e)
+    {
+        var entries = ChangeTracker.Entries().ToList();
+
+        foreach (var entry in entries)
+        {
+            if (entry.Entity is Log) continue;
+
+            if (!entry.State.In(EntityState.Added, EntityState.Deleted, EntityState.Modified))
+                continue;
+
+            if (entry.State == EntityState.Modified)
+                GenerateOnUpdate(entry);
+
+            TrackedEntries.Add(new(entry.Entity, entry.GetDatabaseValues()?.ToObject(), entry.State));
+        }
+    }
+
+    private static void GenerateOnUpdate(EntityEntry entry)
+    {
+        foreach (var property in entry.Properties)
+        {
+            if (property.Metadata.IsConcurrencyToken && property.Metadata.ClrType == _longType)
+                property.CurrentValue = Convert.ToInt64(property.CurrentValue) + 1;
+
+            if (!property.Metadata.ValueGenerated.In(ValueGenerated.OnUpdate, ValueGenerated.OnAddOrUpdate, ValueGenerated.OnUpdateSometimes))
+                continue;
+
+            var valueGeneratorFactory = property.Metadata.GetValueGeneratorFactory();
+
+            if (valueGeneratorFactory == null)
+                continue;
+
+            property.CurrentValue = valueGeneratorFactory.Invoke(property.Metadata, entry.Metadata)
+                                                         .Next(entry);
+        }
+    }
+
 
     public virtual DbSet<Accion> Accions { get; set; }
 
@@ -36,6 +137,8 @@ public partial class PGIContext : DbContext
     public virtual DbSet<CuentaObjetal> Cuentaobjetals { get; set; }
 
     public virtual DbSet<Departamento> Departamentoes { get; set; }
+    public virtual DbSet<Fondo> Fondo { get; set; }
+    public virtual DbSet<DireccionIntitucional> DireccionInstitucional { get; set; }
 
     public virtual DbSet<DetalleSolicitudCompra> Detallesolicitudcompras { get; set; }
 
@@ -67,7 +170,7 @@ public partial class PGIContext : DbContext
 
     public virtual DbSet<IntegracionLog> Integracionlogs { get; set; }
 
-    public virtual DbSet<Log> Logs { get; set; }
+    //public virtual DbSet<Log> Log { get; set; }
 
     public virtual DbSet<Menu> Menus { get; set; }
 
@@ -123,7 +226,9 @@ public partial class PGIContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
-    public virtual DbSet<UserCompania> Usercompanias { get; set; }
+    public virtual DbSet<UserCompania> UserCompanias { get; set; }
+    public virtual DbSet<UserDireccionInstitucional> UserDireccionInstitucional { get; set; }
+    public virtual DbSet<UserSucursal> UserSucursal { get; set; }
 
     public virtual DbSet<UserPermission> Userpermissions { get; set; }
 
@@ -151,7 +256,7 @@ public partial class PGIContext : DbContext
 
             entity.HasIndex(e => e.UserId, "FK_Acion_User");
 
-            entity.Property(e => e.Id).HasMaxLength(36);
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
             entity.Property(e => e.Active).HasColumnName("active");
             entity.Property(e => e.Badge)
                 .HasMaxLength(20)
@@ -161,7 +266,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("companiaId");
             entity.Property(e => e.Created)
                 .HasColumnType("datetime")
-                .HasColumnName("created");
+                .HasColumnName("created").HasValueGenerator<DateTimeValueGenerator>();
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(100)
                 .HasColumnName("descripcion");
@@ -191,14 +296,14 @@ public partial class PGIContext : DbContext
 
             entity.ToTable("actividades");
 
-            entity.Property(e => e.Id).HasMaxLength(36);
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
             entity.Property(e => e.Active).HasColumnName("active");
             entity.Property(e => e.CompaniaId)
                 .HasMaxLength(36)
                 .HasColumnName("companiaId");
             entity.Property(e => e.Created)
                 .HasColumnType("datetime")
-                .HasColumnName("created");
+                .HasColumnName("created").HasValueGenerator<DateTimeValueGenerator>();
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(300)
                 .HasColumnName("descripcion");
@@ -224,7 +329,7 @@ public partial class PGIContext : DbContext
 
             entity.ToTable("area");
 
-            entity.Property(e => e.Id).HasMaxLength(36);
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
             entity.Property(e => e.Active).HasColumnName("active");
             entity.Property(e => e.CodigoIntegracion)
                 .HasMaxLength(50)
@@ -235,7 +340,7 @@ public partial class PGIContext : DbContext
             entity.Property(e => e.CompaniaId).HasColumnName("companiaId");
             entity.Property(e => e.Created)
                 .HasColumnType("datetime")
-                .HasColumnName("created");
+                .HasColumnName("created").HasValueGenerator<DateTimeValueGenerator>();
             entity.Property(e => e.DepartamentoId)
                 .HasMaxLength(36)
                 .HasColumnName("departamentoId");
@@ -248,7 +353,7 @@ public partial class PGIContext : DbContext
             entity.Property(e => e.ObjectType)
                 .HasDefaultValueSql("'3'")
                 .HasColumnName("objectType");
-            entity.Property(e => e.Userid).HasColumnName("userid");
+            entity.Property(e => e.UserId).HasColumnName("userid");
         });
 
         modelBuilder.Entity<AreasTransversale>(entity =>
@@ -257,7 +362,7 @@ public partial class PGIContext : DbContext
 
             entity.ToTable("areastransversales");
 
-            entity.Property(e => e.Id).HasMaxLength(36);
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
             entity.Property(e => e.AreaId)
                 .HasMaxLength(36)
                 .HasColumnName("areaId");
@@ -266,7 +371,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("companiaId");
             entity.Property(e => e.Created)
                 .HasColumnType("datetime")
-                .HasColumnName("created");
+                .HasColumnName("created").HasValueGenerator<DateTimeValueGenerator>();
             entity.Property(e => e.ObjectType)
                 .HasDefaultValueSql("'4'")
                 .HasColumnName("objectType");
@@ -282,7 +387,7 @@ public partial class PGIContext : DbContext
 
             entity.ToTable("auditoria");
 
-            entity.Property(e => e.Id).HasMaxLength(36);
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
             entity.Property(e => e.Active).HasColumnName("active");
             entity.Property(e => e.Campo)
                 .HasMaxLength(50)
@@ -292,7 +397,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("clavePrimaria");
             entity.Property(e => e.Created)
                 .HasColumnType("datetime")
-                .HasColumnName("created");
+                .HasColumnName("created").HasValueGenerator<DateTimeValueGenerator>();
             entity.Property(e => e.Host)
                 .HasMaxLength(50)
                 .HasColumnName("host");
@@ -313,7 +418,7 @@ public partial class PGIContext : DbContext
 
             entity.ToTable("cloudprovider");
 
-            entity.Property(e => e.Id).HasMaxLength(36);
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
             entity.Property(e => e.AccessKey)
                 .HasMaxLength(255)
                 .HasColumnName("accessKey");
@@ -328,7 +433,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("containerName");
             entity.Property(e => e.Created)
                 .HasColumnType("datetime")
-                .HasColumnName("created");
+                .HasColumnName("created").HasValueGenerator<DateTimeValueGenerator>();
             entity.Property(e => e.ObjectType)
                 .HasDefaultValueSql("'6'")
                 .HasColumnName("objectType");
@@ -352,11 +457,11 @@ public partial class PGIContext : DbContext
 
             entity.HasIndex(e => e.Rnc, "UK_RNC").IsUnique();
 
-            entity.Property(e => e.Id).HasMaxLength(36);
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
             entity.Property(e => e.Active).HasColumnName("active");
             entity.Property(e => e.Created)
                 .HasColumnType("datetime")
-                .HasColumnName("created");
+                .HasColumnName("created").HasValueGenerator<DateTimeValueGenerator>();
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(100)
                 .HasColumnName("descripcion");
@@ -387,14 +492,14 @@ public partial class PGIContext : DbContext
 
             entity.ToTable("credenciales");
 
-            entity.Property(e => e.Id).HasMaxLength(36);
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
             entity.Property(e => e.Active).HasColumnName("active");
             entity.Property(e => e.CompaniaId)
                 .HasMaxLength(36)
                 .HasColumnName("companiaId");
             entity.Property(e => e.Created)
                 .HasColumnType("datetime")
-                .HasColumnName("created");
+                .HasColumnName("created").HasValueGenerator<DateTimeValueGenerator>();
             entity.Property(e => e.DbName)
                 .HasMaxLength(100)
                 .HasColumnName("db_name");
@@ -426,16 +531,38 @@ public partial class PGIContext : DbContext
 
             entity.ToTable("cuentaobjetal");
 
-            entity.Property(e => e.Id).HasMaxLength(36);
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
             entity.Property(e => e.Active).HasColumnName("active");
+            //entity.Property(e => e.Cuenta).HasColumnName("Cuenta");
             entity.Property(e => e.Created)
                 .HasColumnType("datetime")
-                .HasColumnName("created");
+                .HasColumnName("created").HasValueGenerator<DateTimeValueGenerator>();
             entity.Property(e => e.Descripcion).HasMaxLength(100);
             entity.Property(e => e.ObjectType)
                 .HasDefaultValueSql("'9'")
                 .HasColumnName("objectType");
             entity.Property(e => e.UserId).HasColumnName("userId");
+        });
+
+        modelBuilder.Entity<DireccionIntitucional>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("direccion_intitucional");
+
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
+            entity.Property(e => e.CompaniaId)
+                .HasMaxLength(36)
+                .HasColumnName("companiaId");
+            entity.Property(e => e.Descripcion)
+                .HasMaxLength(45)
+                .HasColumnName("descripcion");
+            entity.Property(e => e.ObjectType)
+                .HasColumnName("objectType");
+            entity.Property(e => e.Rnc).HasColumnName("Rnc");
+            entity.Property(e => e.Active).HasColumnName("Active");
+            entity.Property(e => e.Telefono).HasColumnName("Telefono");
+            entity.Property(e => e.UserId).HasMaxLength(45)                .HasColumnName("userId");
         });
 
         modelBuilder.Entity<Departamento>(entity =>
@@ -444,7 +571,7 @@ public partial class PGIContext : DbContext
 
             entity.ToTable("departamento");
 
-            entity.Property(e => e.Id).HasMaxLength(36);
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
             entity.Property(e => e.CompaniaId)
                 .HasMaxLength(36)
                 .HasColumnName("companiaId");
@@ -462,13 +589,38 @@ public partial class PGIContext : DbContext
                 .HasColumnName("userId");
         });
 
+        modelBuilder.Entity<Fondo>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("fondo");
+
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
+            entity.Property(e => e.CompaniaId)
+                .HasMaxLength(36)
+                .HasColumnName("companiaId");
+            entity.Property(e => e.Descripcion)
+                .HasMaxLength(45)
+                .HasColumnName("descripcion");
+            entity.Property(e => e.ObjectType)
+                .HasColumnName("objectType");
+            entity.Property(e => e.SucursalId)
+                .HasMaxLength(36)
+                .HasColumnName("sucursalId");
+            entity.Property(e => e.UserId)
+                .HasMaxLength(45)
+                .HasColumnName("userId");
+            entity.Property(e => e.Active)
+                .HasColumnName("Active");
+        });
+
         modelBuilder.Entity<DetalleSolicitudCompra>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
             entity.ToTable("detallesolicitudcompra");
 
-            entity.Property(e => e.Id).HasMaxLength(36);
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
             entity.Property(e => e.Cantidad).HasColumnName("cantidad");
             entity.Property(e => e.Costo).HasPrecision(19, 2);
             entity.Property(e => e.CostoRecepcion).HasPrecision(19, 2);
@@ -505,7 +657,7 @@ public partial class PGIContext : DbContext
 
             entity.ToTable("documentosevidencias");
 
-            entity.Property(e => e.Id).HasMaxLength(36);
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
             entity.Property(e => e.CompaniaId).HasMaxLength(36);
             entity.Property(e => e.Created).HasColumnType("datetime");
             entity.Property(e => e.EvidenciaId).HasMaxLength(36);
@@ -522,7 +674,7 @@ public partial class PGIContext : DbContext
 
             entity.ToTable("documentossolicitudcompra");
 
-            entity.Property(e => e.Id).HasMaxLength(36);
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
             entity.Property(e => e.Created).HasColumnType("datetime");
             entity.Property(e => e.NombreArchivo).HasMaxLength(100);
             entity.Property(e => e.Paccid)
@@ -538,12 +690,12 @@ public partial class PGIContext : DbContext
 
             entity.ToTable("ejesestrategicos");
 
-            entity.Property(e => e.Id).HasMaxLength(36);
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
             entity.Property(e => e.Active).HasColumnName("active");
             entity.Property(e => e.CompaniaId).HasMaxLength(36);
             entity.Property(e => e.Created)
                 .HasColumnType("datetime")
-                .HasColumnName("created");
+                .HasColumnName("created").HasValueGenerator<DateTimeValueGenerator>();
             entity.Property(e => e.Descripcion).HasMaxLength(300);
             entity.Property(e => e.FechaFin).HasColumnType("datetime");
             entity.Property(e => e.FechaInicio).HasColumnType("datetime");
@@ -560,7 +712,7 @@ public partial class PGIContext : DbContext
 
             entity.ToTable("empleados");
 
-            entity.Property(e => e.Id)
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd()
                 .HasMaxLength(36)
                 .HasColumnName("id");
             entity.Property(e => e.Apellidos)
@@ -629,7 +781,7 @@ public partial class PGIContext : DbContext
 
             entity.ToTable("estadoacciones");
 
-            entity.Property(e => e.Id).HasMaxLength(36);
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
             entity.Property(e => e.AccionId).HasMaxLength(36);
             entity.Property(e => e.CompaniaId).HasMaxLength(36);
             entity.Property(e => e.Created).HasColumnType("datetime");
@@ -645,7 +797,7 @@ public partial class PGIContext : DbContext
 
             entity.ToTable("estadosolicitud");
 
-            entity.Property(e => e.Id).HasMaxLength(36);
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
             entity.Property(e => e.Active).HasColumnName("active");
             entity.Property(e => e.Color)
                 .HasMaxLength(20)
@@ -655,7 +807,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("companiaId");
             entity.Property(e => e.Created)
                 .HasColumnType("datetime")
-                .HasColumnName("created");
+                .HasColumnName("created").HasValueGenerator<DateTimeValueGenerator>();
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(100)
                 .HasColumnName("descripcion");
@@ -671,7 +823,7 @@ public partial class PGIContext : DbContext
 
             entity.ToTable("evidencias");
 
-            entity.Property(e => e.Id).HasMaxLength(36);
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
             entity.Property(e => e.ActividadId).HasMaxLength(36);
             entity.Property(e => e.CompaniaId).HasMaxLength(36);
             entity.Property(e => e.Created).HasColumnType("datetime");
@@ -689,7 +841,7 @@ public partial class PGIContext : DbContext
 
             entity.ToTable("grupoparametros");
 
-            entity.Property(e => e.Id).HasMaxLength(36);
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
             entity.Property(e => e.Created).HasColumnType("datetime");
             entity.Property(e => e.Descripcion).HasMaxLength(100);
             entity.Property(e => e.ObjectType)
@@ -699,15 +851,16 @@ public partial class PGIContext : DbContext
 
         modelBuilder.Entity<ImputacionesPresupuestaria>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("imputacionespresupuestarias");
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("imputacionespresupuestarias");
 
             entity.Property(e => e.Active).HasColumnName("active");
             entity.Property(e => e.Created)
                 .HasColumnType("datetime")
-                .HasColumnName("created");
+                .HasColumnName("created").HasValueGenerator<DateTimeValueGenerator>();
             entity.Property(e => e.CuentaObjeto).HasMaxLength(20);
+            entity.Property(e => e.CuentaObjetalId).HasMaxLength(20);
             entity.Property(e => e.Descripcion).HasMaxLength(200);
             entity.Property(e => e.ObjectType)
                 .HasDefaultValueSql("'19'")
@@ -721,7 +874,7 @@ public partial class PGIContext : DbContext
 
             entity.ToTable("indicador");
 
-            entity.Property(e => e.Id).HasMaxLength(36);
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
             entity.Property(e => e.Active).HasColumnName("active");
             entity.Property(e => e.AreaId).HasMaxLength(36);
             entity.Property(e => e.CompaniaId)
@@ -729,7 +882,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("companiaId");
             entity.Property(e => e.Created)
                 .HasColumnType("datetime")
-                .HasColumnName("created");
+                .HasColumnName("created").HasValueGenerator<DateTimeValueGenerator>();
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(100)
                 .HasColumnName("descripcion");
@@ -780,7 +933,7 @@ public partial class PGIContext : DbContext
 
             entity.ToTable("integraciones");
 
-            entity.Property(e => e.Id).HasMaxLength(36);
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
             entity.Property(e => e.Created).HasColumnType("datetime");
             entity.Property(e => e.Descripcion).HasMaxLength(100);
             entity.Property(e => e.ObjectType)
@@ -794,7 +947,7 @@ public partial class PGIContext : DbContext
 
             entity.ToTable("integracionescredenciales");
 
-            entity.Property(e => e.Id).HasMaxLength(36);
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
             entity.Property(e => e.CompaniaId).HasMaxLength(36);
             entity.Property(e => e.Created).HasColumnType("datetime");
             entity.Property(e => e.CredencialId).HasMaxLength(36);
@@ -814,7 +967,7 @@ public partial class PGIContext : DbContext
 
             entity.ToTable("integracionlog");
 
-            entity.Property(e => e.Id).HasMaxLength(36);
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
             entity.Property(e => e.CompaniaId).HasMaxLength(36);
             entity.Property(e => e.Created).HasColumnType("datetime");
             entity.Property(e => e.Existoso).HasColumnName("existoso");
@@ -825,22 +978,22 @@ public partial class PGIContext : DbContext
                 .HasColumnName("objectType");
         });
 
-        modelBuilder.Entity<Log>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PRIMARY");
+        //modelBuilder.Entity<Log>(entity =>
+        //{
+        //    entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.ToTable("logs");
+        //    entity.ToTable("logs");
 
-            entity.HasIndex(e => e.CreatedBy, "CreatedBy");
+        //    entity.HasIndex(e => e.CreatedBy, "CreatedBy");
 
-            entity.Property(e => e.Action).HasMaxLength(100);
-            entity.Property(e => e.CreatedBy).HasMaxLength(36);
-            entity.Property(e => e.IdDocumento).HasMaxLength(36);
-            entity.Property(e => e.NewData).HasColumnType("json");
-            entity.Property(e => e.OldData).HasColumnType("json");
-            entity.Property(e => e.Sha256).HasMaxLength(512);
-            entity.Property(e => e.Timestamp).HasColumnType("datetime");
-        });
+        //    entity.Property(e => e.Action).HasMaxLength(100);
+        //    entity.Property(e => e.CreatedBy).HasMaxLength(36);
+        //    entity.Property(e => e.IdDocumento).HasMaxLength(36);
+        //    entity.Property(e => e.NewData).HasColumnType("json");
+        //    entity.Property(e => e.OldData).HasColumnType("json");
+        //    entity.Property(e => e.Sha256).HasMaxLength(512);
+        //    entity.Property(e => e.Timestamp).HasColumnType("datetime");
+        //});
 
         modelBuilder.Entity<Menu>(entity =>
         {
@@ -848,7 +1001,7 @@ public partial class PGIContext : DbContext
 
             entity.ToTable("menu");
 
-            entity.Property(e => e.Id).HasMaxLength(36);
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
             entity.Property(e => e.Created).HasColumnType("datetime");
             entity.Property(e => e.Nombre).HasMaxLength(100);
             entity.Property(e => e.ObjectType)
@@ -863,12 +1016,12 @@ public partial class PGIContext : DbContext
 
             entity.ToTable("objetivos");
 
-            entity.Property(e => e.Id).HasMaxLength(36);
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
             entity.Property(e => e.Active).HasColumnName("active");
             entity.Property(e => e.CompaniaId).HasMaxLength(36);
             entity.Property(e => e.Created)
                 .HasColumnType("datetime")
-                .HasColumnName("created");
+                .HasColumnName("created").HasValueGenerator<DateTimeValueGenerator>();
             entity.Property(e => e.Descripcion).HasMaxLength(1000);
             entity.Property(e => e.EjeId).HasMaxLength(36);
             entity.Property(e => e.ObjectType)
@@ -892,7 +1045,7 @@ public partial class PGIContext : DbContext
 
             entity.ToTable("pacc");
 
-            entity.Property(e => e.Id).HasMaxLength(36);
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
             entity.Property(e => e.ActividadId).HasMaxLength(36);
             entity.Property(e => e.CodigoCatalogo).HasMaxLength(20);
             entity.Property(e => e.CodigoIntegracion).HasMaxLength(20);
@@ -927,7 +1080,7 @@ public partial class PGIContext : DbContext
 
             entity.ToTable("parametros");
 
-            entity.Property(e => e.Id).HasMaxLength(36);
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
             entity.Property(e => e.Created).HasColumnType("datetime");
             entity.Property(e => e.Descripcion).HasMaxLength(100);
             entity.Property(e => e.GrupoParametroId).HasMaxLength(36);
@@ -943,7 +1096,7 @@ public partial class PGIContext : DbContext
 
             entity.ToTable("parametrosvalor");
 
-            entity.Property(e => e.Id).HasMaxLength(36);
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
             entity.Property(e => e.CompaniaId).HasMaxLength(36);
             entity.Property(e => e.Created).HasColumnType("datetime");
             entity.Property(e => e.ObjectType)
@@ -959,14 +1112,14 @@ public partial class PGIContext : DbContext
 
             entity.ToTable("pei");
 
-            entity.Property(e => e.Id).HasMaxLength(36);
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
             entity.Property(e => e.Active).HasColumnName("active");
             entity.Property(e => e.AnoFinal).HasColumnName("anoFinal");
             entity.Property(e => e.AnoInicial).HasColumnName("anoInicial");
-            entity.Property(e => e.CompaniaId).HasMaxLength(36);
+            //entity.Property(e => e.CompaniaId).HasMaxLength(36);
             entity.Property(e => e.Created)
                 .HasColumnType("datetime")
-                .HasColumnName("created");
+                .HasColumnName("created").HasValueGenerator<DateTimeValueGenerator>();
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(300)
                 .HasColumnName("descripcion");
@@ -982,7 +1135,7 @@ public partial class PGIContext : DbContext
 
             entity.ToTable("periodicidad");
 
-            entity.Property(e => e.Id).HasMaxLength(36);
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
             entity.Property(e => e.Created).HasColumnType("datetime");
             entity.Property(e => e.Nombre).HasMaxLength(100);
             entity.Property(e => e.ObjectType)
@@ -1002,7 +1155,7 @@ public partial class PGIContext : DbContext
 
             entity.HasIndex(e => e.UpdatedBy, "UpdatedBy");
 
-            entity.Property(e => e.Id).HasMaxLength(36);
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
             entity.Property(e => e.Active)
                 .HasDefaultValueSql("b'0'")
                 .HasColumnType("bit(1)");
@@ -1023,7 +1176,7 @@ public partial class PGIContext : DbContext
 
             entity.ToTable("poa");
 
-            entity.Property(e => e.Id).HasMaxLength(36);
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
             entity.Property(e => e.Ano).HasMaxLength(36);
             entity.Property(e => e.CompaniaId).HasMaxLength(36);
             entity.Property(e => e.Created).HasColumnType("datetime");
@@ -1041,7 +1194,7 @@ public partial class PGIContext : DbContext
 
             entity.ToTable("productointegracion");
 
-            entity.Property(e => e.Id).HasMaxLength(36);
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
             entity.Property(e => e.Codigo).HasMaxLength(50);
             entity.Property(e => e.CodigoCatalogo).HasMaxLength(36);
             entity.Property(e => e.CompaniaId).HasMaxLength(36);
@@ -1063,7 +1216,7 @@ public partial class PGIContext : DbContext
 
             entity.ToTable("profitcenters");
 
-            entity.Property(e => e.Id).HasMaxLength(36);
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
             entity.Property(e => e.AreaId).HasMaxLength(36);
             entity.Property(e => e.CenterCode).HasMaxLength(20);
             entity.Property(e => e.CompaniaId).HasMaxLength(36);
@@ -1092,7 +1245,7 @@ public partial class PGIContext : DbContext
 
             entity.ToTable("proveedor");
 
-            entity.Property(e => e.Id).HasMaxLength(36);
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
             entity.Property(e => e.CodigoIntegracion).HasMaxLength(20);
             entity.Property(e => e.CompaniaId).HasMaxLength(36);
             entity.Property(e => e.Created).HasColumnType("datetime");
@@ -1114,7 +1267,7 @@ public partial class PGIContext : DbContext
 
             entity.ToTable("proyecto");
 
-            entity.Property(e => e.Id).HasMaxLength(36);
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
             entity.Property(e => e.AreaId).HasMaxLength(36);
             entity.Property(e => e.Codigo).HasMaxLength(10);
             entity.Property(e => e.CompaniaId).HasMaxLength(36);
@@ -1142,7 +1295,7 @@ public partial class PGIContext : DbContext
 
             entity.ToTable("proyectoindicadores");
 
-            entity.Property(e => e.Id).HasMaxLength(36);
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
             entity.Property(e => e.CompaniaId).HasMaxLength(36);
             entity.Property(e => e.Created).HasColumnType("datetime");
             entity.Property(e => e.IndicadorId).HasMaxLength(36);
@@ -1158,7 +1311,7 @@ public partial class PGIContext : DbContext
 
             entity.ToTable("riesgo");
 
-            entity.Property(e => e.Id).HasMaxLength(36);
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
             entity.Property(e => e.CompaniaId).HasMaxLength(36);
             entity.Property(e => e.Created).HasColumnType("datetime");
             entity.Property(e => e.Descripcion).HasMaxLength(200);
@@ -1178,7 +1331,7 @@ public partial class PGIContext : DbContext
 
             entity.ToTable("riesgoasociados");
 
-            entity.Property(e => e.Id).HasMaxLength(36);
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
             entity.Property(e => e.CompaniaId).HasMaxLength(36);
             entity.Property(e => e.Created).HasColumnType("datetime");
             entity.Property(e => e.ObjectType)
@@ -1202,7 +1355,7 @@ public partial class PGIContext : DbContext
 
             entity.HasIndex(e => e.UpdatedBy, "UpdatedBy");
 
-            entity.Property(e => e.Id).HasMaxLength(36);
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
             entity.Property(e => e.Active)
                 .HasDefaultValueSql("b'0'")
                 .HasColumnType("bit(1)");
@@ -1250,7 +1403,7 @@ public partial class PGIContext : DbContext
 
             entity.ToTable("rolmenu");
 
-            entity.Property(e => e.Id).HasMaxLength(36);
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
             entity.Property(e => e.Created).HasColumnType("datetime");
             entity.Property(e => e.MenuId).HasMaxLength(36);
             entity.Property(e => e.ObjectType)
@@ -1265,7 +1418,7 @@ public partial class PGIContext : DbContext
 
             entity.ToTable("solicitudcompra");
 
-            entity.Property(e => e.Id).HasMaxLength(36);
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
             entity.Property(e => e.Codigo).HasMaxLength(255);
             entity.Property(e => e.CompaniaId).HasMaxLength(36);
             entity.Property(e => e.ObjectType)
@@ -1280,7 +1433,7 @@ public partial class PGIContext : DbContext
 
             entity.ToTable("sucursal");
 
-            entity.Property(e => e.Id)
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd()
                 .HasMaxLength(36)
                 .HasColumnName("id");
             entity.Property(e => e.CompaniaId).HasMaxLength(36);
@@ -1302,14 +1455,14 @@ public partial class PGIContext : DbContext
 
             entity.ToTable("tipoimpuesto");
 
-            entity.Property(e => e.Id).HasMaxLength(36);
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
             entity.Property(e => e.Code).HasMaxLength(15);
             entity.Property(e => e.CompaniaId)
                 .HasMaxLength(36)
                 .HasColumnName("companiaId");
             entity.Property(e => e.Created)
                 .HasColumnType("datetime")
-                .HasColumnName("created");
+                .HasColumnName("created").HasValueGenerator<DateTimeValueGenerator>();
             entity.Property(e => e.Name).HasMaxLength(200);
             entity.Property(e => e.ObjectType)
                 .HasDefaultValueSql("'46'")
@@ -1324,7 +1477,7 @@ public partial class PGIContext : DbContext
 
             entity.ToTable("tiporiesgo");
 
-            entity.Property(e => e.Id).HasMaxLength(36);
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
             entity.Property(e => e.Active).HasColumnName("active");
             entity.Property(e => e.Badge)
                 .HasMaxLength(20)
@@ -1334,7 +1487,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("companiaId");
             entity.Property(e => e.Created)
                 .HasColumnType("datetime")
-                .HasColumnName("created");
+                .HasColumnName("created").HasValueGenerator<DateTimeValueGenerator>();
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(100)
                 .HasColumnName("descripcion");
@@ -1350,14 +1503,14 @@ public partial class PGIContext : DbContext
 
             entity.ToTable("umbrales");
 
-            entity.Property(e => e.Id).HasMaxLength(36);
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
             entity.Property(e => e.Code).HasMaxLength(15);
             entity.Property(e => e.CompaniaId)
                 .HasMaxLength(36)
                 .HasColumnName("companiaId");
             entity.Property(e => e.Created)
                 .HasColumnType("datetime")
-                .HasColumnName("created");
+                .HasColumnName("created").HasValueGenerator<DateTimeValueGenerator>();
             entity.Property(e => e.Name).HasMaxLength(200);
             entity.Property(e => e.ObjectType)
                 .HasDefaultValueSql("'48'")
@@ -1371,7 +1524,7 @@ public partial class PGIContext : DbContext
 
             entity.ToTable("unidadmedida");
 
-            entity.Property(e => e.Id).HasMaxLength(36);
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
             entity.Property(e => e.Created).HasColumnType("datetime");
             entity.Property(e => e.Descripcion).HasMaxLength(100);
             entity.Property(e => e.Nombre).HasMaxLength(50);
@@ -1396,7 +1549,7 @@ public partial class PGIContext : DbContext
 
             entity.HasIndex(e => e.Username, "Username").IsUnique();
 
-            entity.Property(e => e.Id).HasMaxLength(36);
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
             entity.Property(e => e.Active)
                 .HasDefaultValueSql("b'0'")
                 .HasColumnType("bit(1)");
@@ -1442,7 +1595,89 @@ public partial class PGIContext : DbContext
                 .HasColumnType("bit(1)");
             entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
             entity.Property(e => e.UpdatedBy).HasMaxLength(36);
+            entity.Property(e => e.CompaniaId).HasColumnName("CompaniaId").HasMaxLength(36);
             entity.Property(e => e.Username).HasMaxLength(100);
+
+            entity.Property(e => e.Id)
+                 .HasValueGenerator<StringGuidValueGenerator>()
+                 .ValueGeneratedOnAdd();
+
+            entity.Property(e => e.AccessFailedCount)
+                .HasDefaultValueSql("'0'");
+
+            entity.Property(e => e.LogInstance)
+                .IsConcurrencyToken();
+
+            entity.Property(e => e.CreatedAt)
+                .HasValueGenerator<DateTimeValueGenerator>()
+                .ValueGeneratedOnAdd()
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+
+            entity.Property(e => e.CreatedBy)
+                .HasValueGenerator<UserSignValueGenerator>()
+                .ValueGeneratedOnAdd()
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+
+            entity.Property(e => e.UpdatedAt)
+                .HasValueGenerator<DateTimeValueGenerator>()
+                .ValueGeneratedOnUpdate()
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+
+            entity.Property(e => e.UpdatedBy)
+                .HasValueGenerator<UserSignValueGenerator>()
+                .ValueGeneratedOnUpdate()
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+
+            entity.HasMany(x => x.Companies)
+            .WithMany()
+                  .UsingEntity<UserCompania>(j =>
+                          j.HasOne(x => x.Company)
+                           .WithMany()
+                           .HasForeignKey(x => x.CompaniaId),
+
+                          j => j.HasOne(x => x.User)
+                                .WithMany()
+                                .HasForeignKey(x => x.UserId)
+                  );
+
+            //entity.HasMany(x => x.Roles)
+            //      .WithMany()
+            //      .UsingEntity<UserRole>(j =>
+            //              j.HasOne(x => x.Role)
+            //               .WithMany()
+            //               .HasForeignKey(x => x.RoleId),
+
+            //              j => j.HasOne(x => x.User)
+            //                    .WithMany()
+            //                    .HasForeignKey(x => x.UserId)
+            //      );
+
+            //entity.HasMany(x => x.Permissions)
+            //      .WithMany()
+            //      .UsingEntity<UserPermission>(
+            //                j => j.HasOne(x => x.Permission)
+            //                      .WithMany()
+            //                      .HasForeignKey(x => x.PermissionId),
+            //                j => j.HasOne(x => x.User)
+            //                      .WithMany()
+            //                      .HasForeignKey(x => x.UserId)
+            //    );
+
+            entity.HasOne(x => x.Company)
+                  .WithMany()
+                  .HasForeignKey(x => x.CompaniaId);
+
+            entity.Navigation(x => x.Company)
+                  .AutoInclude();
+
+            entity.Navigation(x => x.Companies)
+                  .AutoInclude();
+
+            entity.Navigation(x => x.Roles)
+                  .AutoInclude();
+
+            entity.Navigation(x => x.Permissions)
+                  .AutoInclude();
         });
 
         modelBuilder.Entity<UserCompania>(entity =>
@@ -1451,29 +1686,85 @@ public partial class PGIContext : DbContext
 
             entity.ToTable("usercompania");
 
-            entity.Property(e => e.Id).HasMaxLength(36);
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
             entity.Property(e => e.CompaniaId).HasColumnName("companiaId");
+            entity.Property(e => e.UserId).HasColumnName("UserId");
             entity.Property(e => e.Created)
                 .HasColumnType("datetime")
-                .HasColumnName("created");
+                .HasColumnName("created").HasValueGenerator<DateTimeValueGenerator>();
             entity.Property(e => e.ObjectType)
                 .HasDefaultValueSql("'50'")
                 .HasColumnName("objectType");
+
+            entity.HasOne(x => x.Company)
+                  .WithMany()
+                  .HasForeignKey(x => x.CompaniaId);
+
+            entity.HasOne(x => x.User)
+                  .WithMany()
+                  .HasForeignKey(x => x.UserId);
+        });
+
+        modelBuilder.Entity<UserDireccionInstitucional>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("userdireccioninstitucional");
+
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
+            entity.Property(e => e.DirecionInstitucionalId).HasColumnName("DirecionInstitucionalId");
+            entity.Property(e => e.Created)
+                .HasColumnType("datetime")
+                .HasColumnName("created").HasValueGenerator<DateTimeValueGenerator>();
+            entity.Property(e => e.ObjectType)
+                .HasDefaultValueSql("'50'")
+                .HasColumnName("objectType");
+
+            entity.HasOne(x => x.DireccionIntitucional)
+                  .WithMany()
+                  .HasForeignKey(x => x.DirecionInstitucionalId);
+
+            entity.HasOne(x => x.User)
+                  .WithMany()
+                  .HasForeignKey(x => x.UserId);
+        });
+
+        modelBuilder.Entity<UserSucursal>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("usersucursal");
+
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
+            entity.Property(e => e.SucursalId).HasColumnName("DirecionInstitucionalId");
+            entity.Property(e => e.Created)
+                .HasColumnType("datetime")
+                .HasColumnName("created").HasValueGenerator<DateTimeValueGenerator>();
+            entity.Property(e => e.ObjectType)
+                .HasDefaultValueSql("'50'")
+                .HasColumnName("objectType");
+
+            entity.HasOne(x => x.Sucursal)
+                  .WithMany()
+                  .HasForeignKey(x => x.SucursalId);
+
+            entity.HasOne(x => x.User)
+                  .WithMany()
+                  .HasForeignKey(x => x.UserId);
         });
 
         modelBuilder.Entity<UserPermission>(entity =>
         {
-            entity.HasKey(e => new { e.UserId, e.PermissionId })
-                .HasName("PRIMARY")
-                .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
+            entity.HasKey(e =>  e.Id)
+                .HasName("PRIMARY");
 
             entity.ToTable("userpermissions");
 
-            entity.HasIndex(e => e.CreatedBy, "CreatedBy");
+            //entity.HasIndex(e => e.CreatedBy, "CreatedBy");
 
-            entity.HasIndex(e => e.PermissionId, "PermissionId");
+            //entity.HasIndex(e => e.PermissionId, "PermissionId");
 
-            entity.HasIndex(e => e.UpdatedBy, "UpdatedBy");
+            //entity.HasIndex(e => e.UpdatedBy, "UpdatedBy");
 
             entity.Property(e => e.UserId).HasMaxLength(36);
             entity.Property(e => e.PermissionId).HasMaxLength(36);
@@ -1501,7 +1792,7 @@ public partial class PGIContext : DbContext
 
             entity.HasIndex(e => e.UserId, "UserId");
 
-            entity.Property(e => e.Id).HasMaxLength(36);
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
             entity.Property(e => e.AccessToken).HasMaxLength(512);
             entity.Property(e => e.Alg).HasMaxLength(100);
             entity.Property(e => e.CreatedAt).HasColumnType("datetime");
@@ -1526,7 +1817,7 @@ public partial class PGIContext : DbContext
 
             entity.ToTable("xactividades");
 
-            entity.Property(e => e.Id)
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd()
                 .HasMaxLength(36)
                 .HasColumnName("id");
             entity.Property(e => e.Actividad)
@@ -1594,7 +1885,7 @@ public partial class PGIContext : DbContext
 
             entity.ToTable("xpacc");
 
-            entity.Property(e => e.Id).HasMaxLength(36);
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
             entity.Property(e => e.Actividad).HasMaxLength(255);
             entity.Property(e => e.ActividadId).HasMaxLength(36);
             entity.Property(e => e.AreaId).HasMaxLength(36);
@@ -1622,7 +1913,7 @@ public partial class PGIContext : DbContext
 
             entity.ToTable("xproductos");
 
-            entity.Property(e => e.Id)
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd()
                 .HasMaxLength(36)
                 .HasColumnName("id");
             entity.Property(e => e.Actividad)
@@ -1719,7 +2010,7 @@ public partial class PGIContext : DbContext
 
             entity.ToTable("xxactividades");
 
-            entity.Property(e => e.Id)
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd()
                 .HasMaxLength(36)
                 .HasColumnName("id");
             entity.Property(e => e.Actividad)
@@ -1784,66 +2075,93 @@ public partial class PGIContext : DbContext
                 .HasColumnName("tipo");
         });
 
+
+        OnAuditModelCreating(modelBuilder);
+
         //OnModelCreatingPartial(modelBuilder);
     }
+    private static void OnAuditModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Log>(entity =>
+        {
+            entity.ToTable("Logs");
 
+            entity.HasKey(x => x.Id);
+
+            entity.HasIndex(e => e.CreatedBy);
+
+            entity.Property(e => e.CreatedBy)
+                .HasValueGenerator<UserSignValueGenerator>()
+                .ValueGeneratedOnAdd()
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+
+            entity.Property(e => e.Timestamp)
+                .HasValueGenerator<DateTimeValueGenerator>()
+                .ValueGeneratedOnAdd()
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+        });
+    }
+    private static void OnViewModelCreating(ModelBuilder modelBuilder)
+    {
+
+    }
     // partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 
-    private readonly List<Tuple<EntityEntry, EntityState>> trackedEntries = new();
+    //private readonly List<Tuple<EntityEntry, EntityState>> trackedEntries = new();
 
 
 
-    private void AppDBContext_SavedChanges(object sender, SavedChangesEventArgs e)
-    {
-        try
-        {
-            int trackedCount = trackedEntries.Count;
-            if (trackedCount == 0) return;
+    //private void AppDBContext_SavedChanges(object sender, SavedChangesEventArgs e)
+    //{
+    //    try
+    //    {
+    //        int trackedCount = trackedEntries.Count;
+    //        if (trackedCount == 0) return;
 
-            Logs.AddRange(trackedEntries.Select(x => new Log(JsonConvert.SerializeObject(x.Item1.Entity))
-            {
-                Action = Enum.GetName(x.Item2),
-                //IdDocumento = 
-                OldData = JsonConvert.SerializeObject(x.Item1.OriginalValues?.ToObject())
-            }));
+    //        Logs.AddRange(trackedEntries.Select(x => new Log(JsonConvert.SerializeObject(x.Item1.Entity))
+    //        {
+    //            Action = Enum.GetName(x.Item2),
+    //            //IdDocumento = 
+    //            OldData = JsonConvert.SerializeObject(x.Item1.OriginalValues?.ToObject())
+    //        }));
 
-            trackedEntries.Clear();
+    //        trackedEntries.Clear();
 
-            if (trackedCount > 0)
-                SaveChanges();
-        }
-        catch { }
-    }
+    //        if (trackedCount > 0)
+    //            SaveChanges();
+    //    }
+    //    catch { }
+    //}
 
-    private void AppDBContext_SavingChanges(object sender, SavingChangesEventArgs e)
-    {
-        GenerateOnUpdate();
+    //private void AppDBContext_SavingChanges(object sender, SavingChangesEventArgs e)
+    //{
+    //    GenerateOnUpdate();
 
-        ChangeTracker.Entries()
-            .Where(x => x.Entity is not Log && (x.State == EntityState.Added || x.State == EntityState.Deleted || x.State == EntityState.Modified))
-            .ToList()
-            .ForEach(entry => trackedEntries.Add(new(entry, entry.State)));
-    }
+    //    ChangeTracker.Entries()
+    //        .Where(x => x.Entity is not Log && (x.State == EntityState.Added || x.State == EntityState.Deleted || x.State == EntityState.Modified))
+    //        .ToList()
+    //        .ForEach(entry => trackedEntries.Add(new(entry, entry.State)));
+    //}
 
-    private void GenerateOnUpdate()
-    {
-        ChangeTracker.Entries().Where(x => x.State == EntityState.Modified)
-            .ToList()
-            .ForEach(entry =>
-            {
-                entry.Properties.Where(p =>
-                  (p.Metadata.ValueGenerated == ValueGenerated.OnUpdate ||
-                  p.Metadata.ValueGenerated == ValueGenerated.OnAddOrUpdate ||
-                  p.Metadata.ValueGenerated == ValueGenerated.OnUpdateSometimes) &&
-                  p.Metadata.GetValueGeneratorFactory() != null)
-                .ToList()
-                .ForEach(p =>
-                {
-                    p.CurrentValue = p.Metadata
-                                      .GetValueGeneratorFactory()
-                                      .Invoke(p.Metadata, entry.Metadata)
-                                      .Next(entry);
-                });
-            });
-    }
+    //private void GenerateOnUpdate()
+    //{
+    //    ChangeTracker.Entries().Where(x => x.State == EntityState.Modified)
+    //        .ToList()
+    //        .ForEach(entry =>
+    //        {
+    //            entry.Properties.Where(p =>
+    //              (p.Metadata.ValueGenerated == ValueGenerated.OnUpdate ||
+    //              p.Metadata.ValueGenerated == ValueGenerated.OnAddOrUpdate ||
+    //              p.Metadata.ValueGenerated == ValueGenerated.OnUpdateSometimes) &&
+    //              p.Metadata.GetValueGeneratorFactory() != null)
+    //            .ToList()
+    //            .ForEach(p =>
+    //            {
+    //                p.CurrentValue = p.Metadata
+    //                                  .GetValueGeneratorFactory()
+    //                                  .Invoke(p.Metadata, entry.Metadata)
+    //                                  .Next(entry);
+    //            });
+    //        });
+    //}
 }

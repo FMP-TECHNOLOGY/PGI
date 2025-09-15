@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace DataAccess.Entities;
 
@@ -7,9 +8,9 @@ public partial class UserCompania
 {
     public string? Id { get; set; } 
 
-    public string? CompaniaId { get; set; }
+    public string CompaniaId { get; set; }
 
-    public string? ValidUserId { get; set; }
+    public int ValidUserId { get; set; }
 
     public bool Active { get; set; }
 
@@ -17,5 +18,7 @@ public partial class UserCompania
 
     public DateTime Created { get; set; }
 
-    public int? ObjectType { get; set; }
+    public int? ObjectType { get; }
+    public User? User { get; set; }
+    public Compania? Company { get; set; }
 }

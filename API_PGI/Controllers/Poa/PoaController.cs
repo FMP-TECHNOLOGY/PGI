@@ -16,7 +16,7 @@ namespace API_PGI.Controllers.Poas
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [Route("[controller]")]
     [ApiController]
-    [Authorize]
+    [JwtAuthorize]
     public class PoaController : ControllerBase
     {
         private readonly IPoa _Poa;
@@ -86,12 +86,12 @@ namespace API_PGI.Controllers.Poas
                 if (gridifyQuery.PageSize == 0) gridifyQuery.PageSize = int.MaxValue;
                 if (gridifyQuery.Page == 0) gridifyQuery.Page = 1;
 
-                var items = _Poa.GetPaginated(gridifyQuery);
+                var items = _Poa.FindAll(gridifyQuery);
                 return Ok(new ResponseModel()
                 {
 
                     TotalCount = items.Count,
-                    Result = items.Data,
+                    Result = items,
                 });
                 //  }
             }

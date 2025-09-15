@@ -16,7 +16,7 @@ namespace API_PGI.Controllers.CuentaObjetals
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [Route("[controller]")]
     [ApiController]
-    [Authorize]
+    [JwtAuthorize]
     public class CuentaObjetalController : ControllerBase
     {
         private readonly ICuentaObjetal _CuentaObjetal;
@@ -86,12 +86,12 @@ namespace API_PGI.Controllers.CuentaObjetals
                 if (gridifyQuery.PageSize == 0) gridifyQuery.PageSize = int.MaxValue;
                 if (gridifyQuery.Page == 0) gridifyQuery.Page = 1;
 
-                var items = _CuentaObjetal.GetPaginated(gridifyQuery);
+                var items = _CuentaObjetal.FindAll(gridifyQuery);
                 return Ok(new ResponseModel()
                 {
 
                     TotalCount = items.Count,
-                    Result = items.Data,
+                    Result = items,
                 });
                 //  }
             }

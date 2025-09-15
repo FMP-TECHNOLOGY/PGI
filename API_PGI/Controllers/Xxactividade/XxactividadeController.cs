@@ -16,7 +16,7 @@ namespace API_PGI.Controllers.Xxactividades
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [Route("[controller]")]
     [ApiController]
-    [Authorize]
+    [JwtAuthorize]
     public class XxactividadeController : ControllerBase
     {
         private readonly IXxactividade _Xxactividade;
@@ -86,12 +86,12 @@ namespace API_PGI.Controllers.Xxactividades
                 if (gridifyQuery.PageSize == 0) gridifyQuery.PageSize = int.MaxValue;
                 if (gridifyQuery.Page == 0) gridifyQuery.Page = 1;
 
-                var items = _Xxactividade.GetPaginated(gridifyQuery);
+                var items = _Xxactividade.FindAll(gridifyQuery);
                 return Ok(new ResponseModel()
                 {
 
                     TotalCount = items.Count,
-                    Result = items.Data,
+                    Result = items,
                 });
                 //  }
             }

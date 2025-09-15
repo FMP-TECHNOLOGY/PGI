@@ -27,7 +27,7 @@ namespace Utils.Helpers
             }
             catch (Exception e)
             {
-                new LogData().Error(e);
+                LogData.Error(e);
             }
 
             return null;
@@ -49,7 +49,7 @@ namespace Utils.Helpers
             }
             catch (Exception e)
             {
-                new LogData().Error(e);
+                LogData.Error(e);
             }
             return null;
         }
@@ -95,7 +95,7 @@ namespace Utils.Helpers
             }
             catch (Exception e)
             {
-                new LogData().Error(e);
+                LogData.Error(e);
             }
 
             return null;
@@ -116,7 +116,7 @@ namespace Utils.Helpers
             }
             catch (Exception e)
             {
-                new LogData().Error(e);
+                LogData.Error(e);
             }
 
             return null;

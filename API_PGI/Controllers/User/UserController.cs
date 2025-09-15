@@ -16,7 +16,7 @@ namespace API_PGI.Controllers.Users
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [Route("[controller]")]
     [ApiController]
-    [Authorize]
+    [JwtAuthorize]
     public class UserController : ControllerBase
     {
         private readonly IUser _User;
@@ -86,12 +86,12 @@ namespace API_PGI.Controllers.Users
                 if (gridifyQuery.PageSize == 0) gridifyQuery.PageSize = int.MaxValue;
                 if (gridifyQuery.Page == 0) gridifyQuery.Page = 1;
 
-                var items = _User.GetPaginated(gridifyQuery);
+                var items = _User.FindAll(gridifyQuery);
                 return Ok(new ResponseModel()
                 {
 
                     TotalCount = items.Count,
-                    Result = items.Data,
+                    Result = items,
                 });
                 //  }
             }
@@ -112,7 +112,7 @@ namespace API_PGI.Controllers.Users
         {
             try
             {
-                var valor = _User.Find(x => x.Id == id);
+                var valor = _User.Find(x => x.Id.ToString() == id);
 
                 return Ok(new ResponseModel()
                 {

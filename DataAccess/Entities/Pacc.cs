@@ -59,9 +59,12 @@ public partial class Pacc
 
     public bool Active { get; set; }
 
-    public int UserId { get; set; }
 
     public DateTime Created { get; set; }
 
-    public int? ObjectType { get; set; }
+    public int? ObjectType { get; }
+    public string?UserId { get; set; }
+    public string? DireccionId { get; set; }
+    public string? SucursalId { get; set; }
+    public string? DepartamentoId { get; set; }
 }

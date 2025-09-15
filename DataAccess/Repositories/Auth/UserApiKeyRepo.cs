@@ -36,8 +36,8 @@
 //            query ??= new();
 
 //            return (from t0 in EntityDbSet
-//                    where (authManager.CurrentUser.Su && t0.CompanyId == authManager.CurrentCompany.Id)
-//                    || (t0.UserId == authManager.CurrentUser.Id && t0.CompanyId == authManager.CurrentCompany.Id)
+//                    where (authManager.CurrentUser.Su && t0.CompaniaId == authManager.CurrentCompany.Id)
+//                    || (t0.UserId == authManager.CurrentUser.Id && t0.CompaniaId == authManager.CurrentCompany.Id)
 //                    orderby t0.CreatedAt descending
 //                    select t0
 //                    )
@@ -51,9 +51,9 @@
 //            var user = _usersRepo.FindValidById(entity.UserId)
 //                ?throw new BadRequestException("Invalid user");
 
-//            var company = user.Company?.Id == entity.CompanyId
+//            var company = user.Company?.Id == entity.CompaniaId
 //                ? user.Company
-//                : user.Companies.SingleOrDefault(x => x.Id == entity.CompanyId)
+//                : user.Companies.SingleOrDefault(x => x.Id == entity.CompaniaId)
 //                ?throw new BadRequestException("Invalid company");
 
 //            if (entity.AllowedIPs is not null

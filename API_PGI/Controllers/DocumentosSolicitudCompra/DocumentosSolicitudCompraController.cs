@@ -16,7 +16,7 @@ namespace API_PGI.Controllers.DocumentosSolicitudCompras
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [Route("[controller]")]
     [ApiController]
-    [Authorize]
+    [JwtAuthorize]
     public class DocumentosSolicitudCompraController : ControllerBase
     {
         private readonly IDocumentosSolicitudCompra _DocumentosSolicitudCompra;
@@ -86,12 +86,12 @@ namespace API_PGI.Controllers.DocumentosSolicitudCompras
                 if (gridifyQuery.PageSize == 0) gridifyQuery.PageSize = int.MaxValue;
                 if (gridifyQuery.Page == 0) gridifyQuery.Page = 1;
 
-                var items = _DocumentosSolicitudCompra.GetPaginated(gridifyQuery);
+                var items = _DocumentosSolicitudCompra.FindAll(gridifyQuery);
                 return Ok(new ResponseModel()
                 {
 
                     TotalCount = items.Count,
-                    Result = items.Data,
+                    Result = items,
                 });
                 //  }
             }

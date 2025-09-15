@@ -1,193 +1,196 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Primitives;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.Json.Serialization;
+using System.Text.Json;
+using System.Text;
 using System.Threading.Tasks;
+using Utils.Extensions;
 
 namespace Utils.Helpers
 {
-    public class LogData
+    public static class LogData
     {
-        private static readonly string? rootDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-        private static readonly string? subDir = "Log";
-        private static readonly string? pathSeparator = Path.DirectorySeparatorChar.ToString();
-        private static readonly string? path = $@"{rootDir}{pathSeparator}{subDir}";
-        private readonly string? fileName;
-        public readonly string? logPath;
+        private static readonly string rootDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? "";
+        private static readonly string subDir = "Log";
+        public static readonly string path = Path.Combine(rootDir, subDir);
+        private static readonly object lockObj = new();
 
-        private static readonly object lckObject = new();
+        private static string GetLogFullPath() => Path.Combine(path, $"log-{DateTime.Now:yyyyMMdd}.txt");
 
-        public LogData()
+        public static async Task LogRequest(HttpContext context, string? requestId = null)
         {
-            fileName = $"log-{DateTime.Now:yyyyMMdd}.txt";
-            logPath = $@"{path}{pathSeparator}{fileName}";
-        }
+            try
+            {
+                var request = context.Request;
+                var response = context.Response;
+                var headers = request.Headers;
 
+                var requestLang = headers.TryGetValue("Accept-Language", out StringValues values)
+                    ? values.SingleOrDefault()?
+                            .Replace("_", "-")?
+                            .Split("-", 2, StringSplitOptions.RemoveEmptyEntries)?
+                            .FirstOrDefault()?
+                .ToLower()
+                    : "en";
 
-        public void Debug(string? message)
-        {
-            try
-            {
-                Write(MethodBase.GetCurrentMethod().Name, message);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
-        }
-        public void Debug(Exception e)
-        {
-            try
-            {
-                Write(MethodBase.GetCurrentMethod().Name, e);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
-        }
-        public void Debug(string? message, Exception e)
-        {
-            try
-            {
-                Write(MethodBase.GetCurrentMethod().Name, message, e);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
-        }
+                // Getting info about request to build the log file. 
+                var log = new StringBuilder();
+                log.AppendLine();
+                log.AppendLine($"RequestId : {requestId}");
+                log.AppendLine($"RemoteIpAddress : {context.Connection.RemoteIpAddress}");
+                log.AppendLine($"Path : {request.Path.Value}");
+                log.AppendLine($"Method : {request.Method}");
+                log.AppendLine($"Scheme : {request.Scheme}");
+                log.AppendLine($"QueryString : {request.QueryString.Value}");
+                log.AppendLine($"ContentType : {request.ContentType}");
 
-        public void Info(string? message)
-        {
-            try
-            {
-                Write(MethodBase.GetCurrentMethod().Name, message);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
-        }
-        public void Info(Exception e)
-        {
-            try
-            {
-                Write(MethodBase.GetCurrentMethod().Name, e);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
-        }
-        public void Info(string? message, Exception e)
-        {
-            try
-            {
-                Write(MethodBase.GetCurrentMethod().Name, message, e);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
-        }
+                log.AppendLine("====================== HEADERS ======================");
+                foreach (var item in headers)
+                    log.AppendLine($"{item.Key} : {item.Value}");
+                log.AppendLine("==================== END HEADERS ====================");
 
-        public void Warning(string? message)
-        {
-            try
-            {
-                Write(MethodBase.GetCurrentMethod().Name, message);
+                if (request.HasFormContentType && request.Form != null)
+                {
+                    log.AppendLine();
+                    log.AppendLine("===================== FORM =======================");
+
+                    var formData = await request.ReadFormAsync();
+
+                    foreach (var item in formData)
+                        log.AppendLine($"{item.Key} : {item.Value}");
+
+                    if (request.Form.Files is not null && request.Form.Files.Count > 0)
+                    {
+                        foreach (var file in request.Form.Files)
+                        {
+                            log.AppendLine();
+                            log.AppendLine("===================== FILE =======================");
+
+                            log.AppendLine($"ContentType : {file.ContentType}")
+                               .AppendLine($"FormName : {file.Name}")
+                               .AppendLine($"FileName : {file.FileName}")
+                               .AppendLine($"Length : {file.Length}");
+
+                            log.AppendLine("================= FILE CONTENT ===================");
+                            TryLogFile(file, log);
+                            log.AppendLine("================= FILE CONTENT ===================");
+
+                            log.AppendLine("==================== END FILE ====================");
+                        }
+                    }
+
+                    log.AppendLine("==================== END FORM ====================");
+                }
+
+                var bodyIsReadble = (request.ContentType ?? "").Contains("json", StringComparison.CurrentCultureIgnoreCase)
+                    || (request.ContentType ?? "").Contains("xml", StringComparison.CurrentCultureIgnoreCase);
+
+                if (bodyIsReadble)
+                {
+                    log.AppendLine();
+                    log.AppendLine("===================== BODY =======================");
+
+                    log.AppendLine(await ReadBodyAsStringAsync(request));
+
+                    log.AppendLine("==================== END BODY ====================");
+                }
+
+                Info(log.ToString());
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                Console.WriteLine(ex);
-            }
-        }
-        public void Warning(Exception e)
-        {
-            try
-            {
-                Write(MethodBase.GetCurrentMethod().Name, e);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
-        }
-        public void Warning(string? message, Exception e)
-        {
-            try
-            {
-                Write(MethodBase.GetCurrentMethod().Name, message, e);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
+                Error(e);
             }
         }
 
-        public void Error(string? message)
+        private static void TryLogFile(IFormFile file, StringBuilder log)
         {
+            Stream? reader = null;
             try
             {
-                Write(MethodBase.GetCurrentMethod().Name, message);
+                reader = file.OpenReadStream();
+
+                //if (Path.GetExtension(file.FileName).Contains("xml", StringComparison.InvariantCultureIgnoreCase))
+                //    log.AppendLine(reader.ToXmlString(false));
+
+                if (Path.GetExtension(file.FileName).Contains("json", StringComparison.InvariantCultureIgnoreCase))
+                    log.AppendLine(reader.ToJsonString());
+                else
+                    log.AppendLine($"{file.FileName}: invalid content-type || {file.ContentType}");
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
+                log.AppendLine($"ERROR: {ex}");
             }
-        }
-        public void Error(Exception e)
-        {
-            try
+            finally
             {
-                Write(MethodBase.GetCurrentMethod().Name, e);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
-        }
-        public void Error(string? message, Exception e)
-        {
-            try
-            {
-                Write(MethodBase.GetCurrentMethod().Name, message, e);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
+                reader?.Seek(0, SeekOrigin.Begin);
             }
         }
 
-        public void Critical(string? message)
+        private static async Task<string> ReadBodyAsStringAsync(HttpRequest request)
         {
             try
             {
-                Write(MethodBase.GetCurrentMethod().Name, message);
+                var bodyString = string.Empty;
+
+                var reader = new StreamReader(request.Body, Encoding.UTF8);
+
+                ResetStream(reader);
+
+                var body = await reader.ReadToEndAsync();
+
+                ResetStream(reader);
+
+                return body;
+            }
+            catch (Exception ex)
+            {
+                return ex.InnerException?.Message ?? ex.Message;
+            }
+        }
+
+        private static void ResetStream(StreamReader reader)
+        {
+            if (reader.BaseStream.CanSeek && reader.EndOfStream)
+            {
+                reader.BaseStream.Seek(0, SeekOrigin.Begin);
+                reader.DiscardBufferedData();
+            }
+        }
+
+        public static void Debug(string message)
+        {
+            try
+            {
+                Write(MethodBase.GetCurrentMethod()?.Name, message);
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
             }
         }
-        public void Critical(Exception e)
+        public static void Debug(Exception e)
         {
             try
             {
-                Write(MethodBase.GetCurrentMethod().Name, e);
+                Write(MethodBase.GetCurrentMethod()?.Name, e);
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
             }
         }
-        public void Critical(string? message, Exception e)
+        public static void Debug(string message, Exception e)
         {
             try
             {
-                Write(MethodBase.GetCurrentMethod().Name, message, e);
+                Write(MethodBase.GetCurrentMethod()?.Name, message, e);
             }
             catch (Exception ex)
             {
@@ -195,44 +198,220 @@ namespace Utils.Helpers
             }
         }
 
-        private void Write(string? type, string? message)
+        public static void Info(string message)
         {
+            try
+            {
+                Write(MethodBase.GetCurrentMethod()?.Name, message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+        }
+        public static void Info(Exception e)
+        {
+            try
+            {
+                Write(MethodBase.GetCurrentMethod()?.Name, e);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+        }
+        public static void Info(string message, Exception e)
+        {
+            try
+            {
+                Write(MethodBase.GetCurrentMethod()?.Name, message, e);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+        }
 
-            lock (lckObject)
+        public static void Warning(string message)
+        {
+            try
+            {
+                Write(MethodBase.GetCurrentMethod()?.Name, message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+        }
+        public static void Warning(Exception e)
+        {
+            try
+            {
+                Write(MethodBase.GetCurrentMethod()?.Name, e);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+        }
+        public static void Warning(string message, Exception e)
+        {
+            try
+            {
+                Write(MethodBase.GetCurrentMethod()?.Name, message, e);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+        }
+
+        public static void Error(string message)
+        {
+            try
+            {
+                Write(MethodBase.GetCurrentMethod()?.Name, message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+        }
+        public static void Error(Exception e)
+        {
+            try
+            {
+                Write(MethodBase.GetCurrentMethod()?.Name, e);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+        }
+        public static void Error(string message, Exception e)
+        {
+            try
+            {
+                Write(MethodBase.GetCurrentMethod()?.Name, message, e);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+        }
+
+        public static void Critical(string message)
+        {
+            try
+            {
+                Write(MethodBase.GetCurrentMethod()?.Name, message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+        }
+        public static void Critical(Exception e)
+        {
+            try
+            {
+                Write(MethodBase.GetCurrentMethod()?.Name, e);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+        }
+        public static void Critical(string message, Exception e)
+        {
+            try
+            {
+                Write(MethodBase.GetCurrentMethod()?.Name, message, e);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+        }
+
+        public static void Custom(string content, string? pathName = null)
+        {
+            lock (lockObj)
+            {
+                pathName ??= GetLogFullPath();
+
+                var dir = Path.GetDirectoryName(pathName)
+                    ?? throw new IOException($"Invalid pathName {pathName}");
+
+                if (!Directory.Exists(dir))
+                    Directory.CreateDirectory(dir);
+
+                var builder = new StringBuilder()
+                         .AppendLine($"[CUSTOM] : {DateTime.Now} :")
+                         .AppendLine("===================== LOG =======================")
+                         .AppendLine(content)
+                         .AppendLine("=================== END LOG =====================")
+                         .AppendLine();
+
+                File.AppendAllText(pathName, builder.ToString());
+            }
+        }
+
+        private static void Write(string? type, string message)
+        {
+            lock (lockObj)
             {
                 if (!Directory.Exists(path))
                     Directory.CreateDirectory(path);
 
-                string?[] log = { $"[{type.ToUpper()}] : {DateTime.Now} : {message}" };
-                File.AppendAllLines(logPath, log);
+                string[] log = { $"[{type?.ToUpper()}] : {DateTime.Now} : {message}" };
+                File.AppendAllLines(GetLogFullPath(), log);
             }
-
         }
-        private void Write(string? type, Exception e)
-        {
+        private static void Write(string? type, Exception e)
+            => Write(type, "", e);
 
-            lock (lckObject)
+        private static void Write(string? type, string message, Exception e)
+        {
+            lock (lockObj)
             {
                 if (!Directory.Exists(path))
                     Directory.CreateDirectory(path);
 
-                string?[] log = { $"[{type.ToUpper()}] : {DateTime.Now} : {e}\nINNER EXCEPTION\n{e.InnerException}" };
-                File.AppendAllLines(logPath, log);
+                var builder = new StringBuilder()
+                          .AppendLine($"[{type?.ToUpper()}] : {DateTime.Now} :")
+                          .AppendLine(message)
+                          .AppendLine("===================== EXCEPTION =======================")
+                          .AppendLine(e.ToString())
+                          .AppendLine("===================== END EXCEPTION =======================");
+
+                try
+                {
+                    builder.AppendLine("===================== JEXCEPTION =======================")
+                           .AppendLine(JsonSerializer.Serialize(e, new JsonSerializerOptions()
+                           {
+                               IgnoreReadOnlyFields = true,
+                               IgnoreReadOnlyProperties = true,
+                               ReferenceHandler = ReferenceHandler.IgnoreCycles
+                           }))
+                           .AppendLine("===================== END JEXCEPTION =======================");
+                }
+                catch { }
+
+                var innerException = e.InnerException;
+
+                do
+                {
+                    builder.AppendLine("===================== INNER EXCEPTION =======================")
+                          .AppendLine(e.InnerException?.ToString())
+                          .AppendLine("===================== END INNER EXCEPTION =======================");
+
+                    innerException = innerException?.InnerException;
+
+                } while (innerException != null);
+
+                File.AppendAllText(GetLogFullPath(), builder.ToString());
             }
-
-        }
-        private void Write(string? type, string? message, Exception e)
-        {
-
-            lock (lckObject)
-            {
-                if (!Directory.Exists(path))
-                    Directory.CreateDirectory(path);
-
-                string?[] log = { $"[{type.ToUpper()}] : {DateTime.Now} : {message}\n{e}" };
-                File.AppendAllLines(logPath, log);
-            }
-
         }
     }
 }

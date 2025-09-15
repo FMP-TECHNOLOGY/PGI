@@ -15,7 +15,7 @@ public partial class ProductoIntegracion
 
     public bool Active { get; set; }
 
-    public int UserId { get; set; }
+    public string?UserId { get; set; }
 
     public DateTime Created { get; set; }
 
@@ -27,5 +27,5 @@ public partial class ProductoIntegracion
 
     public string?InventoryUoMentry { get; set; }
 
-    public int? ObjectType { get; set; }
+    public int? ObjectType { get; }
 }

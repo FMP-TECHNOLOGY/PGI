@@ -16,7 +16,7 @@ namespace API_PGI.Controllers.Credenciales
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [Route("[controller]")]
     [ApiController]
-    [Authorize]
+    [JwtAuthorize]
     public class CredencialeController : ControllerBase
     {
         private readonly ICredenciale _Credenciale;
@@ -86,12 +86,12 @@ namespace API_PGI.Controllers.Credenciales
                 if (gridifyQuery.PageSize == 0) gridifyQuery.PageSize = int.MaxValue;
                 if (gridifyQuery.Page == 0) gridifyQuery.Page = 1;
 
-                var items = _Credenciale.GetPaginated(gridifyQuery);
+                var items = _Credenciale.FindAll(gridifyQuery);
                 return Ok(new ResponseModel()
                 {
 
                     TotalCount = items.Count,
-                    Result = items.Data,
+                    Result = items,
                 });
                 //  }
             }

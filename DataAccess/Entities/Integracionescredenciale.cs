@@ -15,11 +15,11 @@ public partial class IntegracionesCredenciale
 
     public string? Url { get; set; } 
 
-    public int Userid { get; set; }
+    public string?UserId { get; set; }
 
     public DateTime Created { get; set; }
 
     public DateTime? UltimaEjecucion { get; set; }
 
-    public int? ObjectType { get; set; }
+    public int? ObjectType { get; }
 }

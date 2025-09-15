@@ -15,5 +15,6 @@ public partial class Departamento
 
     public string? UserId { get; set; } 
 
-    public int? ObjectType { get; set; }
+    public int? ObjectType { get;  }
+    public DateTime? Created { get; set; }
 }

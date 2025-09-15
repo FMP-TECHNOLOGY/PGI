@@ -7,6 +7,23 @@ using System.Threading.Tasks;
 
 namespace Model
 {
+    public class ResponseModel<T> where T : class
+    {
+        public int Rows { get; set; }
+        public int PageNumber { get; set; }
+        public int TotalCount { get; set; }
+        public bool Error { get; set; }
+        public int Code { get; set; }
+        public string? Message { get; set; }
+        public T? Result { get; set; }
+
+        public ResponseModel() { }
+
+        public ResponseModel(T? result)
+        {
+            Result = result;
+        }
+    }
     public class ResponseModel
     {
         public int Rows { get; set; }
@@ -14,9 +31,14 @@ namespace Model
         public int TotalCount { get; set; }
         public bool Error { get; set; }
         public int Code { get; set; }
-        public string?Message { get; set; }
-        public object Result { get; set; }
+        public string? Message { get; set; }
+        public object? Result { get; set; }
+        public ResponseModel() { }
 
+        public ResponseModel(object? result)
+        {
+            Result = result;
+        }
         public static ResponseModel GetErrorResponse()
         {
             return new ResponseModel()

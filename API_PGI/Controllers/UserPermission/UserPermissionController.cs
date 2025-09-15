@@ -16,7 +16,7 @@ namespace API_PGI.Controllers.UserPermissions
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [Route("[controller]")]
     [ApiController]
-    [Authorize]
+    [JwtAuthorize]
     public class UserPermissionController : ControllerBase
     {
         private readonly IUserPermission _UserPermission;
@@ -81,17 +81,17 @@ namespace API_PGI.Controllers.UserPermissions
             {
                 var builder = new QueryBuilder<UserPermission>()
                              .AddQuery(gridifyQuery)
-                             .AddCondition($"{nameof(UserPermission.CompaniaId)}={_Auth.CurrentUser?.CompaniaId}")
+                             //.AddCondition($"{nameof(UserPermission.CompaniaId)}={_Auth.CurrentUser?.CompaniaId}")
                 ;
                 if (gridifyQuery.PageSize == 0) gridifyQuery.PageSize = int.MaxValue;
                 if (gridifyQuery.Page == 0) gridifyQuery.Page = 1;
 
-                var items = _UserPermission.GetPaginated(gridifyQuery);
+                var items = _UserPermission.FindAll(gridifyQuery);
                 return Ok(new ResponseModel()
                 {
 
                     TotalCount = items.Count,
-                    Result = items.Data,
+                    Result = items,
                 });
                 //  }
             }

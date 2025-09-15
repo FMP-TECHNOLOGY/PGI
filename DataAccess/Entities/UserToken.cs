@@ -7,7 +7,7 @@ public partial class UserToken
 {
     public string Id { get; set; } 
 
-    public string? UserId { get; set; } 
+    public string UserId { get; set; } 
 
     public string? AccessToken { get; set; } 
 
@@ -33,6 +33,6 @@ public partial class UserToken
 
     public string?UpdatedBy { get; set; }
 
-    public Guid? CompaniaId { get; set; }
-    public int? ObjectType { get; set; }
+    //public Guid? CompaniaId { get; set; }
+    public int? ObjectType { get; }
 }

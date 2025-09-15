@@ -3,7 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using DataAccess.Entities;
 using DataAccess;
-using Microsoft.IdentityModel.SecurityTokenService;
+using Common.Exceptions;
+//using Microsoft.IdentityModel.SecurityTokenService;
 
 namespace PGI.DataAccess.Repositories.Auth
 {
@@ -42,9 +43,8 @@ namespace PGI.DataAccess.Repositories.Auth
             {
                 PermissionId = permissionId,
                 UserId = user.Id,
-                //Permission = permission,
-                
-                //User = user,
+                Permission = permission,                
+                User = user,
             });
         }
 

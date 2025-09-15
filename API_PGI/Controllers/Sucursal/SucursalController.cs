@@ -16,7 +16,7 @@ namespace API_PGI.Controllers.Sucursals
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [Route("[controller]")]
     [ApiController]
-    [Authorize]
+    [JwtAuthorize]
     public class SucursalController : ControllerBase
     {
         private readonly ISucursal _Sucursal;
@@ -86,12 +86,12 @@ namespace API_PGI.Controllers.Sucursals
                 if (gridifyQuery.PageSize == 0) gridifyQuery.PageSize = int.MaxValue;
                 if (gridifyQuery.Page == 0) gridifyQuery.Page = 1;
 
-                var items = _Sucursal.GetPaginated(gridifyQuery);
+                var items = _Sucursal.FindAll(gridifyQuery);
                 return Ok(new ResponseModel()
                 {
 
                     TotalCount = items.Count,
-                    Result = items.Data,
+                    Result = items,
                 });
                 //  }
             }

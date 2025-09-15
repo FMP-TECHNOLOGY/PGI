@@ -33,7 +33,7 @@ public partial class Proyecto
 
     public bool? Aprobado { get; set; }
 
-    public int UserId { get; set; }
+    public string?UserId { get; set; }
 
     public DateTime Created { get; set; }
 
@@ -43,5 +43,5 @@ public partial class Proyecto
 
     public string? Dimension3 { get; set; } 
 
-    public int? ObjectType { get; set; }
+    public int? ObjectType { get; }
 }

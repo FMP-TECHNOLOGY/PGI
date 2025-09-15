@@ -8,7 +8,7 @@ public partial class UserPermission
     public string? Id { get; set; }
 
     public string? UserId { get; set; }
-    public Guid? CompaniaId { get; set; }
+    //public string? CompaniaId { get; set; }
 
     public string? PermissionId { get; set; } 
 
@@ -22,5 +22,8 @@ public partial class UserPermission
 
     public string?UpdatedBy { get; set; }
 
-    public int? ObjectType { get; set; }
+    public int? ObjectType { get; }
+    public required Permission Permission { get; set; }
+    public required User User { get; set; }
+
 }

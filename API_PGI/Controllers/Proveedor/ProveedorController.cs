@@ -16,7 +16,7 @@ namespace API_PGI.Controllers.Proveedors
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [Route("[controller]")]
     [ApiController]
-    [Authorize]
+    [JwtAuthorize]
     public class ProveedorController : ControllerBase
     {
         private readonly IProveedor _Proveedor;
@@ -86,12 +86,12 @@ namespace API_PGI.Controllers.Proveedors
                 if (gridifyQuery.PageSize == 0) gridifyQuery.PageSize = int.MaxValue;
                 if (gridifyQuery.Page == 0) gridifyQuery.Page = 1;
 
-                var items = _Proveedor.GetPaginated(gridifyQuery);
+                var items = _Proveedor.FindAll(gridifyQuery);
                 return Ok(new ResponseModel()
                 {
 
                     TotalCount = items.Count,
-                    Result = items.Data,
+                    Result = items,
                 });
                 //  }
             }

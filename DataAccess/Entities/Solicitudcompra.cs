@@ -13,5 +13,5 @@ public partial class SolicitudCompra
 
     public string? Codigo { get; set; } 
 
-    public int? ObjectType { get; set; }
+    public int? ObjectType { get; }
 }

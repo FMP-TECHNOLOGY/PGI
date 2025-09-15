@@ -25,5 +25,5 @@ public partial class ProfitCenter
 
     public string?Ucodarfun { get; set; }
 
-    public int? ObjectType { get; set; }
+    public int? ObjectType { get; }
 }

@@ -17,5 +17,5 @@ public partial class IntegracionLog
 
     public DateTime Created { get; set; }
 
-    public int? ObjectType { get; set; }
+    public int? ObjectType { get; }
 }

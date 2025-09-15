@@ -16,7 +16,7 @@ namespace API_PGI.Controllers.Indicadores
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [Route("[controller]")]
     [ApiController]
-    [Authorize]
+    [JwtAuthorize]
     public class IndicadoreController : ControllerBase
     {
         private readonly IIndicadore _Indicadore;
@@ -86,12 +86,12 @@ namespace API_PGI.Controllers.Indicadores
                 if (gridifyQuery.PageSize == 0) gridifyQuery.PageSize = int.MaxValue;
                 if (gridifyQuery.Page == 0) gridifyQuery.Page = 1;
 
-                var items = _Indicadore.GetPaginated(gridifyQuery);
+                var items = _Indicadore.FindAll(gridifyQuery);
                 return Ok(new ResponseModel()
                 {
 
                     TotalCount = items.Count,
-                    Result = items.Data,
+                    Result = items,
                 });
                 //  }
             }

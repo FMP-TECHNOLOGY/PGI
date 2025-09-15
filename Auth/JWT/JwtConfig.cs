@@ -1,4 +1,4 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿//using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,13 +12,13 @@ namespace Auth.JWT
         public string? Secret { get; set; }
         public string? Issuer { get; set; }
 
-        public TokenValidationParameters Parameters => new()
+        public Microsoft.IdentityModel.Tokens.TokenValidationParameters Parameters => new()
         {
             ValidateIssuerSigningKey = true,
             ValidateIssuer = true,
             ValidateAudience = false,
             ValidateLifetime = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Secret)),
+            IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(Encoding.ASCII.GetBytes(Secret)),
             ValidIssuer = Issuer,
             ClockSkew = TimeSpan.Zero,
         };

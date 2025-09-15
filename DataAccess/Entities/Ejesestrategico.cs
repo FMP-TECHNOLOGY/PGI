@@ -19,9 +19,9 @@ public partial class EjesEstrategico
 
     public bool Active { get; set; }
 
-    public int UserId { get; set; }
+    public string?UserId { get; set; }
 
     public DateTime Created { get; set; }
 
-    public int? ObjectType { get; set; }
+    public int? ObjectType { get; }
 }

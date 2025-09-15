@@ -16,7 +16,7 @@ namespace API_PGI.Controllers.Companias
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [Route("[controller]")]
     [ApiController]
-    [Authorize]
+    [JwtAuthorize]
     public class CompaniaController : ControllerBase
     {
         private readonly ICompania _Compania;
@@ -86,12 +86,12 @@ namespace API_PGI.Controllers.Companias
                 if (gridifyQuery.PageSize == 0) gridifyQuery.PageSize = int.MaxValue;
                 if (gridifyQuery.Page == 0) gridifyQuery.Page = 1;
 
-                var items = _Compania.GetPaginated(gridifyQuery);
+                var items = _Compania.FindAll(gridifyQuery);
                 return Ok(new ResponseModel()
                 {
 
                     TotalCount = items.Count,
-                    Result = items.Data,
+                    Result = items,
                 });
                 //  }
             }
@@ -112,7 +112,7 @@ namespace API_PGI.Controllers.Companias
         {
             try
             {
-                var valor = _Compania.Find(x => x.Id == id);
+                var valor = _Compania.Find(x => x.Id.ToString() == id);
 
                 return Ok(new ResponseModel()
                 {

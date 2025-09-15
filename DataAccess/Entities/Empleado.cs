@@ -51,7 +51,7 @@ public partial class Empleado
 
     public string?DescripcionNomina { get; set; }
 
-    public int? CompaniaId { get; set; }
+    public string? CompaniaId { get; set; }
 
-    public int? ObjectType { get; set; }
+    public int? ObjectType { get; }
 }

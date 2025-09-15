@@ -16,7 +16,7 @@ namespace API_PGI.Controllers.Proyectos
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [Route("[controller]")]
     [ApiController]
-    [Authorize]
+    [JwtAuthorize]
     public class ProyectoController : ControllerBase
     {
         private readonly IProyecto _Proyecto;
@@ -86,12 +86,12 @@ namespace API_PGI.Controllers.Proyectos
                 if (gridifyQuery.PageSize == 0) gridifyQuery.PageSize = int.MaxValue;
                 if (gridifyQuery.Page == 0) gridifyQuery.Page = 1;
 
-                var items = _Proyecto.GetPaginated(gridifyQuery);
+                var items = _Proyecto.FindAll(gridifyQuery);
                 return Ok(new ResponseModel()
                 {
 
                     TotalCount = items.Count,
-                    Result = items.Data,
+                    Result = items,
                 });
                 //  }
             }

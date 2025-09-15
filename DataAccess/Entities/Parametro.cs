@@ -15,12 +15,12 @@ public partial class Parametro
 
     public bool Active { get; set; }
 
-    public int Userid { get; set; }
+    public string? UserId { get; set; }
 
     public DateTime Created { get; set; }
 
     public bool OfuscarValor { get; set; }
 
-    public Guid? CompaniaId { get; set; }
-    public int? ObjectType { get; set; }
+    public string? CompaniaId { get; set; }
+    public int? ObjectType { get; }
 }

@@ -16,7 +16,7 @@ namespace API_PGI.Controllers.Periodicidads
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [Route("[controller]")]
     [ApiController]
-    [Authorize]
+    [JwtAuthorize]
     public class PeriodicidadController : ControllerBase
     {
         private readonly IPeriodicidad _Periodicidad;
@@ -81,17 +81,17 @@ namespace API_PGI.Controllers.Periodicidads
             {
                 var builder = new QueryBuilder<Periodicidad>()
                              .AddQuery(gridifyQuery)
-                             .AddCondition($"{nameof(Periodicidad.CompaniaId)}={_Auth.CurrentUser?.CompaniaId}")
+                             //.AddCondition($"{nameof(Periodicidad.CompaniaId)}={_Auth.CurrentUser?.CompaniaId}")
                 ;
                 if (gridifyQuery.PageSize == 0) gridifyQuery.PageSize = int.MaxValue;
                 if (gridifyQuery.Page == 0) gridifyQuery.Page = 1;
 
-                var items = _Periodicidad.GetPaginated(gridifyQuery);
+                var items = _Periodicidad.FindAll(gridifyQuery);
                 return Ok(new ResponseModel()
                 {
 
                     TotalCount = items.Count,
-                    Result = items.Data,
+                    Result = items,
                 });
                 //  }
             }

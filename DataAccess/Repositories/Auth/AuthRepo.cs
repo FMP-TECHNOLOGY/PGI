@@ -14,6 +14,12 @@ using Auth.Claims;
 using Model;
 using Common.Exceptions;
 using DataAccess.Repositories;
+using System.Windows.Input;
+using Microsoft.Extensions.Logging;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using System;
+using Utils.Extensions;
+using DataAccess.Builders;
 
 namespace PGI.DataAccess.Repositories.Auth
 {
@@ -21,20 +27,28 @@ namespace PGI.DataAccess.Repositories.Auth
     {
         User? CurrentUser { get; }
         Compania? CurrentCompany { get; }
-        //DataSourceEnum DataSource { get; }
+        DataSourceEnum DataSource { get; }
 
+        IUser Users { get; }
+        IRole Roles { get; }
+        IUserToken UserTokens { get; }
+        IUserCompany UserCompanies { get; }
+        IPermission Permissions { get; }
+        //IUserApiKey UserApiKeys { get; }
+        IRolePermission RolePermissions { get; }
+        IUserPermission UserPermissions { get; }
         //IUserApiKeyPermission UserApiKeyPermissions { get; }
-        void SetCurrentCredentials(string? authToken, string? location, IPAddress? ipAddress = null, string? userAgent = null);
-        JwtResponse Login(Login login, string? host = null);
-        bool Register(RegisterDto registerDto);
-        //JwtResponse RefreshToken(string? host = null);
-        User FindUserByToken(string? authToken, string? location, IPAddress? ipAddress = null);
-        string? FindCompanyRNCByToken(string? authToken, string? location);
-        void UpdateUserRoles(string? userId, List<Role> roles);
-        //void UpdateUserPassword(PasswordChangeDto passwordChange);
-        bool IsValidToken(User user, string? token, out JwtSecurityToken? jwt);
-        //bool ResetPassword(PasswordChangeDto login, string? recoveryToken);
-        bool RevokeToken(string? token);
+        void SetCurrentCredentials(string authToken, string location, IPAddress? ipAddress = null, string? userAgent = null);
+        Task<JwtResponse> Login(Login login, string? host = null);
+        Task<bool> Register(RegisterDto registerDto);
+        Task<JwtResponse> RefreshToken(string? host = null);
+        Task<User> FindUserByToken(string authToken, string location, IPAddress? ipAddress = null);
+        Task<string?> FindCompanyRNCByToken(string authToken, string location);
+        void UpdateUserRoles(string userId, List<Role> roles);
+        void UpdateUserPassword(PasswordChangeDto passwordChange);
+        bool IsValidToken(User user, string token, out JwtSecurityToken? jwt);
+        bool ResetPassword(PasswordChangeDto login, string recoveryToken);
+        bool RevokeToken(string token);
     }
 
     public class AuthRepo : IAuth
@@ -43,7 +57,7 @@ namespace PGI.DataAccess.Repositories.Auth
 
         public Compania? CurrentCompany { get; private set; }
 
-        // public DataSourceEnum DataSource { get; private set; } = DataSourceEnum.Unknown;
+        public DataSourceEnum DataSource { get; private set; } = DataSourceEnum.Unknown;
 
         public IUser Users { get; }
 
@@ -73,10 +87,10 @@ namespace PGI.DataAccess.Repositories.Auth
                         IUserCompany userCompany,
                         IRole role,
                         IPermission permissions,
-                        // IUserApiKey userApiKeys,
+                        //IUserApiKey userApiKeys,
                         IRolePermission rolePermissions,
                         IUserPermission userPermissions,
-                        // IUserApiKeyPermission userApiKeyPermissions,
+                        //IUserApiKeyPermission userApiKeyPermissions,
                         IOptionsMonitor<JwtConfig> options)
         {
 
@@ -95,65 +109,145 @@ namespace PGI.DataAccess.Repositories.Auth
             jwtConfig = options.CurrentValue;
         }
 
-        public void SetCurrentCredentials(string? authToken, string? location, IPAddress? ipAddress = null, string? userAgent = null)
+        public void SetCurrentCredentials(string authToken, string location, IPAddress? ipAddress = null, string? userAgent = null)
         {
             var authTask = FindUserByToken(authToken, location, ipAddress);
 
-            CurrentUser = authTask;
+            if (!authTask.IsCompletedSuccessfully)
+            {
+                if (authTask.Exception is not null)
+                    LogData.Error(authTask.Exception);
 
-            var companyRNC = FindCompanyRNCByToken(authToken, location);
+                return;
+            }
 
-            CurrentCompany = dBContext.Companias.SingleOrDefault(x => x.Rnc == companyRNC);
+            CurrentUser = authTask.Result;
+
+            var companyRNC = FindCompanyRNCByToken(authToken, location)?.Result;
+
+            CurrentCompany = string.Equals(CurrentUser?.Company?.Rnc, companyRNC, StringComparison.InvariantCultureIgnoreCase)
+                ? CurrentUser?.Company
+                : CurrentUser?.Companies.SingleOrDefault(x => x.Rnc == companyRNC);
 
             //TrySetDataSource(location, userAgent);
         }
 
-        public User FindUserByToken(string? authToken, string? location, IPAddress? ipAddress = null)
+        //private void TrySetDataSource(string location, string? userAgent)
+        //{
+        //    try
+        //    {
+        //        if (location.StartsWith(AppConstants.API_KEY_TOKEN, StringComparison.InvariantCultureIgnoreCase))
+        //        {
+        //            DataSource = DataSourceEnum.Integration;
+        //            return;
+        //        }
+
+        //        var uaInfo = UserAgentHelper.Parse(userAgent);
+
+        //        if (uaInfo is null)
+        //            return;
+
+        //        if (uaInfo.IsMobile)
+        //        {
+        //            DataSource = DataSourceEnum.Mobile;
+        //            return;
+        //        }
+
+        //        if (uaInfo.IsBrowser)
+        //        {
+        //            DataSource = DataSourceEnum.WebClient;
+        //            return;
+        //        }
+        //    }
+        //    catch { }
+
+        //    DataSource = DataSourceEnum.Unknown;
+        //}
+
+        public Task<User> FindUserByToken(string authToken, string location, IPAddress? ipAddress = null)
         {
-            var token = GetJwtTokenFromAuthHeader(authToken, location, out string? tokenType);
+            try
+            {
+                var token = GetJwtTokenFromAuthHeader(authToken, location, out string tokenType);
 
-            var tokenHandler = new JwtSecurityTokenHandler();
+                var tokenHandler = new JwtSecurityTokenHandler();
 
-            var userToken = tokenHandler.ReadJwtToken(token);
+                var userToken = tokenHandler.ReadJwtToken(token);
 
-            var userName = userToken?.Claims.SingleOrDefault(x => x.Type == JwtRegisteredClaimNames.UniqueName)?.Value;
-            var companyTaxId = userToken?.Claims.SingleOrDefault(x => x.Type == CustomClaimTypes.Company)?.Value;
+                var userName = userToken?.Claims.SingleOrDefault(x => x.Type == JwtRegisteredClaimNames.UniqueName)?.Value;
+                var companyTaxId = userToken?.Claims.SingleOrDefault(x => x.Type == CustomJwtClaimTypes.Company)?.Value;
 
-            var user = Users.FindValidByUsername(userName)
-                ?? throw new CustomException("User not founded");
+                var user = Users.FindValidByUsername(userName)
+                    ?? throw new UnauthorizedException();
 
-            if (tokenType.Equals(AppConstants.BEARER_TOKEN, StringComparison.InvariantCultureIgnoreCase)
-                && UserTokens.Find(x =>
-                        x.AccessToken == token
-                        && x.UserId == user.Id
-                        && x.Exp > DateTime.UtcNow) == null
-                )
-                throw new CustomException("Invalid token");
+                if (tokenType.Equals(AppConstants.BEARER_TOKEN, StringComparison.InvariantCultureIgnoreCase)
+                    && !UserTokens.Exists(x =>
+                            x.AccessToken == token
+                            && x.UserId == user.Id
+                            && x.Exp > DateTime.UtcNow)
+                    )
+                    throw new UnauthorizedException("Invalid token");
 
-            if (!IsValidToken(user, token, out JwtSecurityToken? jwt))
-                throw new CustomException("Invalid token");
+                //else if (tokenType.Equals(AppConstants.API_KEY_TOKEN, StringComparison.InvariantCultureIgnoreCase))
+                //{
+                //    var userApiKey = UserApiKeys.Find(x =>
+                //        x.AccessToken == token
+                //        && x.UserId == user.Id
+                //        && x.Active
+                //        && DateTime.UtcNow > x.NotBeforeUTC
+                //        && (x.NotAfterUTC == null || DateTime.UtcNow < x.NotAfterUTC.Value)
+                //        && x.Company!.TaxIdNumber == companyTaxId
+                //    )
+                //        ?? throw new UnauthorizedException("Invalid token");
 
-            return (user);
+                //    if (!(userApiKey.AllowedIPs is null || userApiKey.AllowedIPs.Any(x => x.Equals("*") || x.Replace("*", "").StartsWith(ipAddress!.ToString(), StringComparison.InvariantCultureIgnoreCase))))
+                //        throw new UnauthorizedException("Invalid token");
+                //}
 
+                if (!IsValidToken(user, token, out JwtSecurityToken? jwt))
+                    throw new UnauthorizedException("Invalid token");
+
+                //if (tokenType.Equals(AppConstants.API_KEY_TOKEN, StringComparison.InvariantCultureIgnoreCase))
+                //    user.Permissions = (from t0 in UserApiKeys.EntityDbSet
+                //                        join t1 in UserApiKeyPermissions.EntityDbSet on new { t0.Id, t0.Active, t0.UserId, t0.AccessToken } equals new { Id = t1.ApiKeyId, Active = true, UserId = user.Id, AccessToken = token }
+                //                        where
+                //                             t1.Permission.Active
+                //                        select t1.Permission)
+                //                        .AsNoTrackingWithIdentityResolution()
+                //                        .ToList();
+
+                return Task.FromResult(user);
+            }
+            catch (Exception ex)
+            {
+                return Task.FromException<User>(ex);
+            }
         }
 
-        public string? FindCompanyRNCByToken(string? authToken, string? location)
+        public Task<string?> FindCompanyRNCByToken(string authToken, string location)
         {
-            var token = GetJwtTokenFromAuthHeader(authToken, location, out string? tokenType);
+            try
+            {
+                var token = GetJwtTokenFromAuthHeader(authToken, location, out string? tokenType);
 
-            var tokenHandler = new JwtSecurityTokenHandler();
+                var tokenHandler = new JwtSecurityTokenHandler();
 
-            var userToken = tokenHandler.ReadJwtToken(token);
+                var userToken = tokenHandler.ReadJwtToken(token);
 
-            return (userToken?.Claims.SingleOrDefault(x => x.Type == CustomClaimTypes.Company)?.Value);
+                return Task.FromResult(userToken?.Claims.SingleOrDefault(x => x.Type == CustomJwtClaimTypes.Company)?.Value);
+            }
+            catch (Exception ex)
+            {
+                return Task.FromException<string?>(ex);
+            }
         }
 
-        private static string? GetJwtTokenFromAuthHeader(string? authToken, string? location, out string? tokenType)
+        private static string GetJwtTokenFromAuthHeader(string authToken, string location, out string tokenType)
         {
             tokenType = string.Empty;
 
             if (string.IsNullOrWhiteSpace(authToken))
-                throw new LoginException("Token invalido");
+                throw new BadRequestException(nameof(authToken));
 
             if (location == AppConstants.API_KEY_TOKEN)
             {
@@ -164,12 +258,12 @@ namespace PGI.DataAccess.Repositories.Auth
             var tokenFragments = authToken.Split(" ", 2, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
             if (tokenFragments.Length != 2)
-                throw new Exception("Token not valid");
+                throw new BadRequestException("Token not valid");
 
             tokenType = tokenFragments[0];
 
-            if (!tokenType.Contains(AppConstants.BEARER_TOKEN, StringComparison.InvariantCultureIgnoreCase))
-                throw new Exception("Invalid token type");
+            if (!tokenType.In(AppConstants.BEARER_TOKEN))
+                throw new BadRequestException("Invalid token type");
 
             return tokenFragments[1];
         }
@@ -191,51 +285,51 @@ namespace PGI.DataAccess.Repositories.Auth
             }
             catch (Exception ex)
             {
-                new LogData().Error(ex);
+                LogData.Error(ex);
             }
 
             return false;
 
         }
 
-        public JwtResponse Login(Login login, string? host = null)
+        public Task<JwtResponse> Login(Login login, string? host = null)
         {
             User? user = null;
 
             try
             {
-                if (login == null) throw new LoginException();
+                if (login == null) throw new UnauthorizedException();
 
-                user = Users.FindByUsername(login.username)
-                    ?? throw new LoginException("Invalid username or password");
+                user = Users.FindByUsername(login.UserName)
+                    ?? throw new UnauthorizedException("Invalid username or password");
 
-                //if (user.LockoutDueDate is not null && DateTime.Now > user.LockoutDueDate)
-                //    ResetLockout(user);
+                if (user.LockoutDueDate is not null && DateTime.Now > user.LockoutDueDate)
+                    ResetLockout(user);
 
-                //if ((user.Active == 0 || user.LockoutEnabled == 0 /*|| user.IsLocked()*/) && user.LockoutDueDate < DateTime.Now)
-                //    throw new LoginException("Inactive User or Locked") { ErrorCode = "1001" };
-                if(!user.Active)
-                if (!IsValidPassword(login.password, user))
-                    throw new LoginException("Invalid username or password");
+                if ((!user.Active || user.IsLocked()) && user.LockoutDueDate < DateTime.Now)
+                    throw new UnauthorizedException("Inactive User or Locked") { ErrorCode = 1001 };
+
+                if (!IsValidPassword(login.Password, user))
+                    throw new UnauthorizedException("Invalid username or password");
 
                 var company = dBContext.GetService<ICompania>()?.Find(x => x.Rnc == login.CompanyRNC);
 
                 if (!IsValidUserCompany(user, login.CompanyRNC, company))
-                    throw new LoginException("Invalid company") { ErrorCode = "1002" };
+                    throw new UnauthorizedException("Invalid company") { ErrorCode = 1002 };
 
                 var token = GenerateUserToken(user, host, login.CompanyRNC, out JwtSecurityToken? securityToken);
 
                 UserTokens.SaveToken(user, securityToken!, token, host);
 
-                return new JwtResponse()
+                return Task.FromResult(new JwtResponse()
                 {
                     Token = token,
                     Expiration = securityToken!.ValidTo.ToLocalTime()
-                };
+                });
             }
-            catch (LoginException ex)
+            catch (UnauthorizedException ex)
             {
-                if (user is not null && ex.ErrorCode != "1001")
+                if (user is not null && ex.ErrorCode != 1001)
                     IncreateLoginTries(user);
 
                 throw;
@@ -245,7 +339,7 @@ namespace PGI.DataAccess.Repositories.Auth
         public Task<JwtResponse> RefreshToken(string? host = null)
         {
             if (CurrentUser is null)
-                throw new LoginException();
+                throw new UnauthorizedException();
 
             var token = GenerateUserToken(CurrentUser, host, CurrentCompany?.Rnc, out JwtSecurityToken? securityToken);
 
@@ -262,7 +356,7 @@ namespace PGI.DataAccess.Repositories.Auth
         private bool IsValidUserCompany(User user, string? companyRNC, Compania? company)
         {
             if (string.IsNullOrWhiteSpace(companyRNC))
-                return false;
+                return true;
 
             if (company is null)
                 return false;
@@ -273,22 +367,22 @@ namespace PGI.DataAccess.Repositories.Auth
             if (!company.Active)
                 return false;
 
-            //var isCurrentCompany = user.Company?.TaxIdNumber == companyRNC;
-            var hasCompany = UserCompanies.Find(x => x.CompaniaId == company.Id && x.UserId == user.Id) != null;
+            var isCurrentCompany = user.Company?.Rnc == companyRNC;
+            var hasCompany = UserCompanies.Exists(x => x.CompaniaId == company.Id && x.UserId == user.Id);
 
-            return hasCompany;
+            return isCurrentCompany || hasCompany;
         }
 
-        //private void ResetLockout(User user)
-        //{
-        //    try
-        //    {
-        //        //user.ResetLockout();
+        private void ResetLockout(User user)
+        {
+            try
+            {
+                user.ResetLockout();
 
-        //        //Users.UpdateSaving(user);
-        //    }
-        //    catch { }
-        //}
+                Users.UpdateSaving(user);
+            }
+            catch { }
+        }
 
         private void IncreateLoginTries(User user)
         {
@@ -307,34 +401,31 @@ namespace PGI.DataAccess.Repositories.Auth
             catch { }
         }
 
-        private string? GenerateUserToken(User user, string? host, string? companyRNC, out JwtSecurityToken? securityToken)
+        private string GenerateUserToken(User user, string? host, string? companyRNC, out JwtSecurityToken? securityToken)
         {
             // INIT TOKEN HANDLER
             var tokenHandler = new JwtSecurityTokenHandler();
 
-#warning workaround, cambiar luego
+            securityToken = new UserTokenBuilder(user)
+               .SetIssuer(jwtConfig.Issuer)
+               .SetHost(host)
+               .SetCompany(companyRNC)
+               .Build();
 
-            //securityToken = new UserTokenBuilder(user)
-            //   .SetIssuer(jwtConfig.Issuer)
-            //   .SetHost(host)
-            //   .SetCompany(companyRNC)
-            //   .Build();
-            securityToken = null;
-            return "";
-            //return tokenHandler.WriteToken(securityToken);
+            return tokenHandler.WriteToken(securityToken);
         }
 
-        public bool Register(RegisterDto registerDto)
+        public Task<bool> Register(RegisterDto registerDto)
         {
             Users.AddSaving(new User()
             {
                 Username = registerDto.UserName,
                 FullName = registerDto.FullName,
                 Email = registerDto.Email,
-                PasswordHash = Utilities.Hash(registerDto.Password, HashAlg.SHA256)
+                PasswordHash = CryptoHelper.Hash(registerDto.Password)!
             });
 
-            return (true);
+            return Task.FromResult(true);
         }
 
         private static bool IsValidPassword(string? passToValidate, User user)
@@ -343,39 +434,34 @@ namespace PGI.DataAccess.Repositories.Auth
             if (user == null) return false;
             if (string.IsNullOrWhiteSpace(user?.PasswordHash)) return false;
 
-            var passwordHashed = Utilities.Hash(passToValidate, HashAlg.SHA256) ?? "";
+            var passwordHashed = CryptoHelper.Hash(passToValidate) ?? "";
 
             return passwordHashed.Equals(user.PasswordHash);
 
         }
 
-        public void UpdateUserRoles(string? userId, List<Role> roles)
+        public void UpdateUserRoles(string userId, List<Role> roles)
         {
             // TODO: update user roles
-#warning workaround, cambiar luego
-            //throw new NotImplementedException();
+            throw new NotImplementedException();
         }
 
-//        public void UpdateUserPassword(PasswordChangeDto passwordChange)
-//        {
-//            // TODO: implement update password feature
-//#warning workaround, cambiar luego
-//            throw new NotImplementedException();
-//        }
-
-        //public bool ResetPassword(PasswordChangeDto login, string? recoveryToken)
-        //{
-        //    // TODO: implement reset password feature
-        //    throw new NotImplementedException();
-        //}
-
-        public bool RevokeToken(string? userToken)
+        public void UpdateUserPassword(PasswordChangeDto passwordChange)
         {
-#warning workaround, cambiar luego
-            //var token = TokenRepo.Find(x => x.Token == userToken);
-            //token.IsRevoked = true;
-            //TokenRepo.UpdateSaving(token);
-            return true;
+            // TODO: implement update password feature
+            throw new NotImplementedException();
+        }
+
+        public bool ResetPassword(PasswordChangeDto login, string recoveryToken)
+        {
+            // TODO: implement reset password feature
+            throw new NotImplementedException();
+        }
+
+        public bool RevokeToken(string token)
+        {
+            // TODO: implement revoke authToken access feature
+            throw new NotImplementedException();
         }
 
     }

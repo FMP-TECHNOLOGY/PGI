@@ -7,7 +7,7 @@ namespace PGI.DataAccess.Repositories.Auth
 {
     public interface IUser : IGenericRepo<User>
     {
-        //List<User> FindAllByCompany(int? companyId);
+        //List<User> FindAllByCompany(int? CompaniaId);
         User? FindByUsername(string? username);
         User? FindValidByUsername(string? username);
         User? FindValidById(string? userId);
@@ -22,7 +22,7 @@ namespace PGI.DataAccess.Repositories.Auth
 
         public  User UpdateSaving(User entity)
         {
-            var user = base.UpdateSaving(null,entity);
+            var user = base.UpdateSaving(entity);
 
             return user;
         }
@@ -36,49 +36,52 @@ namespace PGI.DataAccess.Repositories.Auth
                     select t0).FirstOrDefault();
         }
 
-        public User? FindValidById(string? userId)
+        public User? FindValidById(string userId)
             => EntityDbSet//.AsNoTrackingWithIdentityResolution()
                           //.Include(x => x.Roles)
                           //.Include(x => x.ModulePermissions)
-            //.Include(x => x.Companies)
-            .FirstOrDefault(x => x.Id == userId && x.Active && x.LockoutEnabled == false && x.LockoutDueDate == null);
+            .Include(x => x.Companies)
+            .FirstOrDefault(x => x.Id.ToString() == userId && x.Active && x.LockoutEnabled == false && x.LockoutDueDate == null);
 
         public User? FindValidByUsername(string? username)
             => (from t0 in EntityDbSet
                 where t0.Username == username
                 select t0)
-            //.Include(x => x.Companies)
+            .Include(x => x.Companies)
             .FirstOrDefault(x => x.Active && x.LockoutEnabled == false && x.LockoutDueDate == null);
 
-        public override User? Find(Func<User, bool> predicate)
-            => EntityDbSet//.AsNoTrackingWithIdentityResolution()
-                          //.Include(x => x.Roles)
-                          //.Include(x => x.ModulePermissions)
-                          //.Include(x => x.Companies)
-            .FirstOrDefault(predicate);
+        //public override User? Find(Func<User, bool> predicate)
+        //    => EntityDbSet//.AsNoTrackingWithIdentityResolution()
+        //                  //.Include(x => x.Roles)
+        //                  //.Include(x => x.ModulePermissions)
+        //                  //.Include(x => x.Companies)
+        //    .FirstOrDefault(predicate);
 
-        /*public List<User> FindAllByCompany(int? companyId)
+        /*public List<User> FindAllByCompany(int? CompaniaId)
             => (from userCompany in context.UserCompanies
                 join user in context.Users on userCompany.UserId equals user.Id
-                where userCompany.CompanyId == companyId
+                where userCompany.CompaniaId == CompaniaId
                 select user)
             .Distinct()
             .AsNoTrackingWithIdentityResolution()
             .ToList();*/
 
-        public override User? Get(params object[] keys)
-            => Find(x => x.Id == keys.FirstOrDefault().ToString());
+        public override User? Get(params object?[] keys)
+        {
+            var id = keys.FirstOrDefault()?.ToString();
+            return Find(x => x.Id.ToString() == id);
+        }
 
-        /* public void UpdateCompany(string? userId, int companyId)
+        /* public void UpdateCompany(string? userId, int CompaniaId)
          {
              var user = FindValidById(userId) ?throw new BadRequestException("Invalid user");
 
              if (!user.Active || user.LockoutEnabled || user.LockoutDueDate != null)
                  throw new BadRequestException("Invalid user");
 
-             var companiesRepo = Companies.Find(x => x.Id == companyId && x.Active) ?throw new BadRequestException("Invalid Company");
+             var companiesRepo = Companies.Find(x => x.Id == CompaniaId && x.Active) ?throw new BadRequestException("Invalid Company");
 
-             user.CompanyId = companyId;
+             user.CompaniaId = CompaniaId;
 
              UpdateSaving(user);
          }*/
@@ -95,14 +98,14 @@ namespace PGI.DataAccess.Repositories.Auth
                 {
                     var mCompany = Companies.Get(companiesRepo.Id) ?throw new BadRequestException($"Invalid companiesRepo {companiesRepo.Id}");
 
-                    var userHasCompany = userCompanies.Any(x => x.UserId == user.Id && x.CompanyId == mCompany.Id);
+                    var userHasCompany = userCompanies.Any(x => x.UserId == user.Id && x.CompaniaId == mCompany.Id);
 
                     if (!mCompany.Active && !userHasCompany) throw new BadRequestException($"Inactive companiesRepo {mCompany.Name}");
 
                     if (!userHasCompany)
                         UserCompanies.AddSaving(new()
                         {
-                            CompanyId = mCompany.Id,
+                            CompaniaId = mCompany.Id,
                             UserId = user.Id
                         });
                 });
@@ -110,7 +113,7 @@ namespace PGI.DataAccess.Repositories.Auth
                 // REMOVING COMPANIES
                 userCompanies.ForEach(userCompany =>
                 {
-                    if (!companies.Any(x => x.Id == userCompany.CompanyId))
+                    if (!companies.Any(x => x.Id == userCompany.CompaniaId))
                         UserCompanies.RemoveSaving(userCompany);
                 });
 

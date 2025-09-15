@@ -1,7 +1,9 @@
 using API_PGI.Auth;
+using API_PGI.Exceptions;
 using Auth.JWT;
 using DataAccess.Entities;
 using DataAccess.Repositories;
+using Gridify;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +15,13 @@ using System.Globalization;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddMvc(options =>
+{
+    options.Filters.Add(typeof(ExceptionHandlerFilter));
+});
+
+builder.Services.AddEndpointsApiExplorer();
+
 //CORS
 builder.Services.AddCors(options =>
 {
@@ -96,6 +105,17 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 //Interfaces
+builder.Services.AddScoped<IAuth, AuthRepo>();
+
+builder.Services.AddScoped<IUser, UserRepo>();
+builder.Services.AddScoped<IUserToken, UserTokenRepo>();
+builder.Services.AddScoped<IUserCompany, UserCompanyRepo>();
+builder.Services.AddScoped<IRole, RoleRepo>();
+builder.Services.AddScoped<IPermission, PermissionRepo>();
+// IUserApiKey userApiKeys,
+builder.Services.AddScoped<IRolePermission, RolePermissionRepo>();
+builder.Services.AddScoped<IUserPermission, UserPermissionRepo>();
+
 builder.Services.AddScoped<IAccion, AccionRepository>();
 builder.Services.AddScoped<IActividade, ActividadeRepository>();
 builder.Services.AddScoped<IArea, AreaRepository>();
@@ -132,6 +152,10 @@ builder.Services.AddScoped<IPei, PeiRepository>();
 builder.Services.AddScoped<IPeriodicidad, PeriodicidadRepository>();
 builder.Services.AddScoped<IPermission, PermissionRepo>();
 builder.Services.AddScoped<IPoa, PoaRepository>();
+builder.Services.AddScoped<IPrograma, ProgramaRepository>();
+builder.Services.AddScoped<IFondo,FondoRepository>();
+builder.Services.AddScoped<IUserSucursal,UserSucursalRepository>();
+builder.Services.AddScoped<IUserDireccionInstitucional, UserDireccionInstitucionalRepository>();
 builder.Services.AddScoped<IProductoIntegracion, ProductoIntegracionRepository>();
 builder.Services.AddScoped<IProfitCenter, ProfitCenterRepository>();
 builder.Services.AddScoped<IProveedor, ProveedorRepository>();
@@ -158,6 +182,9 @@ builder.Services.AddScoped<IXproducto, XproductoRepository>();
 builder.Services.AddScoped<IXxactividade, XxactividadeRepository>();
 
 
+GridifyGlobalConfiguration.DefaultPageSize = int.MaxValue;
+
+
 
 builder.Services.AddDbContext<PGIContext>(x =>
 {
@@ -168,7 +195,7 @@ builder.Services.AddDbContext<PGIContext>(x =>
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
+//builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
@@ -191,10 +218,9 @@ app.UseCors("CORS_CONFIG");
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
-app.UseStaticFiles();
-
 app.UseMiddleware<AuthMiddleware>();
 
+app.UseStaticFiles();
 
 app.MapControllers();
 

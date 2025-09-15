@@ -3,6 +3,6 @@
     public class JwtResponse
     {
         public string? Token { get; set; }
-        public DateTimeOffset Expiration { get; set; }
+        public DateTime Expiration { get; set; }
     }
 }

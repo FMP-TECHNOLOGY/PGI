@@ -11,10 +11,10 @@ public partial class Integracione
 
     public bool Active { get; set; }
 
-    public int Userid { get; set; }
+    public string?UserId { get; set; }
 
     public DateTime Created { get; set; }
 
     public Guid? CompaniaId { get; set; }
-    public int? ObjectType { get; set; }
+    public int? ObjectType { get; }
 }

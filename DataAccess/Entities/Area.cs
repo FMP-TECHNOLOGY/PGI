@@ -15,7 +15,7 @@ public partial class Area
 
     public bool Active { get; set; }
 
-    public int Userid { get; set; }
+    public string?UserId { get; set; }
 
     public DateTime Created { get; set; }
 
@@ -25,5 +25,5 @@ public partial class Area
 
     public string?DepartamentoId { get; set; }
 
-    public int? ObjectType { get; set; }
+    public int? ObjectType { get; }
 }

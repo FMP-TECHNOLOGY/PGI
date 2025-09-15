@@ -16,7 +16,7 @@ namespace API_PGI.Controllers.Objetivos
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [Route("[controller]")]
     [ApiController]
-    [Authorize]
+    [JwtAuthorize]
     public class ObjetivoController : ControllerBase
     {
         private readonly IObjetivo _Objetivo;
@@ -86,12 +86,12 @@ namespace API_PGI.Controllers.Objetivos
                 if (gridifyQuery.PageSize == 0) gridifyQuery.PageSize = int.MaxValue;
                 if (gridifyQuery.Page == 0) gridifyQuery.Page = 1;
 
-                var items = _Objetivo.GetPaginated(gridifyQuery);
+                var items = _Objetivo.FindAll(gridifyQuery);
                 return Ok(new ResponseModel()
                 {
 
                     TotalCount = items.Count,
-                    Result = items.Data,
+                    Result = items,
                 });
                 //  }
             }

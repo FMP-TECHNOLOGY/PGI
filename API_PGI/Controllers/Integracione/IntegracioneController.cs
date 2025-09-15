@@ -16,7 +16,7 @@ namespace API_PGI.Controllers.Integraciones
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [Route("[controller]")]
     [ApiController]
-    [Authorize]
+    [JwtAuthorize]
     public class IntegracioneController : ControllerBase
     {
         private readonly IIntegracione _Integracione;
@@ -86,12 +86,12 @@ namespace API_PGI.Controllers.Integraciones
                 if (gridifyQuery.PageSize == 0) gridifyQuery.PageSize = int.MaxValue;
                 if (gridifyQuery.Page == 0) gridifyQuery.Page = 1;
 
-                var items = _Integracione.GetPaginated(gridifyQuery);
+                var items = _Integracione.FindAll(gridifyQuery);
                 return Ok(new ResponseModel()
                 {
 
                     TotalCount = items.Count,
-                    Result = items.Data,
+                    Result = items,
                 });
                 //  }
             }
