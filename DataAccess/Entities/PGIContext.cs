@@ -1628,6 +1628,9 @@ public partial class PGIContext : DbContext
                 .ValueGeneratedOnUpdate()
                 .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
 
+            //entity.Property(x=>x.CompaniaId)
+            //.HasColumnName("")
+
             entity.HasMany(x => x.Companies)
             .WithMany()
                   .UsingEntity<UserCompania>(j =>
@@ -1650,18 +1653,18 @@ public partial class PGIContext : DbContext
             //              j => j.HasOne(x => x.User)
             //                    .WithMany()
             //                    .HasForeignKey(x => x.UserId)
-            //      );
+            //);
 
-            //entity.HasMany(x => x.Permissions)
-            //      .WithMany()
-            //      .UsingEntity<UserPermission>(
-            //                j => j.HasOne(x => x.Permission)
-            //                      .WithMany()
-            //                      .HasForeignKey(x => x.PermissionId),
-            //                j => j.HasOne(x => x.User)
-            //                      .WithMany()
-            //                      .HasForeignKey(x => x.UserId)
-            //    );
+            entity.HasMany(x => x.Permissions)
+                  .WithMany()
+                  .UsingEntity<UserPermission>(
+                            j => j.HasOne(x => x.Permission)
+                                  .WithMany()
+                                  .HasForeignKey(x => x.PermissionId),
+                            j => j.HasOne(x => x.User)
+                                  .WithMany()
+                                  .HasForeignKey(x => x.UserId)
+                );
 
             entity.HasOne(x => x.Company)
                   .WithMany()
@@ -1673,8 +1676,8 @@ public partial class PGIContext : DbContext
             entity.Navigation(x => x.Companies)
                   .AutoInclude();
 
-            entity.Navigation(x => x.Roles)
-                  .AutoInclude();
+            //entity.Navigation(x => x.Roles)
+            //      .AutoInclude();
 
             entity.Navigation(x => x.Permissions)
                   .AutoInclude();

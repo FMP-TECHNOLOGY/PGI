@@ -48,7 +48,7 @@ namespace PGI.DataAccess.Repositories.Auth
                 where t0.Username == username
                 select t0)
             .Include(x => x.Companies)
-            .FirstOrDefault(x => x.Active && x.LockoutEnabled == false && x.LockoutDueDate == null);
+            .FirstOrDefault(x => x.Active && x.LockoutEnabled == false );
 
         //public override User? Find(Func<User, bool> predicate)
         //    => EntityDbSet//.AsNoTrackingWithIdentityResolution()

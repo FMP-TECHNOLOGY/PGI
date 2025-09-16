@@ -72,10 +72,10 @@ public partial class User : EqualityComparer<User>
     //[NotMapped]
 
     public List<Compania> Companies { get; set; } = new();
-    //[NotMapped]
+    [NotMapped]
 
     public List<Role> Roles { get; set; } = new();
-    //[NotMapped]
+    [NotMapped]
 
     public List<Permission> Permissions { get; set; } = new();
 

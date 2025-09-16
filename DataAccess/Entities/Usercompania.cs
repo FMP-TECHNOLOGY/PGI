@@ -10,7 +10,7 @@ public partial class UserCompania
 
     public string CompaniaId { get; set; }
 
-    public int ValidUserId { get; set; }
+    public string? ValidUserId { get; set; }
 
     public bool Active { get; set; }
 
