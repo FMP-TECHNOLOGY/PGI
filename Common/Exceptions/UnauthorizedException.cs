@@ -19,4 +19,17 @@ namespace Common.Exceptions
 
         public UnauthorizedException(string? message, Exception innerException) : base(message ?? ErrorDescription, innerException) { }
     }
+
+    public class NotFoundException : BaseException
+    {
+        public override int ErrorCode { get; set; } = (int)HttpStatusCode.NotFound;
+        public override HttpStatusCode StatusCode { get; set; } = HttpStatusCode.NotFound;
+        public static string ErrorDescription { get; } = "Not Found";
+
+        public NotFoundException() : base(ErrorDescription) { }
+
+        public NotFoundException(string? message) : base(message ?? ErrorDescription) { }
+
+        public NotFoundException(string? message, Exception innerException) : base(message ?? ErrorDescription, innerException) { }
+    }
 }

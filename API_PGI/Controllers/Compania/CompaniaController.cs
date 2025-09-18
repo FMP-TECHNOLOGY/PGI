@@ -51,6 +51,7 @@ namespace API_PGI.Controllers.Companias
             }
 
         }
+        
         [HttpPut]
         public IActionResult Put([FromBody] Compania entity)
         {
@@ -74,6 +75,7 @@ namespace API_PGI.Controllers.Companias
             }
 
         }
+        
         [HttpGet("GetAll")]
         public IActionResult GetAll([FromQuery] GridifyQuery gridifyQuery)
         {
@@ -107,6 +109,7 @@ namespace API_PGI.Controllers.Companias
             }
 
         }
+        
         [HttpGet("Get/{id}")]
         public IActionResult GetAll(string id)
         {
@@ -130,5 +133,6 @@ namespace API_PGI.Controllers.Companias
 
 
         }
+
     }
 }

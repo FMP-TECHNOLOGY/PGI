@@ -148,7 +148,7 @@ namespace DataAccess.Builders
             return new JwtSecurityTokenHandler().CreateJwtSecurityToken(tokenDescriptor);
         }
 
-        private UserTokenBuilder SetClaims(params Claim[] claims)
+        public UserTokenBuilder SetClaims(params Claim[] claims)
         {
             var oldClaims = tokenDescriptor.Subject?.Claims ?? Array.Empty<Claim>();
             var newClaims = new List<Claim>(oldClaims);

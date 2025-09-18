@@ -59,10 +59,46 @@ namespace API_PGI.Controllers.Auth
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status401Unauthorized)]
+        [JwtAuthorize]
         [HttpGet("refresh-token")]
         public ActionResult<ResponseModel> Register()
         {
             return Ok(new ResponseModel<JwtResponse>(auth.RefreshToken(Request.HttpContext.Connection.RemoteIpAddress?.ToString()).Result));
         }
+
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status401Unauthorized)]
+        [JwtAuthorize]
+        [HttpPost("Select/Compania/{Id}")]
+        public ActionResult<ResponseModel> SelectCompania([FromRoute] Guid Id)
+        {
+            return Ok(auth.SelectCompania(Id));
+        }
+
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status401Unauthorized)]
+        [JwtAuthorize]
+        [HttpPost("Select/DireccionInstitucional/{Id}")]
+        public ActionResult<ResponseModel> SelectDireccionInstitucional([FromRoute] Guid Id)
+        {
+            
+            return Ok(auth.SelectDireccionInstitucional(Id));
+        }
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status401Unauthorized)]
+        [JwtAuthorize]
+        [HttpPost("Select/Sucursal/{Id}")]
+        public ActionResult<ResponseModel> SelectSucursal([FromRoute] Guid Id)
+        {
+            
+            return Ok(auth.SelectSucursal(Id));
+        }
+
     }
 }
