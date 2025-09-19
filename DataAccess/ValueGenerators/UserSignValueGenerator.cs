@@ -2,11 +2,6 @@
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.ValueGeneration;
 using PGI.DataAccess.Repositories.Auth;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataAccess.ValueGenerators
 {
@@ -16,5 +11,27 @@ namespace DataAccess.ValueGenerators
 
         public override string? Next(EntityEntry entry)
             => entry.Context.GetService<IAuth>()?.CurrentUser?.Id.ToString();
+    }
+    public class CompaniaSignValueGenerator : ValueGenerator<string?>
+    {
+        public override bool GeneratesTemporaryValues { get; }
+
+        public override string? Next(EntityEntry entry)
+            => entry.Context.GetService<IAuth>()?.CurrentCompany?.Id.ToString();
+    }
+    public class DireccionInstitucionalSignValueGenerator : ValueGenerator<string?>
+    {
+        public override bool GeneratesTemporaryValues { get; }
+
+        public override string? Next(EntityEntry entry)
+            => entry.Context.GetService<IAuth>()?.CurrentDireccionIntitucional?.Id.ToString();
+    }
+    
+    public class SucursalSignValueGenerator : ValueGenerator<string?>
+    {
+        public override bool GeneratesTemporaryValues { get; }
+
+        public override string? Next(EntityEntry entry)
+            => entry.Context.GetService<IAuth>()?.CurrentSucursal?.Id.ToString();
     }
 }
