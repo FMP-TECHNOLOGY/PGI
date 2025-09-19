@@ -17,23 +17,23 @@ namespace API_PGI.Controllers.RiesgoAsociados
     [Route("[controller]")]
     [ApiController]
     [JwtAuthorize]
-    public class RiesgoAsociadoController : ControllerBase
+    public class ProyectoRiesgoController : ControllerBase
     {
-        private readonly IRiesgoAsociado _RiesgoAsociado;
+        private readonly IProyectoRiesgo _ProyectoRiesgo;
         private IAuth _Auth { get; }
 
-        public RiesgoAsociadoController(IRiesgoAsociado RiesgoAsociado, IAuth auth)
+        public ProyectoRiesgoController(IProyectoRiesgo proyectoRiesgo, IAuth auth)
         {
-            _RiesgoAsociado = RiesgoAsociado;
+            _ProyectoRiesgo = proyectoRiesgo;
             _Auth = auth;
         }
 
         [HttpPost]
-        public IActionResult post([FromBody] RiesgoAsociado entity)
+        public IActionResult post([FromBody] ProyectoRiesgo entity)
         {
             try
             {
-                _RiesgoAsociado.AddSaving( entity);
+                _ProyectoRiesgo.AddSaving( entity);
 
 
                 return Ok(new ResponseModel()
@@ -52,12 +52,12 @@ namespace API_PGI.Controllers.RiesgoAsociados
 
         }
         [HttpPut]
-        public IActionResult Put([FromBody] RiesgoAsociado entity)
+        public IActionResult Put([FromBody] ProyectoRiesgo entity)
         {
             try
             {
 
-                _RiesgoAsociado.UpdateSaving( entity);
+                _ProyectoRiesgo.UpdateSaving( entity);
 
                 return Ok(new ResponseModel()
                 {
@@ -79,14 +79,14 @@ namespace API_PGI.Controllers.RiesgoAsociados
         {
             try
             {
-                var builder = new QueryBuilder<RiesgoAsociado>()
+                var builder = new QueryBuilder<ProyectoRiesgo>()
                              .AddQuery(gridifyQuery)
-                             .AddCondition($"{nameof(RiesgoAsociado.CompaniaId)}={_Auth.CurrentUser?.CompaniaId}")
+                             .AddCondition($"{nameof(ProyectoRiesgo.CompaniaId)}={_Auth.CurrentUser?.CompaniaId}")
                 ;
                 if (gridifyQuery.PageSize == 0) gridifyQuery.PageSize = int.MaxValue;
                 if (gridifyQuery.Page == 0) gridifyQuery.Page = 1;
 
-                var items = _RiesgoAsociado.FindAll(gridifyQuery);
+                var items = _ProyectoRiesgo.FindAll(gridifyQuery);
                 return Ok(new ResponseModel()
                 {
 
@@ -112,7 +112,7 @@ namespace API_PGI.Controllers.RiesgoAsociados
         {
             try
             {
-                var valor = _RiesgoAsociado.Find(x => x.Id == id);
+                var valor = _ProyectoRiesgo.Find(x => x.Id == id);
 
                 return Ok(new ResponseModel()
                 {

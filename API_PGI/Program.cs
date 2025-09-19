@@ -162,7 +162,7 @@ builder.Services.AddScoped<IProveedor, ProveedorRepository>();
 builder.Services.AddScoped<IProyecto, ProyectoRepository>();
 builder.Services.AddScoped<IProyectoIndicadore, ProyectoIndicadoreRepository>();
 builder.Services.AddScoped<IRiesgo, RiesgoRepository>();
-builder.Services.AddScoped<IRiesgoAsociado, RiesgoAsociadoRepository>();
+builder.Services.AddScoped<IProyectoRiesgo, ProyectoRiesgoRepository>();
 builder.Services.AddScoped<IRole, RoleRepo>();
 builder.Services.AddScoped<IRolePermission, RolePermissionRepo>();
 builder.Services.AddScoped<IRolMenu, RolMenuRepository>();

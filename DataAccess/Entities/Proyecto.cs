@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataAccess.Entities;
 
@@ -8,6 +9,8 @@ public partial class Proyecto
     public string? Id { get; set; } 
 
     public string? CompaniaId { get; set; } 
+    public string? ProgramaId { get; set; } 
+    public string? FondoId { get; set; } 
 
     public string? PoaId { get; set; } 
 
@@ -44,4 +47,14 @@ public partial class Proyecto
     public string? Dimension3 { get; set; } 
 
     public int? ObjectType { get; }
+    [NotMapped]
+    public List<Indicadore>? Indicadores { get; set; }
+    [NotMapped]
+
+    public List<Riesgo>? Riesgo { get; set; }
+    [NotMapped]
+    public List<Area>? Areas { get; set; }
+    [NotMapped]
+    public List<Actividade>? actividades { get; set; }
+
 }

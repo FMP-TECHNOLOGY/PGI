@@ -58,8 +58,6 @@ public partial class Pacc
     public decimal Mes12 { get; set; }
 
     public bool Active { get; set; }
-
-
     public DateTime Created { get; set; }
 
     public int? ObjectType { get; }

@@ -204,7 +204,7 @@ public partial class PGIContext : DbContext
 
     public virtual DbSet<Riesgo> Riesgoes { get; set; }
 
-    public virtual DbSet<RiesgoAsociado> Riesgoasociados { get; set; }
+    public virtual DbSet<ProyectoRiesgo> ProyectoRiesgo { get; set; }
 
     public virtual DbSet<Role> Roles { get; set; }
 
@@ -1621,6 +1621,8 @@ public partial class PGIContext : DbContext
             entity.Property(e => e.PeriodicidadId).HasMaxLength(36);
             entity.Property(e => e.Peso).HasPrecision(19, 2);
             entity.Property(e => e.PoaId).HasMaxLength(36);
+            entity.Property(e => e.ProgramaId).HasMaxLength(36);
+            entity.Property(e => e.FondoId).HasMaxLength(36);
             entity.Property(e => e.Responsable).HasMaxLength(100);
             entity.Property(e => e.UnidadMedidaId).HasMaxLength(36);
         });
@@ -1677,11 +1679,11 @@ public partial class PGIContext : DbContext
             entity.Property(e => e.ProbabilidadOcurrencia).HasMaxLength(5);
         });
 
-        modelBuilder.Entity<RiesgoAsociado>(entity =>
+        modelBuilder.Entity<ProyectoRiesgo>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.ToTable("riesgoasociados");
+            entity.ToTable("proyectoriesgo");
 
             entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
             //entity.Property(e => e.CompaniaId).HasMaxLength(36);

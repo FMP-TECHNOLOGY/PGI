@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataAccess.Entities;
 
@@ -22,4 +23,6 @@ public partial class Pei
     public DateTime Created { get; set; }
 
     public int? ObjectType { get; }
+    [NotMapped]
+    public List<EjesEstrategico>  EjesEstrategicos { get; set; }
 }

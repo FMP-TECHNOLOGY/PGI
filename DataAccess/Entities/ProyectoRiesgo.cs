@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace DataAccess.Entities;
 
-public partial class RiesgoAsociado
+public partial class ProyectoRiesgo
 {
     public string? Id { get; set; } 
 

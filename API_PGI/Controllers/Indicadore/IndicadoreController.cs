@@ -20,7 +20,7 @@ namespace API_PGI.Controllers.Indicadores
     public class IndicadoreController : ControllerBase
     {
         private readonly IIndicadore _Indicadore;
-        private IAuth _Auth { get; }
+        private IAuth _Auth {get;}
 
         public IndicadoreController(IIndicadore Indicadore, IAuth auth)
         {
@@ -127,8 +127,6 @@ namespace API_PGI.Controllers.Indicadores
                     Message = ex.Message
                 });
             }
-
-
         }
     }
 }

@@ -72,7 +72,7 @@ namespace API_PGI.Controllers.Auth
         [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status401Unauthorized)]
         [JwtAuthorize]
         [HttpPost("Select/Compania/{Id}")]
-        public ActionResult<ResponseModel> SelectCompania([FromRoute] Guid Id)
+        public ActionResult<ResponseModel> SelectCompania([FromRoute] string Id)
         {
             return Ok(auth.SelectCompania(Id));
         }
@@ -83,7 +83,7 @@ namespace API_PGI.Controllers.Auth
         [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status401Unauthorized)]
         [JwtAuthorize]
         [HttpPost("Select/DireccionInstitucional/{Id}")]
-        public ActionResult<ResponseModel> SelectDireccionInstitucional([FromRoute] Guid Id)
+        public ActionResult<ResponseModel> SelectDireccionInstitucional([FromRoute] string Id)
         {
             
             return Ok(auth.SelectDireccionInstitucional(Id));
@@ -94,7 +94,7 @@ namespace API_PGI.Controllers.Auth
         [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status401Unauthorized)]
         [JwtAuthorize]
         [HttpPost("Select/Sucursal/{Id}")]
-        public ActionResult<ResponseModel> SelectSucursal([FromRoute] Guid Id)
+        public ActionResult<ResponseModel> SelectSucursal([FromRoute] string Id)
         {
             
             return Ok(auth.SelectSucursal(Id));
