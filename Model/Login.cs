@@ -10,7 +10,7 @@ namespace Model
     {
         public string? UserName { get; set; }
         public string? Password { get; set; }
-        public string? CompanyRNC { get; set; }
+        //public string? CompanyRNC { get; set; }
     }
     public class RegisterDto
     {

@@ -83,13 +83,14 @@ namespace API_PGI.Controllers.Parametros
                              .AddQuery(gridifyQuery)
                              .AddCondition($"{nameof(Parametro.CompaniaId)}={_Auth.CurrentUser?.CompaniaId}")
                 ;
-                if (gridifyQuery.PageSize == 0) gridifyQuery.PageSize = int.MaxValue;
-                if (gridifyQuery.Page == 0) gridifyQuery.Page = 1;
+                if (gridifyQuery.PageSize <= 0) gridifyQuery.PageSize = int.MaxValue;
+                if (gridifyQuery.Page <= 0) gridifyQuery.Page = 1;
 
                 var items = _Parametro.GetPaginated(gridifyQuery);
                 return Ok(new ResponseModel()
                 {
-
+                    PageNumber = gridifyQuery.Page,
+                    Rows = items.Data.Count(),
                     TotalCount = items.Count,
                     Result = items.Data,
                 });
@@ -108,7 +109,7 @@ namespace API_PGI.Controllers.Parametros
 
         }
         [HttpGet("Get/{id}")]
-        public IActionResult GetAll(string id)
+        public IActionResult Get(string id)
         {
             try
             {

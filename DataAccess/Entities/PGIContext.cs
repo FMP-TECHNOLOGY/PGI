@@ -1,18 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.Extensions.Logging;
-//using Microsoft.IdentityModel.SecurityTokenService;
-using Newtonsoft.Json;
 using Common.Exceptions;
 using Utils.Extensions;
-using static System.Reflection.Metadata.BlobBuilder;
 using Microsoft.Data.SqlClient;
 using Utils.Helpers;
 using DataAccess.ValueGenerators;
-using PGI.DataAccess.Repositories.Auth;
 
 namespace DataAccess.Entities;
 
@@ -830,7 +823,7 @@ public partial class PGIContext : DbContext
                 .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
 
             entity.Property(e => e.Created).HasColumnType("datetime");
-            entity.Property(e => e.EvidenciaId).HasMaxLength(36);
+            //entity.Property(e => e.EvidenciaId).HasMaxLength(36);
             entity.Property(e => e.NombreArchivo).HasMaxLength(100);
             entity.Property(e => e.ObjectType)
                 .HasDefaultValueSql("'12'")
@@ -1367,7 +1360,7 @@ public partial class PGIContext : DbContext
             entity.Property(e => e.ObjectType)
                 .HasDefaultValueSql("'28'")
                 .HasColumnName("objectType");
-            entity.Property(e => e.ParametroId).HasMaxLength(36);
+            entity.Property(e => e.ParametroId).HasColumnName("ParametroId").HasMaxLength(36);
         });
 
         modelBuilder.Entity<ParametrosValor>(entity =>

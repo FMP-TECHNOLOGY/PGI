@@ -381,12 +381,12 @@ namespace PGI.DataAccess.Repositories.Auth
                 if (!IsValidPassword(login.Password, user))
                     throw new UnauthorizedException("Invalid username or password");
 
-                var company = dBContext.GetService<ICompania>()?.Find(x => x.Rnc == login.CompanyRNC);
+                //var company = dBContext.GetService<ICompania>()?.Find(x => x.Rnc == login.CompanyRNC);
 
-                if (!IsValidUserCompany(user, login.CompanyRNC, company))
-                    throw new UnauthorizedException("Invalid company") { ErrorCode = 1002 };
+                //if (!IsValidUserCompany(user, login.CompanyRNC, company))
+                //    throw new UnauthorizedException("Invalid company") { ErrorCode = 1002 };
 
-                var token = GenerateUserToken(user, host, login.CompanyRNC, out JwtSecurityToken? securityToken);
+                var token = GenerateUserToken(user, host, out JwtSecurityToken? securityToken);
 
                 UserTokens.SaveToken(user, securityToken!, token, host);
 
@@ -475,7 +475,7 @@ namespace PGI.DataAccess.Repositories.Auth
             catch { }
         }
 
-        private string GenerateUserToken(User user, string? host, string? companyRNC, out JwtSecurityToken? securityToken)
+        private string GenerateUserToken(User user, string? host, out JwtSecurityToken? securityToken)
         {
             // INIT TOKEN HANDLER
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -484,7 +484,7 @@ namespace PGI.DataAccess.Repositories.Auth
                .SetIssuer(jwtConfig.Issuer)
                .SetHost(host)
                //.SetClaims()
-               .SetCompany(companyRNC)
+               //.SetCompany(companyRNC)
                .Build();
 
             return tokenHandler.WriteToken(securityToken);
