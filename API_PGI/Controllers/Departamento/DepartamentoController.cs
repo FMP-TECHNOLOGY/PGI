@@ -86,12 +86,12 @@ namespace API_PGI.Controllers.Departamentos
                 if (gridifyQuery.PageSize == 0) gridifyQuery.PageSize = int.MaxValue;
                 if (gridifyQuery.Page == 0) gridifyQuery.Page = 1;
 
-                var items = _Departamento.FindAll(gridifyQuery);
+                var items = _Departamento.GetPaginated(gridifyQuery);
                 return Ok(new ResponseModel()
                 {
 
                     TotalCount = items.Count,
-                    Result = items,
+                    Result = items.Data,
                 });
                 //  }
             }

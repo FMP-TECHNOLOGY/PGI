@@ -9,13 +9,17 @@ public partial class DocumentosEvidencia
 
     public string? CompaniaId { get; set; } 
 
-    public string? EvidenciaId { get; set; } 
+    public string? IdDocumentoBase { get; set; } 
+    public int? NoLinea { get; set; } 
+    public int? ObjectTypeBase { get; set; } 
 
     public string? NombreArchivo { get; set; } 
+    public string? Path { get; set; } 
+    public string? Extencion { get; set; } 
 
     public string? TipoArchivo { get; set; } 
 
-    public string?UserId { get; set; }
+    public string? UserId { get; set; }
 
     public DateTime Created { get; set; }
 

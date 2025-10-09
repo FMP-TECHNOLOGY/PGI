@@ -86,12 +86,12 @@ namespace API_PGI.Controllers.Parametros
                 if (gridifyQuery.PageSize == 0) gridifyQuery.PageSize = int.MaxValue;
                 if (gridifyQuery.Page == 0) gridifyQuery.Page = 1;
 
-                var items = _Parametro.FindAll(gridifyQuery);
+                var items = _Parametro.GetPaginated(gridifyQuery);
                 return Ok(new ResponseModel()
                 {
 
                     TotalCount = items.Count,
-                    Result = items,
+                    Result = items.Data,
                 });
                 //  }
             }

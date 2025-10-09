@@ -1332,7 +1332,7 @@ public partial class PGIContext : DbContext
 
             entity.Property(e => e.CostoEstimado).HasPrecision(19, 2);
             entity.Property(e => e.Created).HasColumnType("datetime");
-            entity.Property(e => e.CuentaObjetal).HasMaxLength(20);
+            entity.Property(e => e.CuentaObjetalId).HasMaxLength(20);
             entity.Property(e => e.Descripcion).HasMaxLength(300);
             entity.Property(e => e.Grupo).HasMaxLength(30);
             entity.Property(e => e.Mes1).HasPrecision(15, 2);

@@ -25,5 +25,5 @@ public partial class SolicitudCompra
     public bool? CompraPlanificada { get; set; }
     public string? Comentario { get; set; }
     [NotMapped]
-    public List<DetalleSolicitudCompra> DetalleSolicitudCompras = new List<DetalleSolicitudCompra>();
+    public List<DetalleSolicitudCompra> DetalleSolicitudCompras { get; set; } = new List<DetalleSolicitudCompra>();
 }

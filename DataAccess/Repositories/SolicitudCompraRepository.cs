@@ -28,7 +28,6 @@ public class SolicitudCompraRepository : GenericRepo<SolicitudCompra>, ISolicitu
         {
             try
             {
-
                 var data = base.Add(entity);
 
                 if (entity.DetalleSolicitudCompras.Count == 0) throw new Exception("La solicitud no tiene detalle");

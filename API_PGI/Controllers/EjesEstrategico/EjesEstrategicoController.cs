@@ -86,12 +86,12 @@ namespace API_PGI.Controllers.EjesEstrategicos
                 if (gridifyQuery.PageSize == 0) gridifyQuery.PageSize = int.MaxValue;
                 if (gridifyQuery.Page == 0) gridifyQuery.Page = 1;
 
-                var items = _EjesEstrategico.FindAll(gridifyQuery);
+                var items = _EjesEstrategico.GetPaginated(gridifyQuery);
                 return Ok(new ResponseModel()
                 {
 
                     TotalCount = items.Count,
-                    Result = items,
+                    Result = items.Data,
                 });
                 //  }
             }

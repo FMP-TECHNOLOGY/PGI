@@ -86,11 +86,11 @@ namespace API_PGI.Controllers.Accions
     //            if (gridifyQuery.PageSize == 0) gridifyQuery.PageSize = int.MaxValue;
     //            if (gridifyQuery.Page == 0) gridifyQuery.Page = 1;
 
-    //            var items = _Accion.FindAll(gridifyQuery);
+    //            var items = _Accion.GetPaginated(gridifyQuery);
     //            return Ok(new ResponseModel()
     //            {
     //                TotalCount = items.Count,
-    //                Result = items,
+    //                Result = items.Data,
     //            });
     //            //  }
     //        }

@@ -29,10 +29,11 @@ namespace API_PGI.Controllers.SolicitudCompras
         }
 
         [HttpPost]
-        public IActionResult post([FromBody] SolicitudCompra entity)
+        public IActionResult post([FromForm] SolicitudCompra entity)
         {
             try
             {
+                var request = Request;
                 _SolicitudCompra.AddSaving( entity);
 
 
@@ -86,12 +87,12 @@ namespace API_PGI.Controllers.SolicitudCompras
                 if (gridifyQuery.PageSize == 0) gridifyQuery.PageSize = int.MaxValue;
                 if (gridifyQuery.Page == 0) gridifyQuery.Page = 1;
 
-                var items = _SolicitudCompra.FindAll(gridifyQuery);
+                var items = _SolicitudCompra.GetPaginated(gridifyQuery);
                 return Ok(new ResponseModel()
                 {
 
                     TotalCount = items.Count,
-                    Result = items,
+                    Result = items.Data,
                 });
                 //  }
             }

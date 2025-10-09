@@ -30,6 +30,7 @@ namespace DataAccess
         public T? Find(GridifyQuery query);
         public List<T> FindAll(Expression<Func<T, bool>> predicate);
         public List<T> FindAll(GridifyQuery query);
+        public Paging<T> GetPaginated(GridifyQuery gridifyQuery);
         public T Add(T entity);
         public T AddSaving(T entity);
         public Task<T[]> AddSavingCatching(params T[] entities);
@@ -250,11 +251,18 @@ namespace DataAccess
         {
             return EntityDbSet.AsNoTrackingWithIdentityResolution().Where(predicate).ToList();
         }
+        public virtual Paging<T> GetPaginated(GridifyQuery gridifyQuery)
+        {
+            // return context.Set<T>().ApplyPaging(gridifyQuery).Paginate() ;
+            return EntityDbSet.AsNoTrackingWithIdentityResolution().Gridify(gridifyQuery);
+
+        }
 
         public virtual List<T> FindAll(GridifyQuery query)
         {
-            return EntityDbSet.AsNoTrackingWithIdentityResolution().ApplyFiltering(query)
-                .ToList();
+            //return EntityDbSet.AsNoTrackingWithIdentityResolution().ApplyFiltering(query)
+            //    .ToList();
+            return EntityDbSet.AsNoTrackingWithIdentityResolution().Gridify(query).Data.ToList();
         }
 
         public virtual T Update(T entity)

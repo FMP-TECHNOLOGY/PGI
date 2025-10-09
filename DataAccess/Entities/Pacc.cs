@@ -19,7 +19,7 @@ public partial class Pacc
 
     public string? CodigoCatalogo { get; set; } 
 
-    public string? CuentaObjetal { get; set; } 
+    public string? CuentaObjetalId { get; set; } 
 
     public string? Descripcion { get; set; } 
 

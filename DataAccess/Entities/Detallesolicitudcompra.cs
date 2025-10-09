@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataAccess.Entities;
 
@@ -54,4 +56,6 @@ public partial class DetalleSolicitudCompra
     public DateTime Created { get; set; }
 
     public int? ObjectType { get;  }
+    [NotMapped]
+    public List<DocumentosEvidencia> Files { get; set; } = new List<DocumentosEvidencia>();
 }
