@@ -14,8 +14,8 @@ namespace API_PGI.Controllers.UserCompanias
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [Route("[controller]")]
-    [ApiController]
+    //[Route("[controller]")]
+    //[ApiController]
     [JwtAuthorize]
     public class UserCompaniaController : ControllerBase
     {

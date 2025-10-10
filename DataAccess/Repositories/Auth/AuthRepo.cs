@@ -376,7 +376,7 @@ namespace PGI.DataAccess.Repositories.Auth
                     ResetLockout(user);
 
                 if ((!user.Active || user.IsLocked()) && user.LockoutDueDate < DateTime.Now)
-                    throw new UnauthorizedException("Inactive User or Locked") { ErrorCode = 1001 };
+                    throw new UnauthorizedException("Inactive User or Locked") { ErrorCode = "1001" };
 
                 if (!IsValidPassword(login.Password, user))
                     throw new UnauthorizedException("Invalid username or password");
@@ -398,7 +398,7 @@ namespace PGI.DataAccess.Repositories.Auth
             }
             catch (UnauthorizedException ex)
             {
-                if (user is not null && ex.ErrorCode != 1001)
+                if (user is not null && ex.ErrorCode != "1001")
                     IncreateLoginTries(user);
 
                 throw;

@@ -7,10 +7,14 @@ using System.Threading.Tasks;
 
 namespace Common.Exceptions
 {
-    public class UnauthorizedException : BaseException
+    public class UnauthorizedException : CustomException
     {
-        public override int ErrorCode { get; set; } = (int)HttpStatusCode.Unauthorized;
-        public override HttpStatusCode StatusCode { get; set; } = HttpStatusCode.Unauthorized;
+        //public override int ErrorCode { get; set; } = (int)HttpStatusCode.Unauthorized;
+        //public override HttpStatusCode StatusCode { get; set; } = HttpStatusCode.Unauthorized;
+
+        public override int StatusCode { get; set; } = (int)HttpStatusCode.Unauthorized;
+        public override string ErrorCode { get; set; } = HttpStatusCode.Unauthorized.ToString();
+
         public static string ErrorDescription { get; } = "Unauthorized";
 
         public UnauthorizedException() : base(ErrorDescription) { }
@@ -20,10 +24,13 @@ namespace Common.Exceptions
         public UnauthorizedException(string? message, Exception innerException) : base(message ?? ErrorDescription, innerException) { }
     }
 
-    public class NotFoundException : BaseException
+    public class NotFoundException : CustomException
     {
-        public override int ErrorCode { get; set; } = (int)HttpStatusCode.NotFound;
-        public override HttpStatusCode StatusCode { get; set; } = HttpStatusCode.NotFound;
+        //public override int ErrorCode { get; set; } = (int)HttpStatusCode.NotFound;
+        //public override HttpStatusCode StatusCode { get; set; } = HttpStatusCode.NotFound;
+
+        public new int StatusCode { get; set; } = (int)HttpStatusCode.NotFound;
+        public new string ErrorCode { get; set; } = HttpStatusCode.NotFound.ToString();
         public static string ErrorDescription { get; } = "Not Found";
 
         public NotFoundException() : base(ErrorDescription) { }
