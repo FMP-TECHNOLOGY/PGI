@@ -557,7 +557,7 @@ namespace PGI.DataAccess.Repositories.Auth
             if (CurrentUser is null)
                 throw new UnauthorizedException();
 
-            var sucursal = UserCompanies.Find(x => x.Id == id && x.UserId == CurrentUser.Id) ??
+            var sucursal = UserCompanies.Find(x => x.CompaniaId == id && x.UserId == CurrentUser.Id) ??
                 throw new NotFoundException();
 
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -586,7 +586,7 @@ namespace PGI.DataAccess.Repositories.Auth
             if (CurrentUser is null)
                 throw new UnauthorizedException();
 
-            var sucursal = userDireccionInstitucionalRepo.Find(x => x.Id == id && x.UserId == CurrentUser.Id) ??
+            var sucursal = userDireccionInstitucionalRepo.Find(x => x.DirecionInstitucionalId == id && x.UserId == CurrentUser.Id) ??
                 throw new NotFoundException();
 
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -615,7 +615,7 @@ namespace PGI.DataAccess.Repositories.Auth
             if (CurrentUser is null)
                 throw new UnauthorizedException();
 
-            var sucursal = userSucursalRepo.Find(x => x.Id == id && x.UserId == CurrentUser.Id) ??
+            var sucursal = userSucursalRepo.Find(x => x.SucursalId == id && x.UserId == CurrentUser.Id) ??
                 throw new NotFoundException();
 
             var tokenHandler = new JwtSecurityTokenHandler();

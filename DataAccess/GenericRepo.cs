@@ -4,10 +4,13 @@ using DataAccess.Extensions;
 using Gridify;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using PGI.DataAccess.Repositories.Auth;
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -59,11 +62,17 @@ namespace DataAccess
 
         public DbSet<T> EntityDbSet { get; init; }
 
+        private static readonly ConcurrentDictionary<Type, IEnumerable<string>> TypeNavigations = new();
+        private protected readonly Type entityType;
+        IGlobalFilters globalFilter;
         public GenericRepo(PGIContext context)
         {
             this.context = context;
+            entityType = typeof(T);
 
             EntityDbSet = context.Set<T>();
+
+            this.globalFilter = context.GetService<IGlobalFilters>();
         }
 
         public virtual T Add(T entity)
@@ -254,10 +263,33 @@ namespace DataAccess
         public virtual Paging<T> GetPaginated(GridifyQuery gridifyQuery)
         {
             // return context.Set<T>().ApplyPaging(gridifyQuery).Paginate() ;
-            return EntityDbSet.AsNoTrackingWithIdentityResolution().Gridify(gridifyQuery);
+            //return EntityDbSet.AsNoTrackingWithIdentityResolution().Gridify(gridifyQuery);
+            return IncludeRelatedNavigations(EntityDbSet.AsNoTrackingWithIdentityResolution(), GetNavigationProps(), globalFilter.Expand)
+                .Gridify(gridifyQuery);
 
         }
+        private IEnumerable<string> GetNavigationProps()
+        {
+            return TypeNavigations.GetOrAdd(entityType, (type) =>
+            {
+                var model = context.Model.FindEntityType(type);
+                var navs = model.GetNavigations()
+                    .Select(x => x.Name)
+                    .ToList();
 
+                navs.AddRange(model.GetSkipNavigations().Select(x => x.Name));
+                return navs;
+            });
+        }
+        public  IQueryable<T> IncludeRelatedNavigations<T>(IQueryable<T> queryable,
+            IEnumerable<string> navigations, bool load = true) where T : class
+        {
+            if (load)
+                foreach (var navigation in navigations)
+                    queryable = queryable.Include(navigation);
+
+            return queryable;
+        }
         public virtual List<T> FindAll(GridifyQuery query)
         {
             //return EntityDbSet.AsNoTrackingWithIdentityResolution().ApplyFiltering(query)

@@ -1,6 +1,9 @@
+using API_PGI;
 using API_PGI.Auth;
 using API_PGI.Exceptions;
 using Auth.JWT;
+using Common.Exceptions;
+using DataAccess;
 using DataAccess.Entities;
 using DataAccess.Repositories;
 using Gridify;
@@ -180,7 +183,7 @@ builder.Services.AddScoped<IXactividade, XactividadeRepository>();
 builder.Services.AddScoped<IXpacc, XpaccRepository>();
 builder.Services.AddScoped<IXproducto, XproductoRepository>();
 builder.Services.AddScoped<IXxactividade, XxactividadeRepository>();
-
+builder.Services.AddScoped<IGlobalFilters, GlobalFilters>();
 
 GridifyGlobalConfiguration.DefaultPageSize = int.MaxValue;
 
@@ -200,6 +203,29 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 app.UseMiddleware<ErrorHandlerMiddleware>();
+
+app.Use((context, next) =>
+{
+    if (!"GET".Equals(context.Request.Method, StringComparison.InvariantCultureIgnoreCase))
+        goto next;
+
+    var globals = context.RequestServices.GetService<IGlobalFilters>();
+    if (globals is null)
+        goto next;
+
+    if (!context.Request.Query.TryGetValue("Expand", out var filters))
+        goto next;
+
+    var value = filters.ToString();
+
+    if (!bool.TryParse(value, out var expand))
+        throw new BadRequestException($"The value {value} for the 'Expand' query parameter is not a valid boolean value");
+
+    globals.Expand = expand;
+
+next:
+    return next(context);
+});
 
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
