@@ -11,9 +11,10 @@ public partial class GrupoParametro
 
     public bool Active { get; set; }
 
-    public string?UserId { get; set; }
+    public string? UserId { get; set; }
 
     public DateTime Created { get; set; }
 
+    //public long con {  get; set; }
     public int? ObjectType { get; }
 }

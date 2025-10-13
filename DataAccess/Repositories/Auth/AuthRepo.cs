@@ -493,6 +493,7 @@ namespace PGI.DataAccess.Repositories.Auth
             securityToken = new UserTokenBuilder(user)
                .SetIssuer(jwtConfig.Issuer)
                .SetHost(host)
+               //.SetUser(user)
                //.SetClaims()
                //.SetCompany(companyId)
                .Build();

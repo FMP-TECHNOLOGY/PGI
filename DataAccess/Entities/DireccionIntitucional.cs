@@ -17,5 +17,5 @@ public partial class DireccionIntitucional
     public string? Telefono { get; set; } 
 
     public int? ObjectType { get; }
-    public Boolean? Active { get; set; }
+    public bool? Active { get; set; }
 }

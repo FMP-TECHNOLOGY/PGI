@@ -33,7 +33,7 @@ namespace DataAccess.Builders
             if (setBasicClaims)
                 SetBasicClaims();
 
-            SetCompany(user.Company.Id.ToString());
+            SetCompany(user.Company?.Id.ToString());
 
             SetExpirity(hour: 1);
 

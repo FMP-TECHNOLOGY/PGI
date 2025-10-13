@@ -251,7 +251,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("userId")
                 .HasValueGenerator<UserSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
             entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
             entity.Property(e => e.Active).HasColumnName("active");
@@ -267,7 +267,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("companiaId")
                 .HasValueGenerator<CompaniaSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
             entity.Property(e => e.Created)
                 .HasColumnType("datetime")
@@ -308,7 +308,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("companiaId")
                 .HasValueGenerator<CompaniaSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
             entity.Property(e => e.Created)
                 .HasColumnType("datetime")
@@ -335,7 +335,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("userId")
                 .HasValueGenerator<UserSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
         });
 
         modelBuilder.Entity<Area>(entity =>
@@ -358,7 +358,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("companiaId")
                 .HasValueGenerator<CompaniaSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
 
             entity.Property(e => e.Created)
@@ -382,7 +382,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("userId")
                 .HasValueGenerator<UserSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
         });
 
@@ -404,7 +404,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("companiaId")
                 .HasValueGenerator<CompaniaSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
 
             entity.Property(e => e.Created)
@@ -422,7 +422,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("userId")
                 .HasValueGenerator<UserSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
         });
 
         modelBuilder.Entity<Auditoria>(entity =>
@@ -457,7 +457,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("userId")
                 .HasValueGenerator<UserSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
             entity.Property(e => e.ValorActual).HasColumnName("valorActual");
             entity.Property(e => e.ValorAnterior).HasColumnName("valorAnterior");
@@ -484,7 +484,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("companiaId")
                 .HasValueGenerator<CompaniaSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
 
             entity.Property(e => e.ContainerName)
@@ -511,7 +511,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("userId")
                 .HasValueGenerator<UserSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
         });
 
@@ -555,7 +555,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("userId")
                 .HasValueGenerator<UserSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
         });
 
@@ -575,7 +575,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("companiaId")
                 .HasValueGenerator<CompaniaSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
 
             entity.Property(e => e.Created)
@@ -606,7 +606,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("userId")
                 .HasValueGenerator<UserSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
             entity.Property(e => e.Username)
                 .HasMaxLength(100)
@@ -635,7 +635,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("userId")
                 .HasValueGenerator<UserSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
         });
 
@@ -654,7 +654,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("companiaId")
                 .HasValueGenerator<CompaniaSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
 
             entity.Property(e => e.Descripcion)
@@ -672,7 +672,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("userId")
                 .HasValueGenerator<UserSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
         });
 
@@ -691,7 +691,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("companiaId")
                 .HasValueGenerator<CompaniaSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
 
             entity.Property(e => e.Descripcion)
@@ -709,7 +709,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("sucursalId")
                 .HasValueGenerator<SucursalSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
             //entity.Property(e => e.UserId)
             //    .HasMaxLength(45)
@@ -719,7 +719,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("userId")
                 .HasValueGenerator<UserSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
         });
 
@@ -738,7 +738,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("companiaId")
                 .HasValueGenerator<CompaniaSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
 
             entity.Property(e => e.Descripcion)
@@ -754,7 +754,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("sucursalId")
                 .HasValueGenerator<SucursalSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
             //entity.Property(e => e.UserId)
             //    .HasMaxLength(45)
@@ -764,7 +764,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("userId")
                 .HasValueGenerator<UserSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
             entity.Property(e => e.Active)
                 .HasColumnName("Active");
@@ -820,7 +820,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("companiaId")
                 .HasValueGenerator<CompaniaSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
             entity.Property(e => e.Created).HasColumnType("datetime");
             //entity.Property(e => e.EvidenciaId).HasMaxLength(36);
@@ -861,7 +861,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("companiaId")
                 .HasValueGenerator<CompaniaSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
 
             entity.Property(e => e.Created)
@@ -880,7 +880,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("userId")
                 .HasValueGenerator<UserSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
         });
 
@@ -909,7 +909,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("companiaId")
                 .HasValueGenerator<CompaniaSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
             entity.Property(e => e.Depto).HasColumnName("depto");
             entity.Property(e => e.DescripcionNomina)
@@ -974,7 +974,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("companiaId")
                 .HasValueGenerator<CompaniaSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
 
             entity.Property(e => e.Created).HasColumnType("datetime");
@@ -1003,7 +1003,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("companiaId")
                 .HasValueGenerator<CompaniaSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
             entity.Property(e => e.Created)
                 .HasColumnType("datetime")
@@ -1020,7 +1020,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("userId")
                 .HasValueGenerator<UserSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
         });
 
@@ -1038,7 +1038,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("companiaId")
                 .HasValueGenerator<CompaniaSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
             entity.Property(e => e.Created).HasColumnType("datetime");
             entity.Property(e => e.Ejecutado).HasPrecision(15, 2);
@@ -1061,6 +1061,17 @@ public partial class PGIContext : DbContext
             entity.Property(e => e.ObjectType)
                 .HasDefaultValueSql("'18'")
                 .HasColumnName("objectType");
+
+            //entity.Property(e => e.con).IsConcurrencyToken();
+            entity.Property(e => e.Created)
+                .HasColumnType("datetime")
+                .HasColumnName("created").HasValueGenerator<DateTimeValueGenerator>();
+
+            entity.Property(e => e.UserId)
+               .HasColumnName("userId")
+               .HasValueGenerator<UserSignValueGenerator>()
+               .ValueGeneratedOnAdd()
+               .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
         });
 
         modelBuilder.Entity<ImputacionesPresupuestaria>(entity =>
@@ -1085,7 +1096,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("userId")
                 .HasValueGenerator<UserSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
         });
 
@@ -1106,7 +1117,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("companiaId")
                 .HasValueGenerator<CompaniaSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
             entity.Property(e => e.Created)
                 .HasColumnType("datetime")
@@ -1134,7 +1145,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("userId")
                 .HasValueGenerator<UserSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
             entity.Property(e => e.ValorActual)
                 .HasPrecision(19, 2)
@@ -1189,7 +1200,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("companiaId")
                 .HasValueGenerator<CompaniaSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
             entity.Property(e => e.Created).HasColumnType("datetime");
             entity.Property(e => e.CredencialId).HasMaxLength(36);
@@ -1216,7 +1227,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("companiaId")
                 .HasValueGenerator<CompaniaSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
 
             entity.Property(e => e.Created).HasColumnType("datetime");
@@ -1274,7 +1285,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("companiaId")
                 .HasValueGenerator<CompaniaSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
 
             entity.Property(e => e.Created)
@@ -1291,7 +1302,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("userId")
                 .HasValueGenerator<UserSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
         });
 
@@ -1320,7 +1331,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("companiaId")
                 .HasValueGenerator<CompaniaSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
 
             entity.Property(e => e.CostoEstimado).HasPrecision(19, 2);
@@ -1361,6 +1372,23 @@ public partial class PGIContext : DbContext
                 .HasDefaultValueSql("'28'")
                 .HasColumnName("objectType");
             entity.Property(e => e.ParametroId).HasColumnName("ParametroId").HasMaxLength(36);
+
+            entity.Property(e => e.CompaniaId)
+                .HasColumnName("companiaId")
+                .HasValueGenerator<CompaniaSignValueGenerator>()
+                .ValueGeneratedOnAdd()
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
+
+
+            entity.Property(e => e.Created)
+                .HasColumnType("datetime")
+                .HasColumnName("created").HasValueGenerator<DateTimeValueGenerator>();
+
+            entity.Property(e => e.UserId)
+               .HasColumnName("userId")
+               .HasValueGenerator<UserSignValueGenerator>()
+               .ValueGeneratedOnAdd()
+               .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
         });
 
         modelBuilder.Entity<ParametrosValor>(entity =>
@@ -1376,7 +1404,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("companiaId")
                 .HasValueGenerator<CompaniaSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
 
             entity.Property(e => e.Created).HasColumnType("datetime");
@@ -1414,7 +1442,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("userId")
                 .HasValueGenerator<UserSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
         });
 
@@ -1473,7 +1501,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("companiaId")
                 .HasValueGenerator<CompaniaSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
 
             entity.Property(e => e.Created).HasColumnType("datetime");
@@ -1500,7 +1528,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("companiaId")
                 .HasValueGenerator<CompaniaSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
 
             entity.Property(e => e.Created).HasColumnType("datetime");
@@ -1530,7 +1558,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("companiaId")
                 .HasValueGenerator<CompaniaSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
 
             entity.Property(e => e.InWhichDimension).HasMaxLength(20);
@@ -1566,7 +1594,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("companiaId")
                 .HasValueGenerator<CompaniaSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
 
             entity.Property(e => e.Created).HasColumnType("datetime");
@@ -1597,7 +1625,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("companiaId")
                 .HasValueGenerator<CompaniaSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
 
             entity.Property(e => e.Created).HasColumnType("datetime");
@@ -1633,7 +1661,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("companiaId")
                 .HasValueGenerator<CompaniaSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
 
             entity.Property(e => e.Created).HasColumnType("datetime");
@@ -1657,7 +1685,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("companiaId")
                 .HasValueGenerator<CompaniaSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
 
             entity.Property(e => e.Created).HasColumnType("datetime");
@@ -1685,7 +1713,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("companiaId")
                 .HasValueGenerator<CompaniaSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
 
             entity.Property(e => e.Created).HasColumnType("datetime");
@@ -1781,7 +1809,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("companiaId")
                 .HasValueGenerator<CompaniaSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
 
             entity.Property(e => e.ObjectType)
@@ -1805,7 +1833,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("companiaId")
                 .HasValueGenerator<CompaniaSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
 
             entity.Property(e => e.Nombre)
@@ -1838,7 +1866,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("companiaId")
                 .HasValueGenerator<CompaniaSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
 
             entity.Property(e => e.Created)
@@ -1855,7 +1883,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("userId")
                 .HasValueGenerator<UserSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
         });
 
@@ -1878,7 +1906,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("companiaId")
                 .HasValueGenerator<CompaniaSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
 
             entity.Property(e => e.Created)
@@ -1896,7 +1924,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("userId")
                 .HasValueGenerator<UserSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
         });
 
@@ -1916,7 +1944,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("companiaId")
                 .HasValueGenerator<CompaniaSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
 
             entity.Property(e => e.Created)
@@ -1932,7 +1960,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("userId")
                 .HasValueGenerator<UserSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
         });
 
@@ -2019,7 +2047,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("companiaId")
                 .HasValueGenerator<CompaniaSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
 
             entity.Property(e => e.Username).HasMaxLength(100);
@@ -2037,22 +2065,22 @@ public partial class PGIContext : DbContext
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<DateTimeValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
             entity.Property(e => e.CreatedBy)
                 .HasValueGenerator<UserSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
             entity.Property(e => e.UpdatedAt)
                 .HasValueGenerator<DateTimeValueGenerator>()
                 .ValueGeneratedOnUpdate()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
             entity.Property(e => e.UpdatedBy)
                 .HasValueGenerator<UserSignValueGenerator>()
                 .ValueGeneratedOnUpdate()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
             //entity.Property(x=>x.CompaniaId)
             //.HasColumnName("")
@@ -2123,7 +2151,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("userId")
                 .HasValueGenerator<UserSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
             entity.Property(e => e.Created)
                 .HasColumnType("datetime")
@@ -2169,7 +2197,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("userId")
                 .HasValueGenerator<UserSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
         });
 
@@ -2258,7 +2286,7 @@ public partial class PGIContext : DbContext
                 .HasColumnName("userId")
                 .HasValueGenerator<UserSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
         });
 
@@ -2544,12 +2572,12 @@ public partial class PGIContext : DbContext
             entity.Property(e => e.CreatedBy)
                 .HasValueGenerator<UserSignValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
             entity.Property(e => e.Timestamp)
                 .HasValueGenerator<DateTimeValueGenerator>()
                 .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
         });
     }
     private static void OnViewModelCreating(ModelBuilder modelBuilder)
