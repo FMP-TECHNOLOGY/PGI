@@ -74,7 +74,7 @@ namespace API_PGI.Controllers.Auth
         [HttpPost("Select/Compania/{Id}")]
         public ActionResult<ResponseModel> SelectCompania([FromRoute] string Id)
         {
-            return Ok(auth.SelectCompania(Id));
+            return Ok(new ResponseModel<JwtResponse>(auth.SelectCompania(Id)));
         }
 
 
@@ -86,7 +86,7 @@ namespace API_PGI.Controllers.Auth
         public ActionResult<ResponseModel> SelectDireccionInstitucional([FromRoute] string Id)
         {
             
-            return Ok(auth.SelectDireccionInstitucional(Id));
+            return Ok(new ResponseModel<JwtResponse>(auth.SelectDireccionInstitucional(Id)));
         }
 
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -97,7 +97,7 @@ namespace API_PGI.Controllers.Auth
         public ActionResult<ResponseModel> SelectSucursal([FromRoute] string Id)
         {
             
-            return Ok(auth.SelectSucursal(Id));
+            return Ok(new ResponseModel<JwtResponse>(auth.SelectSucursal(Id)));
         }
 
     }
