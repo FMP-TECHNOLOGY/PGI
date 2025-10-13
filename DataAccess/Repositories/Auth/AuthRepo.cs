@@ -153,25 +153,35 @@ namespace PGI.DataAccess.Repositories.Auth
 
             var userToken = tokenHandler.ReadJwtToken(token);
 
-            var companyRNC = userToken.Claims.FirstOrDefault(x => x.Type == CustomJwtClaimTypes.Company)?.Value;
+            var companyId = userToken.Claims.FirstOrDefault(x => x.Type == CustomJwtClaimTypes.Company)?.Value;
             var instDirId = userToken.Claims.FirstOrDefault(x => x.Type == CustomJwtClaimTypes.DireccionInstitucional)?.Value;
             var sucursalId = userToken.Claims.FirstOrDefault(x => x.Type == CustomJwtClaimTypes.BranchOffice)?.Value;
 
-            SetCompany(companyRNC);
+            SetCompany(companyId);
             SetDirInst(instDirId);
             SetSucursal(sucursalId);
 
             //TrySetDataSource(location, userAgent);
 
-            void SetCompany(string? rnc)
+            void SetCompany(string? compId)
             {
-                if (string.IsNullOrWhiteSpace(rnc))
+                if (string.IsNullOrWhiteSpace(compId))
                     return;
                 try
                 {
-                    CurrentCompany = string.Equals(CurrentUser?.Company?.Rnc, rnc, StringComparison.InvariantCultureIgnoreCase)
-                    ? CurrentUser?.Company
-                    : CurrentUser?.Companies.SingleOrDefault(x => x.Rnc == rnc);
+                    if(string.Equals(CurrentUser?.Company?.Id, compId, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        CurrentCompany = CurrentUser?.Company;
+
+                    }
+                    else
+                    {
+                        CurrentCompany = CurrentUser?.Companies.SingleOrDefault(x => x.Id == compId);
+                        CurrentUser.CompaniaId = compId;
+                        Users.UpdateSaving(CurrentUser);
+
+                    }
+                    
                 }
                 catch { }
             }
@@ -484,7 +494,7 @@ namespace PGI.DataAccess.Repositories.Auth
                .SetIssuer(jwtConfig.Issuer)
                .SetHost(host)
                //.SetClaims()
-               //.SetCompany(companyRNC)
+               //.SetCompany(companyId)
                .Build();
 
             return tokenHandler.WriteToken(securityToken);
@@ -498,7 +508,7 @@ namespace PGI.DataAccess.Repositories.Auth
                .SetIssuer(jwtConfig.Issuer)
                .SetHost(host)
                .SetClaims(claims)
-               //.SetCompany(companyRNC)
+               //.SetCompany(companyId)
                .Build();
 
             return tokenHandler.WriteToken(securityToken);
