@@ -34,7 +34,7 @@ public class SolicitudCompraRepository : GenericRepo<SolicitudCompra>, ISolicitu
                 foreach (var item in entity.DetalleSolicitudCompras)
                 {
                     item.SolicitudId = data.Id;
-                    if (item.Cantidad == 0) throw new Exception($"No se permiten cantidades 0");
+                    if (item.Cantidad == 0) throw new Exception($"No se permiten cantidades en 0");
                     _DetalleSolicitudCompra.Add(item);
                 }
                 return entity;

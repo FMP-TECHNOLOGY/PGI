@@ -29,7 +29,7 @@ namespace API_PGI.Controllers.SolicitudCompras
         }
 
         [HttpPost]
-        public IActionResult post([FromForm] SolicitudCompra entity)
+        public IActionResult post([FromBody] SolicitudCompra entity)
         {
             try
             {

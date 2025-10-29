@@ -23,29 +23,23 @@ namespace API_PGI.Controllers.DocumentosEvidencias
         private readonly ISolicitudCompra _SolicitudCompra;
         private IAuth _Auth { get; }
         private readonly string _basePath;
+        private Microsoft.AspNetCore.Hosting.IHostingEnvironment _hostingEnvironment;
 
-        public DocumentosEvidenciaController(IDocumentosEvidencia DocumentosEvidencia, IAuth auth, ISolicitudCompra solicitudCompra, IConfiguration config)
+        public DocumentosEvidenciaController(IDocumentosEvidencia DocumentosEvidencia, IAuth auth, ISolicitudCompra solicitudCompra, Microsoft.AspNetCore.Hosting.IHostingEnvironment hostingEnvironment)
         {
             _DocumentosEvidencia = DocumentosEvidencia;
             _Auth = auth;
             _SolicitudCompra = solicitudCompra;
-            _basePath = config["StoragePath"];
+            _hostingEnvironment = hostingEnvironment;
         }
 
-        [HttpPost]
+        [HttpPost()]
+        //[HttpPost()]
         public IActionResult post([FromForm] Archivo Anexos, string idDocumentoBase, int NoLinea, int ObjectType)
         {
             try
             {
-                //var solicitud = _SolicitudCompra.Find(x => x.Id == SolicitudId);
-                //if (solicitud == null)
-                //{
-                //    return BadRequest(new ResponseModel()
-                //    {
-                //        Message = "Documento no existe"
-                //    });
-                //}
-                var empresaFolder = Path.Combine(_basePath, $"{_Auth.CurrentCompany.Id}", DateTime.Now.ToString("yyyy"), DateTime.Now.ToString("MM"));
+                var empresaFolder = Path.Combine(_hostingEnvironment.WebRootPath, $"{_Auth.CurrentCompany.Id}", DateTime.Now.ToString("yyyy"), DateTime.Now.ToString("MM"));
                 Directory.CreateDirectory(empresaFolder);
 
                 List<DocumentosEvidencia> documentosEvidencias = new List<DocumentosEvidencia>();
@@ -63,7 +57,7 @@ namespace API_PGI.Controllers.DocumentosEvidencias
                         item.CopyToAsync(stream);
                     }
                     //ruta = Path.Combine("Imagenes", $"{nombre}.{extencion}");//; $"Imagenes/{nombre}.{extencion}";
-
+                    filePath= Path.Combine( $"{_Auth.CurrentCompany.Id}", DateTime.Now.ToString("yyyy"), DateTime.Now.ToString("MM"), fileName);
                     documentosEvidencias.Add(new DocumentosEvidencia() { Extencion = extencion, IdDocumentoBase = idDocumentoBase, NombreArchivo = fileName, Path = filePath, CompaniaId = _Auth.CurrentCompany.Id, NoLinea = NoLinea, ObjectTypeBase = ObjectType, UserId = _Auth.CurrentUser.Id });
                 }
 
@@ -107,6 +101,7 @@ namespace API_PGI.Controllers.DocumentosEvidencias
             }
 
         }
+
         [HttpGet("GetAll")]
         public IActionResult GetAll([FromQuery] GridifyQuery gridifyQuery)
         {
