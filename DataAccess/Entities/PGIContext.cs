@@ -113,6 +113,7 @@ public partial class PGIContext : DbContext
 
 
 
+    public virtual DbSet<GrupoDePacc> GrupoDePaccs { get; set; }
     public virtual DbSet<PeriodoEvidencia> PeriodoEvidencias { get; set; }
     public virtual DbSet<Origen> Origenes { get; set; }
     public virtual DbSet<Impacto> Impactos { get; set; }
@@ -251,6 +252,7 @@ public partial class PGIContext : DbContext
         ModelDefinitionFrom<Impacto>(modelBuilder, "Impacto");
         ModelDefinitionFrom<Origen>(modelBuilder, "Origen");
         ModelDefinitionFrom<PeriodoEvidencia>(modelBuilder, "PeriodoEvidencia");
+        ModelDefinitionFrom<GrupoDePacc>(modelBuilder, "grupodepacc");
 
         modelBuilder.Entity<Accion>(entity =>
         {
@@ -1587,6 +1589,8 @@ public partial class PGIContext : DbContext
                 .HasColumnName("objectType");
             entity.Property(e => e.PoaId).HasMaxLength(36);
             entity.Property(e => e.ProyectoId).HasMaxLength(36);
+
+            entity.HasOne<GrupoDePacc>().WithMany().HasForeignKey(x => x.GrupoId);
         });
 
         modelBuilder.Entity<Parametro>(entity =>

@@ -26,6 +26,7 @@ public partial class Pacc
 
     public string? Descripcion { get; set; } 
 
+    public string? GrupoId { get; set; } 
     public string? Grupo { get; set; } 
 
     public decimal CostoEstimado { get; set; }
