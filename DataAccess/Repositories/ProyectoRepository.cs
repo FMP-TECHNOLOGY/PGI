@@ -75,7 +75,7 @@ public class ProyectoRepository : GenericRepo<Proyecto>, IProyecto
                 //-------------------------------
                 var proyectoRiesgos = _ProyectoRiesgo.FindAll(x => x.ProyectoId == data.Id);
 
-                //Insertar Riesgos del proyecto----------------------------------
+                //Insertar Riesgos del _Proyecto----------------------------------
                 if (entity.Riesgo.Count > 0)
                 {
                     foreach (var item in entity.Riesgo)
@@ -112,7 +112,7 @@ public class ProyectoRepository : GenericRepo<Proyecto>, IProyecto
                     }
                 }
                 //-------------------------------------
-                //Insertar Riesgos del proyecto----------------------------------
+                //Insertar Riesgos del _Proyecto----------------------------------
                 if (entity.Riesgo.Count > 0)
                 {
                     foreach (var item in entity.Riesgo)

@@ -68,4 +68,5 @@ public partial class Pacc
     public string? DireccionId { get; set; }
     public string? SucursalId { get; set; }
     public string? DepartamentoId { get; set; }
+    public string? AreaId { get; set; }
 }
