@@ -113,6 +113,7 @@ public partial class PGIContext : DbContext
 
 
 
+    public virtual DbSet<PeriodoEvidencia> PeriodoEvidencias { get; set; }
     public virtual DbSet<Origen> Origenes { get; set; }
     public virtual DbSet<Impacto> Impactos { get; set; }
     public virtual DbSet<ProbabilidadOcurrencia> ProbabilidadOcurrencias { get; set; }
@@ -249,6 +250,7 @@ public partial class PGIContext : DbContext
         ModelDefinitionFrom<ProbabilidadOcurrencia>(modelBuilder, "ProbabilidadOcurrencia");
         ModelDefinitionFrom<Impacto>(modelBuilder, "Impacto");
         ModelDefinitionFrom<Origen>(modelBuilder, "Origen");
+        ModelDefinitionFrom<PeriodoEvidencia>(modelBuilder, "PeriodoEvidencia");
 
         modelBuilder.Entity<Accion>(entity =>
         {
@@ -1740,6 +1742,8 @@ public partial class PGIContext : DbContext
                 .HasColumnName("objectType");
             entity.Property(e => e.PeriodoEvidencia).HasColumnName("periodoEvidencia");
             entity.Property(e => e.Planificacion).HasColumnName("planificacion");
+
+            entity.HasOne<PeriodoEvidencia>().WithMany().HasForeignKey(e => e.PeriodoEvidenciaId);
         });
 
         modelBuilder.Entity<ProductoIntegracion>(entity =>

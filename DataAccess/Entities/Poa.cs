@@ -15,6 +15,7 @@ public partial class Poa
 
     public bool Planificacion { get; set; }
 
+    public string? PeriodoEvidenciaId { get; set; }
     public int PeriodoEvidencia { get; set; }
 
     public bool Active { get; set; }

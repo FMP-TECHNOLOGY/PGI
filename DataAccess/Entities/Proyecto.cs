@@ -40,11 +40,16 @@ public partial class Proyecto
 
     public DateTime Created { get; set; }
 
+    //producto
     public string? Dimension1 { get; set; } 
-
+    //actividad
     public string? Dimension2 { get; set; } 
-
+    //departamento gerencial
     public string? Dimension3 { get; set; } 
+    //objetal
+    public string? Dimension4 { get; set; } 
+    //fondo
+    public string? Dimension5 { get; set; } 
 
     public int? ObjectType { get; }
     [NotMapped]
