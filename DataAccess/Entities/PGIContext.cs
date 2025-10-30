@@ -112,6 +112,10 @@ public partial class PGIContext : DbContext
     }
 
 
+
+    public virtual DbSet<Origen> Origenes { get; set; }
+    public virtual DbSet<Impacto> Impactos { get; set; }
+    public virtual DbSet<ProbabilidadOcurrencia> ProbabilidadOcurrencias { get; set; }
     public virtual DbSet<Accion> Accions { get; set; }
 
     public virtual DbSet<Actividade> Actividades { get; set; }
@@ -241,6 +245,10 @@ public partial class PGIContext : DbContext
         modelBuilder
             .UseCollation("utf8mb4_0900_ai_ci")
             .HasCharSet("utf8mb4");
+
+        ModelDefinitionFrom<ProbabilidadOcurrencia>(modelBuilder, "ProbabilidadOcurrencia");
+        ModelDefinitionFrom<Impacto>(modelBuilder, "Impacto");
+        ModelDefinitionFrom<Origen>(modelBuilder, "Origen");
 
         modelBuilder.Entity<Accion>(entity =>
         {
@@ -649,7 +657,7 @@ public partial class PGIContext : DbContext
 
             entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
             entity.Property(e => e.Active).HasColumnName("active");
-            
+
             entity.Property(e => e.Created)
                 .HasColumnType("datetime")
                 .HasColumnName("created").HasValueGenerator<DateTimeValueGenerator>();
@@ -733,7 +741,7 @@ public partial class PGIContext : DbContext
             entity.ToTable("direccion_intitucional");
 
             entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
-            
+
 
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(45)
@@ -813,7 +821,7 @@ public partial class PGIContext : DbContext
             entity.ToTable("fondo");
 
             entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
-            
+
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(45)
                 .HasColumnName("descripcion");
@@ -1919,6 +1927,10 @@ public partial class PGIContext : DbContext
                 .HasColumnName("objectType");
             entity.Property(e => e.Origen).HasMaxLength(7);
             entity.Property(e => e.ProbabilidadOcurrencia).HasMaxLength(5);
+
+            entity.HasOne<ProbabilidadOcurrencia>().WithMany().HasForeignKey(x => x.ProbabilidadId);
+            entity.HasOne<Impacto>().WithMany().HasForeignKey(x => x.ImpactoId);
+            entity.HasOne<Origen>().WithMany().HasForeignKey(x => x.OrigenId);
         });
 
         modelBuilder.Entity<ProyectoRiesgo>(entity =>
@@ -2448,7 +2460,7 @@ public partial class PGIContext : DbContext
 
         modelBuilder.Entity<UserPermission>(entity =>
         {
-            entity.HasKey(e =>  e.Id)
+            entity.HasKey(e => e.Id)
                 .HasName("PRIMARY");
 
             entity.ToTable("userpermissions");
@@ -2780,6 +2792,46 @@ public partial class PGIContext : DbContext
 
         //OnModelCreatingPartial(modelBuilder);
     }
+
+    void ModelDefinitionFrom<T>(ModelBuilder modelBuilder, string? tableName = null) where T : BaseSystemData
+    {
+        modelBuilder.Entity<T>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            if (!string.IsNullOrWhiteSpace(tableName))
+                entity.ToTable(tableName);
+
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
+
+            entity.Property(e => e.CreatedAt)
+                .HasColumnType("datetime")
+                //.HasColumnName("createdAt")
+                .HasValueGenerator<DateTimeValueGenerator>();
+            
+            entity.Property(e => e.Description)
+                .HasMaxLength(100)
+                //.HasColumnName("descripcion")
+                ;
+
+            entity.Property(e => e.CreatedBy)
+                .HasColumnType("datetime")
+                //.HasColumnName("created")
+                .HasValueGenerator<DateTimeValueGenerator>();
+
+            entity.Property(e => e.UpdatedAt)
+                .HasColumnType("datetime")
+                //.HasColumnName("createdAt")
+                .HasValueGenerator<DateTimeValueGenerator>();
+
+            entity.Property(e => e.UpdatedBy)
+                .HasColumnType("datetime")
+                //.HasColumnName("created")
+                .HasValueGenerator<DateTimeValueGenerator>();
+        });
+
+    }
+
     private static void OnAuditModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Log>(entity =>
