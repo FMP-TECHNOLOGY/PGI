@@ -20,12 +20,12 @@ public partial class Proyecto
 
     public string? Descripcion { get; set; }
 
-    //public string? ObjetivoId { get; set; } 
-    public List<Objetivo> Objetivos { get; set; } = new List<Objetivo>();
+    public string? ObjetivoId { get; set; } 
+    //public List<Objetivo> Objetivos { get; set; } = new List<Objetivo>();
     public string? Responsable { get; set; }
 
     public string? UnidadMedidaId { get; set; }
-
+    
     public string? PeriodicidadId { get; set; }
 
     public decimal LineaBase { get; set; }

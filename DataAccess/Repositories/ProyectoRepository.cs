@@ -43,7 +43,7 @@ public class ProyectoRepository : GenericRepo<Proyecto>, IProyecto
                     {
                         if (!proyectoIndicadores.Exists(x => x.IndicadorId == item.Id))
                         {
-                            _ProyectoIndicadore.AddOrUpdateSaving(new ProyectoIndicadore()
+                            _ProyectoIndicadore.AddOrUpdate(new ProyectoIndicadore()
                             {
                                 CompaniaId = Auth.CurrentCompany.Id,
                                 IndicadorId = item.Id,
@@ -195,10 +195,11 @@ public class ProyectoRepository : GenericRepo<Proyecto>, IProyecto
                     {
                         if (actividades.Find(x => x.Id == item.Id) == null)
                         {
-                            _AreaTransversales.AddOrUpdateSaving(new AreasTransversale()
+                            _Actividade.AddOrUpdateSaving(new Actividade()
                             {
                                 CompaniaId = Auth.CurrentCompany.Id,
-                                AreaId = item.Id,
+                                 //= item.Id,
+                                 TipoActividad = item.TipoActividad,
                                 ProyectoId = data.Id
                             });
                         }

@@ -15,10 +15,13 @@ public partial class Pacc
 
     public string? ActividadId { get; set; } 
 
+    //codigo producto o item
     public string? CodigoIntegracion { get; set; } 
 
+    //viene del producto
     public string? CodigoCatalogo { get; set; } 
 
+    //viene del producto
     public string? CuentaObjetalId { get; set; } 
 
     public string? Descripcion { get; set; } 
