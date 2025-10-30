@@ -41,7 +41,7 @@ public class ProyectoRepository : GenericRepo<Proyecto>, IProyecto
                 {
                     foreach (var item in entity.Indicadores)
                     {
-                        if (proyectoIndicadores.Find(x => x.IndicadorId == item.Id) == null)
+                        if (!proyectoIndicadores.Exists(x => x.IndicadorId == item.Id))
                         {
                             _ProyectoIndicadore.AddOrUpdateSaving(new ProyectoIndicadore()
                             {

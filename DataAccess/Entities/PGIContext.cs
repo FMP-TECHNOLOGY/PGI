@@ -1871,7 +1871,7 @@ public partial class PGIContext : DbContext
             entity.Property(e => e.ObjectType)
                 .HasDefaultValueSql("'37'")
                 .HasColumnName("objectType");
-            entity.Property(e => e.ObjetivoId).HasMaxLength(36);
+            //entity.Property(e => e.ObjetivoId).HasMaxLength(36);
             entity.Property(e => e.PeriodicidadId).HasMaxLength(36);
             entity.Property(e => e.Peso).HasPrecision(19, 2);
             entity.Property(e => e.PoaId).HasMaxLength(36);
@@ -1879,6 +1879,15 @@ public partial class PGIContext : DbContext
             entity.Property(e => e.FondoId).HasMaxLength(36);
             entity.Property(e => e.Responsable).HasMaxLength(100);
             entity.Property(e => e.UnidadMedidaId).HasMaxLength(36);
+
+            entity.HasOne<UnidadMedida>().WithMany().HasForeignKey(x => x.UnidadMedidaId);
+
+            entity.HasMany<Objetivo>(x=>x.Objetivos).WithMany().UsingEntity<ObjetivoProyeto>(j =>
+            {
+                j.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
+                j.HasOne<Objetivo>().WithMany().HasForeignKey(e => e.ObjetivoId);
+                j.HasOne<Proyecto>().WithMany().HasForeignKey(e => e.ProyectoId);
+            });
         });
 
         modelBuilder.Entity<ProyectoIndicadore>(entity =>
