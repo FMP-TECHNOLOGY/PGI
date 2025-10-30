@@ -15,17 +15,17 @@ public partial class Riesgo
 
     public int TipoRiesgoId { get; set; }
 
-    public Guid? ProbabilidadId { get; set; }
+    public string? ProbabilidadId { get; set; }
 
     public string? ProbabilidadOcurrencia { get; set; }
 
-    public Guid? ImpactoId { get; set; }
+    public string? ImpactoId { get; set; }
 
     public string? Impacto { get; set; } 
 
     public string? Mitigacion { get; set; } 
 
-    public Guid? OrigenId { get; set; } 
+    public string? OrigenId { get; set; } 
 
     public string? Origen { get; set; } 
 

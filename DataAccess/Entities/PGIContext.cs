@@ -986,11 +986,11 @@ public partial class PGIContext : DbContext
             entity.Property(e => e.Active).HasColumnName("active");
             //entity.Property(e => e.CompaniaId).HasMaxLength(36);
 
-            entity.Property(e => e.CompaniaId)
-                .HasColumnName("companiaId")
-                .HasValueGenerator<CompaniaSignValueGenerator>()
-                .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
+            //entity.Property(e => e.CompaniaId)
+            //    .HasColumnName("companiaId")
+            //    .HasValueGenerator<CompaniaSignValueGenerator>()
+            //    .ValueGeneratedOnAdd()
+            //    .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
 
             entity.Property(e => e.Created)
@@ -1510,11 +1510,11 @@ public partial class PGIContext : DbContext
             entity.Property(e => e.Active).HasColumnName("active");
             //entity.Property(e => e.CompaniaId).HasMaxLength(36);
 
-            entity.Property(e => e.CompaniaId)
-                .HasColumnName("companiaId")
-                .HasValueGenerator<CompaniaSignValueGenerator>()
-                .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
+            //entity.Property(e => e.CompaniaId)
+            //    .HasColumnName("companiaId")
+            //    .HasValueGenerator<CompaniaSignValueGenerator>()
+            //    .ValueGeneratedOnAdd()
+            //    .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
 
             entity.Property(e => e.Created)
@@ -1931,6 +1931,32 @@ public partial class PGIContext : DbContext
             entity.HasOne<ProbabilidadOcurrencia>().WithMany().HasForeignKey(x => x.ProbabilidadId);
             entity.HasOne<Impacto>().WithMany().HasForeignKey(x => x.ImpactoId);
             entity.HasOne<Origen>().WithMany().HasForeignKey(x => x.OrigenId);
+
+            //entity.HasMany<ProbabilidadOcurrencia>()
+            //.WithMany()
+            //.UsingEntity<OcurrenciaRiesgo>(j =>
+            //{
+            //    j.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
+            //    j.HasOne<Riesgo>().WithMany().HasForeignKey(e => e.RiesgoId);
+            //    j.HasOne<ProbabilidadOcurrencia>().WithMany().HasForeignKey(e => e.ProbabilidadOcurrenciaId);
+            //});
+
+            //entity.HasMany<Impacto>()
+            //.WithMany()
+            //.UsingEntity<ImpactoRiesgo>(j =>
+            //{
+            //    j.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
+            //    j.HasOne<Riesgo>().WithMany().HasForeignKey(e => e.RiesgoId);
+            //    j.HasOne<Impacto>().WithMany().HasForeignKey(e => e.ImpactoId);
+            //});
+            //entity.HasMany<Origen>()
+            //.WithMany()
+            //.UsingEntity<OrigenRiesgo>(j =>
+            //{
+            //    j.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
+            //    j.HasOne<Riesgo>().WithMany().HasForeignKey(e => e.RiesgoId);
+            //    j.HasOne<Origen>().WithMany().HasForeignKey(e => e.OrigenId);
+            //});
         });
 
         modelBuilder.Entity<ProyectoRiesgo>(entity =>
@@ -2815,7 +2841,7 @@ public partial class PGIContext : DbContext
                 ;
 
             entity.Property(e => e.CreatedBy)
-                .HasColumnType("datetime")
+                .HasColumnType("varchar(36)")
                 //.HasColumnName("created")
                 .HasValueGenerator<DateTimeValueGenerator>();
 
@@ -2825,7 +2851,7 @@ public partial class PGIContext : DbContext
                 .HasValueGenerator<DateTimeValueGenerator>();
 
             entity.Property(e => e.UpdatedBy)
-                .HasColumnType("datetime")
+                .HasColumnType("varchar(36)")
                 //.HasColumnName("created")
                 .HasValueGenerator<DateTimeValueGenerator>();
         });

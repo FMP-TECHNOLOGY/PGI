@@ -7,7 +7,7 @@ public partial class Objetivo
 {
     public string? Id { get; set; } 
 
-    public string? CompaniaId { get; set; } 
+    //public string? CompaniaId { get; set; } 
 
     public string? EjeId { get; set; } 
 

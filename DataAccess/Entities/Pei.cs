@@ -24,5 +24,5 @@ public partial class Pei
 
     public int? ObjectType { get; }
     [NotMapped]
-    public List<EjesEstrategico>  EjesEstrategicos { get; set; }
+    public List<EjesEstrategico>  EjesEstrategicos { get; set; } = new List<EjesEstrategico>();
 }

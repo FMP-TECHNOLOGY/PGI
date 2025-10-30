@@ -81,7 +81,7 @@ namespace API_PGI.Controllers.EjesEstrategicos
             {
                 var builder = new QueryBuilder<EjesEstrategico>()
                              .AddQuery(gridifyQuery)
-                             .AddCondition($"{nameof(EjesEstrategico.CompaniaId)}={_Auth.CurrentUser?.CompaniaId}")
+                             //.AddCondition($"{nameof(EjesEstrategico.CompaniaId)}={_Auth.CurrentUser?.CompaniaId}")
                 ;
                 if (gridifyQuery.PageSize == 0) gridifyQuery.PageSize = int.MaxValue;
                 if (gridifyQuery.Page == 0) gridifyQuery.Page = 1;

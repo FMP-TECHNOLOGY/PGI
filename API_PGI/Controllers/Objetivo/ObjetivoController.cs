@@ -81,7 +81,7 @@ namespace API_PGI.Controllers.Objetivos
             {
                 var builder = new QueryBuilder<Objetivo>()
                              .AddQuery(gridifyQuery)
-                             .AddCondition($"{nameof(Objetivo.CompaniaId)}={_Auth.CurrentUser?.CompaniaId}")
+                             //.AddCondition($"{nameof(Objetivo.CompaniaId)}={_Auth.CurrentUser?.CompaniaId}")
                 ;
                 if (gridifyQuery.PageSize == 0) gridifyQuery.PageSize = int.MaxValue;
                 if (gridifyQuery.Page == 0) gridifyQuery.Page = 1;
