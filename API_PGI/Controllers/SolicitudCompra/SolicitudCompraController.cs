@@ -33,7 +33,7 @@ namespace API_PGI.Controllers.SolicitudCompras
         {
             try
             {
-                var request = Request;
+                //var request = Request;
                 _SolicitudCompra.AddSaving( entity);
 
 

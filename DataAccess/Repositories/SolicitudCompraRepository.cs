@@ -37,6 +37,8 @@ public class SolicitudCompraRepository : GenericRepo<SolicitudCompra>, ISolicitu
                     if (item.Cantidad == 0) throw new Exception($"No se permiten cantidades en 0");
                     _DetalleSolicitudCompra.Add(item);
                 }
+                base.Save();
+                trans.Commit();
                 return entity;
             }
             catch (Exception ex)
