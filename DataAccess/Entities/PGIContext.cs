@@ -113,6 +113,10 @@ public partial class PGIContext : DbContext
 
 
 
+    public virtual DbSet<DetalleRequisicion> DetalleRequisiciones { get; set; }
+    public virtual DbSet<Requisicion> Requisiciones { get; set; }
+    public virtual DbSet<Impuesto> Impuestos { get; set; }
+    public virtual DbSet<TipoUmbral> TipoUmbrales { get; set; }
     public virtual DbSet<GrupoDePacc> GrupoDePaccs { get; set; }
     public virtual DbSet<PeriodoEvidencia> PeriodoEvidencias { get; set; }
     public virtual DbSet<Origen> Origenes { get; set; }
@@ -141,6 +145,7 @@ public partial class PGIContext : DbContext
     public virtual DbSet<DireccionIntitucional> DireccionInstitucional { get; set; }
 
     public virtual DbSet<DetalleSolicitudCompra> Detallesolicitudcompras { get; set; }
+    public virtual DbSet<DetalleOrdenCompra> DetalleOrdenCompras { get; set; }
 
     public virtual DbSet<DocumentosEvidencia> Documentosevidencias { get; set; }
 
@@ -213,6 +218,7 @@ public partial class PGIContext : DbContext
     public virtual DbSet<RolMenu> Rolmenus { get; set; }
 
     public virtual DbSet<SolicitudCompra> Solicitudcompras { get; set; }
+    public virtual DbSet<OrdenCompra> Ordencompras { get; set; }
 
     public virtual DbSet<Sucursal> Sucursals { get; set; }
 
@@ -253,6 +259,96 @@ public partial class PGIContext : DbContext
         ModelDefinitionFrom<Origen>(modelBuilder, "Origen");
         ModelDefinitionFrom<PeriodoEvidencia>(modelBuilder, "PeriodoEvidencia");
         ModelDefinitionFrom<GrupoDePacc>(modelBuilder, "grupodepacc");
+        ModelDefinitionFrom<TipoUmbral>(modelBuilder, "tipoumbrales");
+        ModelDefinitionFrom<Impuesto>(modelBuilder, "impuestos");
+
+
+        modelBuilder.Entity<Requisicion>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("requisiciones");
+
+            entity.Property(e => e.UserId)
+                .HasColumnName("userId")
+                .HasValueGenerator<UserSignValueGenerator>()
+                .ValueGeneratedOnAdd()
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
+
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
+            //entity.Property(e => e.Active).HasColumnName("active");
+            
+            entity.Property(e => e.CompaniaId)
+                .HasMaxLength(36)
+                .HasColumnName("companiaId");
+
+            entity.Property(e => e.CompaniaId)
+                .HasColumnName("companiaId")
+                .HasValueGenerator<CompaniaSignValueGenerator>()
+                .ValueGeneratedOnAdd()
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
+
+            entity.Property(e => e.Created)
+                .HasColumnType("datetime")
+                .HasColumnName("created").HasValueGenerator<DateTimeValueGenerator>();
+            
+            entity.Property(e => e.ObjectType)
+                //.HasDefaultValueSql("'1'")
+                .HasColumnName("objectType");
+            
+            entity.Property(e => e.CompaniaId)
+                .HasColumnName("companiaId")
+                .HasValueGenerator<CompaniaSignValueGenerator>()
+                .ValueGeneratedOnAdd()
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
+
+
+            entity.Property(e => e.Created)
+                .HasColumnType("datetime")
+                .HasColumnName("created").HasValueGenerator<DateTimeValueGenerator>();
+
+            entity.Property(e => e.UserId)
+               .HasColumnName("userId")
+               .HasValueGenerator<UserSignValueGenerator>()
+               .ValueGeneratedOnAdd()
+               .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
+
+            entity.HasMany<DetalleRequisicion>().WithOne().HasForeignKey(x => x.RequisicionId);
+        });
+        modelBuilder.Entity<DetalleRequisicion>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("detallerequisicion");
+
+            entity.Property(e => e.UserId)
+                .HasColumnName("userId")
+                .HasValueGenerator<UserSignValueGenerator>()
+                .ValueGeneratedOnAdd()
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
+
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
+            //entity.Property(e => e.Active).HasColumnName("active");
+            
+            entity.Property(e => e.Created)
+                .HasColumnType("datetime")
+                .HasColumnName("created").HasValueGenerator<DateTimeValueGenerator>();
+            
+            entity.Property(e => e.ObjectType)
+                //.HasDefaultValueSql("'1'")
+                .HasColumnName("objectType");
+            
+            entity.Property(e => e.Created)
+                .HasColumnType("datetime")
+                .HasColumnName("created").HasValueGenerator<DateTimeValueGenerator>();
+
+            entity.Property(e => e.UserId)
+               .HasColumnName("userId")
+               .HasValueGenerator<UserSignValueGenerator>()
+               .ValueGeneratedOnAdd()
+               .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
+
+        });
 
         modelBuilder.Entity<Accion>(entity =>
         {
@@ -850,54 +946,6 @@ public partial class PGIContext : DbContext
                 .HasValueGenerator<CompaniaSignValueGenerator>()
                 .ValueGeneratedOnAdd()
                 .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
-
-
-            entity.Property(e => e.Created)
-                .HasColumnType("datetime")
-                .HasColumnName("created").HasValueGenerator<DateTimeValueGenerator>();
-
-            entity.Property(e => e.UserId)
-               .HasColumnName("userId")
-               .HasValueGenerator<UserSignValueGenerator>()
-               .ValueGeneratedOnAdd()
-               .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
-        });
-
-        modelBuilder.Entity<DetalleSolicitudCompra>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PRIMARY");
-
-            entity.ToTable("detallesolicitudcompra");
-
-            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
-            entity.Property(e => e.Cantidad).HasColumnName("cantidad");
-            entity.Property(e => e.Costo).HasPrecision(19, 2);
-            entity.Property(e => e.CostoRecepcion).HasPrecision(19, 2);
-            entity.Property(e => e.Created).HasColumnType("datetime");
-            entity.Property(e => e.CuentaObjetal)
-                .HasMaxLength(36)
-                .HasColumnName("cuentaObjetal");
-            entity.Property(e => e.Especificaciones)
-                .HasColumnType("text")
-                .HasColumnName("especificaciones");
-            entity.Property(e => e.Estadoid).HasMaxLength(36);
-            entity.Property(e => e.FechaAdjudicacion).HasColumnType("datetime");
-            entity.Property(e => e.NumeroProceso).HasMaxLength(30);
-            entity.Property(e => e.ObjectType)
-                .HasDefaultValueSql("'11'")
-                .HasColumnName("objectType");
-            entity.Property(e => e.OrdenCompra).HasMaxLength(20);
-            entity.Property(e => e.PaccId)
-                .HasMaxLength(36)
-                .HasColumnName("paccId");
-            entity.Property(e => e.PorcentajeDescuento).HasPrecision(15, 2);
-            entity.Property(e => e.ProveedorId).HasMaxLength(36);
-            entity.Property(e => e.SolicitudId)
-                .HasMaxLength(36)
-                .HasColumnName("solicitudId");
-            entity.Property(e => e.TipoImpuestoCode).HasMaxLength(10);
-            entity.Property(e => e.UmbralCode).HasMaxLength(36);
-            entity.Property(e => e.Valor).HasPrecision(19, 2);
 
 
             entity.Property(e => e.Created)
@@ -1774,7 +1822,7 @@ public partial class PGIContext : DbContext
             entity.Property(e => e.InventoryUoMentry)
                 .HasMaxLength(10)
                 .HasColumnName("InventoryUoMEntry");
-            entity.Property(e => e.Itbis).HasMaxLength(10);
+            //entity.Property(e => e.Itbis).HasMaxLength(10);
             entity.Property(e => e.ObjectType)
                 .HasDefaultValueSql("'34'")
                 .HasColumnName("objectType");
@@ -2093,6 +2141,125 @@ public partial class PGIContext : DbContext
                 .HasDefaultValueSql("'44'")
                 .HasColumnName("objectType");
             entity.Property(e => e.PoaId).HasMaxLength(36);
+
+            entity.HasMany<DetalleSolicitudCompra>().WithOne().HasForeignKey(x => x.SolicitudId);
+        });
+
+
+        modelBuilder.Entity<DetalleSolicitudCompra>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("detallesolicitudcompra");
+
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
+            entity.Property(e => e.Cantidad).HasColumnName("cantidad");
+            entity.Property(e => e.Costo).HasPrecision(19, 2);
+            entity.Property(e => e.CostoRecepcion).HasPrecision(19, 2);
+            entity.Property(e => e.Created).HasColumnType("datetime");
+            entity.Property(e => e.CuentaObjetal)
+                .HasMaxLength(36)
+                .HasColumnName("cuentaObjetal");
+            entity.Property(e => e.Especificaciones)
+                .HasColumnType("text")
+                .HasColumnName("especificaciones");
+            entity.Property(e => e.Estadoid).HasMaxLength(36);
+            entity.Property(e => e.FechaAdjudicacion).HasColumnType("datetime");
+            entity.Property(e => e.NumeroProceso).HasMaxLength(30);
+            entity.Property(e => e.ObjectType)
+                //.HasDefaultValueSql("'11'")
+                .HasColumnName("objectType");
+            entity.Property(e => e.OrdenCompra).HasMaxLength(20);
+            entity.Property(e => e.PaccId)
+                .HasMaxLength(36)
+                .HasColumnName("paccId");
+            entity.Property(e => e.PorcentajeDescuento).HasPrecision(15, 2);
+            entity.Property(e => e.ProveedorId).HasMaxLength(36);
+            entity.Property(e => e.SolicitudId)
+                .HasMaxLength(36)
+                .HasColumnName("solicitudId");
+            entity.Property(e => e.TipoImpuestoCode).HasMaxLength(10);
+            entity.Property(e => e.UmbralCode).HasMaxLength(36);
+            entity.Property(e => e.Valor).HasPrecision(19, 2);
+
+
+            entity.Property(e => e.Created)
+                .HasColumnType("datetime")
+                .HasColumnName("created").HasValueGenerator<DateTimeValueGenerator>();
+
+            entity.Property(e => e.UserId)
+               .HasColumnName("userId")
+               .HasValueGenerator<UserSignValueGenerator>()
+               .ValueGeneratedOnAdd()
+               .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
+        });
+
+        modelBuilder.Entity<OrdenCompra>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("ordencompra");
+
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
+            entity.Property(e => e.Codigo).HasMaxLength(255);
+            //entity.Property(e => e.CompaniaId).HasMaxLength(36);
+
+            entity.Property(e => e.CompaniaId)
+                .HasColumnName("companiaId")
+                .HasValueGenerator<CompaniaSignValueGenerator>()
+                .ValueGeneratedOnAdd()
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
+
+
+            entity.Property(e => e.ObjectType)
+                //.HasDefaultValueSql("'44'")
+                .HasColumnName("objectType");
+            entity.Property(e => e.PoaId).HasMaxLength(36);
+
+            entity.HasMany<DetalleOrdenCompra>().WithOne().HasForeignKey(x => x.OrdenCompraId);
+
+        });
+
+        modelBuilder.Entity<DetalleOrdenCompra>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("detalleordencompra");
+
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
+            entity.Property(e => e.Cantidad).HasColumnName("cantidad");
+            entity.Property(e => e.Costo).HasPrecision(19, 2);
+            entity.Property(e => e.Created).HasColumnType("datetime");
+            entity.Property(e => e.CuentaObjetal)
+                .HasMaxLength(36)
+                .HasColumnName("cuentaObjetal");
+            entity.Property(e => e.Estadoid).HasMaxLength(36);
+            entity.Property(e => e.FechaAdjudicacion).HasColumnType("datetime");
+            entity.Property(e => e.NumeroProceso).HasMaxLength(30);
+            entity.Property(e => e.ObjectType)
+                //.HasDefaultValueSql("'11'")
+                .HasColumnName("objectType");
+            entity.Property(e => e.PaccId)
+                .HasMaxLength(36)
+                .HasColumnName("paccId");
+            entity.Property(e => e.PorcentajeDescuento).HasPrecision(15, 2);
+            entity.Property(e => e.OrdenCompraId)
+                .HasMaxLength(36)
+                .HasColumnName("OrdenCompraId");
+            entity.Property(e => e.TipoImpuestoCode).HasMaxLength(10);
+            entity.Property(e => e.UmbralCode).HasMaxLength(36);
+            entity.Property(e => e.Valor).HasPrecision(19, 2);
+
+
+            entity.Property(e => e.Created)
+                .HasColumnType("datetime")
+                .HasColumnName("created").HasValueGenerator<DateTimeValueGenerator>();
+
+            entity.Property(e => e.UserId)
+               .HasColumnName("userId")
+               .HasValueGenerator<UserSignValueGenerator>()
+               .ValueGeneratedOnAdd()
+               .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
         });
 
         modelBuilder.Entity<Sucursal>(entity =>

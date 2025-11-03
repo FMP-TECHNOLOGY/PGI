@@ -23,7 +23,7 @@ public partial class ProductoIntegracion
 
     public string?CuentaObjetal { get; set; }
 
-    public string?Itbis { get; set; }
+    //public string?Itbis { get; set; }
 
     public string?InventoryUoMentry { get; set; }
 

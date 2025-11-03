@@ -1,5 +1,4 @@
 ﻿using API_PGI.Auth;
-using DataAccess;
 using DataAccess.Entities;
 using DataAccess.Repositories;
 using Gridify;
@@ -7,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Model;
 using PGI.DataAccess.Repositories.Auth;
 
-namespace API_PGI.Controllers.SystemData
+namespace API_PGI.Controllers.OrdenDeCompra
 {
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status201Created)]
@@ -18,24 +17,24 @@ namespace API_PGI.Controllers.SystemData
     [Route("[controller]")]
     [ApiController]
     [JwtAuthorize]
-    public abstract class BaseSystemDataController<T> : ControllerBase where T : BaseSystemData
+    public class OrdenDeCompraController : ControllerBase
     {
-
-        private readonly ISystemData<T> _Repo;
+        private readonly IOrdenCompra _OrdenCompra;
         private IAuth _Auth { get; }
 
-        public BaseSystemDataController(ISystemData<T> BaseSystemData, IAuth auth)
+        public OrdenDeCompraController(IOrdenCompra OrdenCompra, IAuth auth)
         {
-            _Repo = BaseSystemData;
+            _OrdenCompra = OrdenCompra;
             _Auth = auth;
         }
 
         [HttpPost]
-        public virtual IActionResult post([FromBody] T entity)
+        public IActionResult post([FromBody] OrdenCompra entity)
         {
             try
             {
-                _Repo.AddSaving(entity);
+                //var request = Request;
+                _OrdenCompra.AddSaving(entity);
 
 
                 return Ok(new ResponseModel()
@@ -54,11 +53,12 @@ namespace API_PGI.Controllers.SystemData
 
         }
         [HttpPut]
-        public virtual IActionResult Put([FromBody] T entity)
+        public IActionResult Put([FromBody] OrdenCompra entity)
         {
             try
             {
-                _Repo.UpdateSaving(entity);
+
+                _OrdenCompra.UpdateSaving(entity);
 
                 return Ok(new ResponseModel()
                 {
@@ -76,18 +76,18 @@ namespace API_PGI.Controllers.SystemData
 
         }
         [HttpGet("GetAll")]
-        public virtual IActionResult GetAll([FromQuery] GridifyQuery gridifyQuery)
+        public IActionResult GetAll([FromQuery] GridifyQuery gridifyQuery)
         {
             try
             {
-                var builder = new QueryBuilder<T>()
+                var builder = new QueryBuilder<OrdenCompra>()
                              .AddQuery(gridifyQuery)
-                             .AddCondition($"{nameof(BaseSystemData.CompaniaId)}={_Auth.CurrentUser?.CompaniaId}")
+                             .AddCondition($"{nameof(OrdenCompra.CompaniaId)}={_Auth.CurrentUser?.CompaniaId}")
                 ;
                 if (gridifyQuery.PageSize == 0) gridifyQuery.PageSize = int.MaxValue;
                 if (gridifyQuery.Page == 0) gridifyQuery.Page = 1;
 
-                var items = _Repo.GetPaginated(gridifyQuery);
+                var items = _OrdenCompra.GetPaginated(gridifyQuery);
                 return Ok(new ResponseModel()
                 {
 
@@ -108,12 +108,12 @@ namespace API_PGI.Controllers.SystemData
             }
 
         }
-        [HttpGet("{id}")]
-        public virtual IActionResult GetAll(string id)
+        [HttpGet("Get/{id}")]
+        public IActionResult GetAll(string id)
         {
             try
             {
-                var valor = _Repo.Find(x => x.Id == id);
+                var valor = _OrdenCompra.Find(x => x.Id == id);
 
                 return Ok(new ResponseModel()
                 {
