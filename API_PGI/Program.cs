@@ -185,6 +185,10 @@ builder.Services.AddScoped<IXproducto, XproductoRepository>();
 builder.Services.AddScoped<IXxactividade, XxactividadeRepository>();
 builder.Services.AddScoped<IGlobalFilters, GlobalFilters>();
 
+
+builder.Services.AddScoped<IDireccionIntitucional, DireccionIntitucionalRepository>();
+
+
 GridifyGlobalConfiguration.DefaultPageSize = int.MaxValue;
 
 

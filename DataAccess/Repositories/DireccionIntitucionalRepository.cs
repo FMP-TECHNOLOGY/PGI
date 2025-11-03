@@ -7,7 +7,7 @@ namespace DataAccess.Repositories
     {
 
     }
-    public class DireccionIntitucionalRepository : GenericRepo<DireccionIntitucional>
+    public class DireccionIntitucionalRepository : GenericRepo<DireccionIntitucional>, IDireccionIntitucional
     {
         public DireccionIntitucionalRepository(PGIContext context) : base(context)
         {
