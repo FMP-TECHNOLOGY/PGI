@@ -113,6 +113,8 @@ public partial class PGIContext : DbContext
 
 
 
+    public virtual DbSet<DetallePacc> DetallePaccs { get; set; }
+    public virtual DbSet<TipoArticulo> TipoArticulos { get; set; }
     public virtual DbSet<DetalleRequisicion> DetalleRequisiciones { get; set; }
     public virtual DbSet<Requisicion> Requisiciones { get; set; }
     public virtual DbSet<Impuesto> Impuestos { get; set; }
@@ -261,7 +263,39 @@ public partial class PGIContext : DbContext
         ModelDefinitionFrom<GrupoDePacc>(modelBuilder, "grupodepacc");
         ModelDefinitionFrom<TipoUmbral>(modelBuilder, "tipoumbrales");
         ModelDefinitionFrom<Impuesto>(modelBuilder, "impuestos");
+        ModelDefinitionFrom<TipoArticulo>(modelBuilder, "tipoarticulo");
 
+
+        modelBuilder.Entity<DetallePacc>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("detallepacc");
+
+            entity.Property(e => e.UserId)
+                .HasColumnName("userId")
+                .HasValueGenerator<UserSignValueGenerator>()
+                .ValueGeneratedOnAdd()
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
+
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
+            //entity.Property(e => e.Active).HasColumnName("active");
+
+            entity.Property(e => e.Created)
+                .HasColumnType("datetime")
+                .HasColumnName("created").HasValueGenerator<DateTimeValueGenerator>();
+
+            entity.Property(e => e.ObjectType)
+                //.HasDefaultValueSql("'1'")
+                .HasColumnName("objectType");
+
+            entity.Property(e => e.UserId)
+               .HasColumnName("userId")
+               .HasValueGenerator<UserSignValueGenerator>()
+               .ValueGeneratedOnAdd()
+               .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
+
+        });
 
         modelBuilder.Entity<Requisicion>(entity =>
         {
@@ -302,19 +336,15 @@ public partial class PGIContext : DbContext
                 .ValueGeneratedOnAdd()
                 .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
-
-            entity.Property(e => e.Created)
-                .HasColumnType("datetime")
-                .HasColumnName("created").HasValueGenerator<DateTimeValueGenerator>();
-
             entity.Property(e => e.UserId)
                .HasColumnName("userId")
                .HasValueGenerator<UserSignValueGenerator>()
                .ValueGeneratedOnAdd()
                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
-            entity.HasMany<DetalleRequisicion>().WithOne().HasForeignKey(x => x.RequisicionId);
+            entity.HasMany<DetalleRequisicion>(x=>x.Detalles).WithOne().HasForeignKey(x => x.RequisicionId);
         });
+
         modelBuilder.Entity<DetalleRequisicion>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");

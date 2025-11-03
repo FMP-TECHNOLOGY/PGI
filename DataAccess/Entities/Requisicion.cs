@@ -24,6 +24,8 @@ namespace DataAccess.Entities
 
         public DateTime Created { get; set; }
 
+        public List<DetalleRequisicion> Detalles { get; set; } = new List<DetalleRequisicion>();
+
         //public string? ProgramaId { get; set; }
         //public string? FondoId { get; set; }
 
