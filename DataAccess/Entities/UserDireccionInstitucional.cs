@@ -7,7 +7,7 @@ public partial class UserDireccionInstitucional
 
     public string DirecionInstitucionalId { get; set; }
 
-    public int ValidUserId { get; set; }
+    public string? ValidUserId { get; set; }
 
     public bool Active { get; set; }
 
