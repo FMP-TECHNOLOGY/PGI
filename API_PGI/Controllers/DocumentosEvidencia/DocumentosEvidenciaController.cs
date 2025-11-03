@@ -57,11 +57,22 @@ namespace API_PGI.Controllers.DocumentosEvidencias
                         item.CopyToAsync(stream);
                     }
                     //ruta = Path.Combine("Imagenes", $"{nombre}.{extencion}");//; $"Imagenes/{nombre}.{extencion}";
-                    filePath= Path.Combine( $"{_Auth.CurrentCompany.Id}", DateTime.Now.ToString("yyyy"), DateTime.Now.ToString("MM"), fileName);
-                    documentosEvidencias.Add(new DocumentosEvidencia() { Extencion = extencion, IdDocumentoBase = idDocumentoBase, NombreArchivo = fileName, Path = filePath, CompaniaId = _Auth.CurrentCompany.Id, NoLinea = NoLinea, ObjectTypeBase = ObjectType, UserId = _Auth.CurrentUser.Id });
+                    filePath = Path.Combine($"{_Auth.CurrentCompany.Id}", DateTime.Now.ToString("yyyy"), DateTime.Now.ToString("MM"), fileName);
+                    documentosEvidencias.Add(new DocumentosEvidencia()
+                    {
+                        Extencion = extencion,
+                        IdDocumentoBase = idDocumentoBase,
+                        NombreArchivo = fileName,
+                        TipoArchivo = extencion,
+                        Path = filePath,
+                        CompaniaId = _Auth.CurrentCompany.Id,
+                        NoLinea = NoLinea,
+                        ObjectTypeBase = ObjectType,
+                        UserId = _Auth.CurrentUser.Id
+                    });
                 }
 
-                _DocumentosEvidencia.AddOrUpdateRange(documentosEvidencias);
+                _DocumentosEvidencia.AddOrUpdateRangeSaving(documentosEvidencias);
                 //dynamic items = Anexo.Solicitudprestamos.Get(id);
 
                 return Ok(new ResponseModel()

@@ -25,5 +25,30 @@ public partial class SolicitudCompra
     public bool? CompraPlanificada { get; set; }
     public string? Comentario { get; set; }
     [NotMapped]
-    public List<DetalleSolicitudCompra> DetalleSolicitudCompras { get; set; } = new List<DetalleSolicitudCompra>();
+    public List<DetalleSolicitudCompra> Detalle { get; set; } = new List<DetalleSolicitudCompra>();
+}
+public partial class OrdenCompra
+{
+    public string? Id { get; set; }
+
+    public string? CompaniaId { get; set; }
+    public string?ProveedorId { get; set; }
+
+    public string? PoaId { get; set; }
+
+    public string? Codigo { get; set; }
+
+    public int? ObjectType { get; }
+    public string? DireccionInstitucionalId { get; set; }
+    public DateTime? Fecha { get; set; }
+    public DateTime? FechaRequerida { get; set; }
+    public string? SucursalId { get; set; }
+    public string? DepartamentoId { get; set; }
+    public string? AreaId { get; set; }
+    public string? ProyectoId { get; set; }
+    public string? SolicitudCompraId { get; set; }
+    public bool? CompraPlanificada { get; set; }
+    public string? Comentario { get; set; }
+    [NotMapped]
+    public List<DetalleOrdenCompra> Detalle { get; set; } = new List<DetalleOrdenCompra>();
 }
