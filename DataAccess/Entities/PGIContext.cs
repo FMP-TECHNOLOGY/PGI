@@ -2652,7 +2652,7 @@ public partial class PGIContext : DbContext
             entity.ToTable("usersucursal");
 
             entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
-            entity.Property(e => e.SucursalId).HasColumnName("DirecionInstitucionalId");
+            entity.Property(e => e.SucursalId).HasColumnName("SucursalId");
             entity.Property(e => e.Created)
                 .HasColumnType("datetime")
                 .HasColumnName("created").HasValueGenerator<DateTimeValueGenerator>();
