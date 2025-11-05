@@ -5,7 +5,8 @@ public partial class UserDireccionInstitucional
 {
     public string? Id { get; set; } 
 
-    public string DirecionInstitucionalId { get; set; }
+    //public string? CompaniaId { get; set; }
+    public string? DirecionInstitucionalId { get; set; }
 
     public string? ValidUserId { get; set; }
 

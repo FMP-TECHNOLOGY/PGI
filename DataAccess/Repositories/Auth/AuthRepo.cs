@@ -90,7 +90,9 @@ namespace PGI.DataAccess.Repositories.Auth
 
 
         IUserDireccionInstitucional userDireccionInstitucionalRepo { get; }
+        IDireccionIntitucional DireccionInstitucionalRepo { get; }
         IUserSucursal userSucursalRepo { get; }
+        ISucursal SucursalRepo { get; }
         //public IUserApiKeyPermission UserApiKeyPermissions { get; }
 
         private readonly JwtConfig jwtConfig;
@@ -107,7 +109,9 @@ namespace PGI.DataAccess.Repositories.Auth
                         IRolePermission rolePermissions,
                         IUserPermission userPermissions,
                         IUserDireccionInstitucional userDireccionInstitucionalRepo,
+                        IDireccionIntitucional direccionRepo,
                         IUserSucursal userSucursalRepo,
+                        ISucursal sucursalRepo,
                         //IUserApiKeyPermission userApiKeyPermissions,
                         IOptionsMonitor<JwtConfig> options)
         {
@@ -128,6 +132,9 @@ namespace PGI.DataAccess.Repositories.Auth
             this.userSucursalRepo = userSucursalRepo;
 
             jwtConfig = options.CurrentValue;
+
+            this.DireccionInstitucionalRepo = direccionRepo;
+            this.SucursalRepo = sucursalRepo;
         }
 
         public void SetCurrentCredentials(string authToken, string location, IPAddress? ipAddress = null, string? userAgent = null)
@@ -577,9 +584,9 @@ namespace PGI.DataAccess.Repositories.Auth
 
             var claims = userToken.Claims;
 
-            var curSucursal = userToken.Claims.FirstOrDefault(x => x.Type == CustomJwtClaimTypes.Company);
-            if (curSucursal != null)
-                claims = claims.Except([curSucursal]);
+            var curCompania = userToken.Claims.FirstOrDefault(x => x.Type == CustomJwtClaimTypes.Company);
+            if (curCompania != null)
+                claims = claims.Except([curCompania]);
 
             var token = GenerateUserToken(CurrentUser, null, [.. claims, new Claim(CustomJwtClaimTypes.Company, id)], out JwtSecurityToken? securityToken);
 
@@ -606,9 +613,9 @@ namespace PGI.DataAccess.Repositories.Auth
 
             var claims = userToken.Claims;
 
-            var curSucursal = userToken.Claims.FirstOrDefault(x => x.Type == CustomJwtClaimTypes.DireccionInstitucional);
-            if (curSucursal != null)
-                claims = claims.Except([curSucursal]);
+            var curDireccion = userToken.Claims.FirstOrDefault(x => x.Type == CustomJwtClaimTypes.DireccionInstitucional);
+            if (curDireccion != null)
+                claims = claims.Except([curDireccion]);
 
             var token = GenerateUserToken(CurrentUser, null, [.. claims, new Claim(CustomJwtClaimTypes.DireccionInstitucional, id)], out JwtSecurityToken? securityToken);
 
@@ -626,8 +633,17 @@ namespace PGI.DataAccess.Repositories.Auth
             if (CurrentUser is null)
                 throw new UnauthorizedException();
 
-            var sucursal = userSucursalRepo.Find(x => x.SucursalId == id && x.UserId == CurrentUser.Id) ??
-                throw new NotFoundException();
+            var sucursal = userSucursalRepo.Find(x => x.SucursalId == id 
+            //&& x.UserId == CurrentUser.Id
+            ) 
+                ?? throw new NotFoundException();
+            var suculsar = SucursalRepo.Find(x => x.Id == sucursal.SucursalId);
+            //sucursal.Sucursal.DireccionId
+            var direccion = DireccionInstitucionalRepo.Find(x => x.Id == suculsar.DireccionId)
+                ?? throw new NotFoundException();
+
+            var compania = UserCompanies.Find(x => x.CompaniaId == direccion.CompaniaId)
+                ?? throw new NotFoundException();
 
             var tokenHandler = new JwtSecurityTokenHandler();
 
@@ -635,11 +651,25 @@ namespace PGI.DataAccess.Repositories.Auth
 
             var claims = userToken.Claims;
 
+            var curCompania = userToken.Claims.FirstOrDefault(x => x.Type == CustomJwtClaimTypes.Company);
+            if (curCompania != null)
+                claims = claims.Except([curCompania]);
+            
+            var curDireccion = userToken.Claims.FirstOrDefault(x => x.Type == CustomJwtClaimTypes.DireccionInstitucional);
+            if (curDireccion != null)
+                claims = claims.Except([curDireccion]);
+
             var curSucursal = userToken.Claims.FirstOrDefault(x => x.Type == CustomJwtClaimTypes.BranchOffice);
             if (curSucursal != null)
                 claims = claims.Except([curSucursal]);
 
-            var token = GenerateUserToken(CurrentUser, null, [.. claims, new Claim(CustomJwtClaimTypes.BranchOffice, id)], out JwtSecurityToken? securityToken);
+            var token = GenerateUserToken(CurrentUser, null, 
+                [.. claims, 
+            new Claim(CustomJwtClaimTypes.Company, compania.Id), 
+            new Claim(CustomJwtClaimTypes.DireccionInstitucional, direccion.Id),
+                new Claim(CustomJwtClaimTypes.BranchOffice, id),
+            ], 
+                out JwtSecurityToken? securityToken);
 
             UserTokens.SaveToken(CurrentUser, securityToken!, token, null);
 

@@ -13,7 +13,7 @@ public partial class Riesgo
 
     public string? Descripcion { get; set; } 
 
-    public int TipoRiesgoId { get; set; }
+    public string? TipoRiesgoId { get; set; }
 
     public string? ProbabilidadId { get; set; }
 

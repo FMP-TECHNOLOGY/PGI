@@ -51,6 +51,7 @@ namespace API_PGI.Controllers.Sucursals
             }
 
         }
+
         [HttpPut]
         public IActionResult Put([FromBody] Sucursal entity)
         {

@@ -11,10 +11,8 @@ namespace DataAccess.Entities
         public string? Id { get; set; }
         public string? RequisicionId { get; set; }
         public string? CuentaObjetal { get; set; }
+        public string? ProductoId { get; set; }
         public int? Cantidad { get; set; }
-        //public int? CantidadRestante { get; set; }
-        public decimal? Costo { get; set; }
-        public decimal? Valor { get; set; }
         public int? NumeroProceso { get; set; }
         public int? EstadoId { get; set; }
         public int? LineNumRequisicion { get; set; }

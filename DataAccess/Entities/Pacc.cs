@@ -70,4 +70,6 @@ public partial class Pacc
     public string? SucursalId { get; set; }
     public string? DepartamentoId { get; set; }
     public string? AreaId { get; set; }
+
+    public List<DetallePacc> Detalles { get; set; } = new List<DetallePacc>();
 }

@@ -10,9 +10,24 @@ namespace DataAccess.Repositories
     public interface IRequisicion : IGenericRepo<Requisicion> { }
     public class RequisicionRepository : GenericRepo<Requisicion>, IRequisicion
     {
-        public RequisicionRepository(PGIContext context) : base(context)
+        IDetalleRequisicion _DetalleRequisicion;
+        public RequisicionRepository(PGIContext context, IDetalleRequisicion detalleRequisicion) : base(context)
         {
-
+            _DetalleRequisicion = detalleRequisicion;
         }
+
+        public override Requisicion AddSaving(Requisicion entity)
+        {
+            var nuevaRequisicion = base.AddSaving(entity);
+
+            if (entity.Detalles.Count > 0)
+            {
+                entity.Detalles.ForEach(x => x.RequisicionId = nuevaRequisicion.Id);
+
+                _DetalleRequisicion.AddRangeSaving(entity.Detalles);
+            }
+            return entity;
+        }
+
     }
 }

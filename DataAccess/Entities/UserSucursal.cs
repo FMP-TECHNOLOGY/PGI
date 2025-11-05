@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace DataAccess.Entities;
 
@@ -8,7 +7,8 @@ public partial class UserSucursal
 {
     public string? Id { get; set; } 
 
-    public string SucursalId { get; set; }
+    public string? SucursalId { get; set; }
+    //public string? DirecccionId { get; set; }
 
     public string? ValidUserId { get; set; }
 
