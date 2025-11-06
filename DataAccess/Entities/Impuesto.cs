@@ -8,6 +8,8 @@ namespace DataAccess.Entities
 {
     public class Impuesto : BaseSystemData
     {
+        public override int ObjectType => 71;
+
         public decimal Value { get; set; }
     }
 }

@@ -1,9 +1,10 @@
-﻿using System;
+﻿using DataAccess.Entities.Base;
+using System;
 using System.Collections.Generic;
 
 namespace DataAccess.Entities;
 
-public partial class CuentaObjetal
+public partial class CuentaObjetal : IUserIdentity, IIdentity
 {
     public string? Id { get; set; } 
     //public string? Cuenta { get; set; } 

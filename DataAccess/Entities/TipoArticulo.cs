@@ -8,5 +8,6 @@ namespace DataAccess.Entities
 {
     public class TipoArticulo : BaseSystemData
     {
+        public override int ObjectType => 72;
     }
 }

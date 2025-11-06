@@ -4,10 +4,11 @@ using System.ComponentModel.DataAnnotations;
 using System.Xml.Serialization;
 using System.Text.Json.Serialization;
 using System.ComponentModel.DataAnnotations.Schema;
+using DataAccess.Entities.Base;
 
 namespace DataAccess.Entities;
 
-public partial class User : EqualityComparer<User>
+public partial class User : EqualityComparer<User>, IIdentity, ICompanyIdentity
 {
     public string Id { get; set; }
 

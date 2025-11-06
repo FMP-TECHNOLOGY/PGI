@@ -8,5 +8,7 @@ namespace DataAccess.Entities
 {
     public class GrupoDePacc : BaseSystemData
     {
+        public override int ObjectType => 77;
+
     }
 }

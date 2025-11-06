@@ -1,6 +1,8 @@
-﻿namespace DataAccess.Entities;
+﻿using DataAccess.Entities.Base;
 
-public partial class CloudProvider
+namespace DataAccess.Entities;
+
+public partial class CloudProvider : IUserIdentity, IIdentity, ICompanyIdentity
 {
     public string? Id { get; set; } 
 

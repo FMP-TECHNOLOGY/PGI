@@ -1,9 +1,10 @@
-﻿using System;
+﻿using DataAccess.Entities.Base;
+using System;
 using System.Collections.Generic;
 
 namespace DataAccess.Entities;
 
-public partial class Permission
+public partial class Permission : IIdentity
 {
     public string Id { get; set; }
     //public string? CompaniaId { get; set; }

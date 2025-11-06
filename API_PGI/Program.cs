@@ -190,6 +190,15 @@ builder.Services.AddScoped<IDireccionIntitucional, DireccionIntitucionalReposito
 builder.Services.AddScoped<IDetalleRequisicion, DetalleRequisicionRepository>();
 builder.Services.AddScoped<IRequisicion, RequisicionRepository>();
 
+builder.Services.AddScoped<ISystemData<GrupoDePacc>, SystemDataRepository<GrupoDePacc>>();
+builder.Services.AddScoped<ISystemData<ProbabilidadOcurrencia>, SystemDataRepository<ProbabilidadOcurrencia>>();
+builder.Services.AddScoped<ISystemData<Impacto>, SystemDataRepository<Impacto>>();
+builder.Services.AddScoped<ISystemData<Impuesto>, SystemDataRepository<Impuesto>>();
+builder.Services.AddScoped<ISystemData<Origen>, SystemDataRepository<Origen>>();
+builder.Services.AddScoped<ISystemData<PeriodoEvidencia>, SystemDataRepository<PeriodoEvidencia>>();
+builder.Services.AddScoped<ISystemData<TipoArticulo>, SystemDataRepository<TipoArticulo>>();
+builder.Services.AddScoped<ISystemData<TipoUmbral>, SystemDataRepository<TipoUmbral>>();
+
 
 GridifyGlobalConfiguration.DefaultPageSize = int.MaxValue;
 

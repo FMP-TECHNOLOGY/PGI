@@ -8,5 +8,6 @@ namespace DataAccess.Entities
 {
     public class Impacto : BaseSystemData
     {
+        public override int ObjectType => 65;
     }
 }

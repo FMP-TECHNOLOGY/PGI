@@ -1,7 +1,9 @@
 ﻿
+using DataAccess.Entities.Base;
+
 namespace DataAccess.Entities;
 
-public partial class UserDireccionInstitucional
+public partial class UserDireccionInstitucional : IUserIdentity, IIdentity
 {
     public string? Id { get; set; } 
 

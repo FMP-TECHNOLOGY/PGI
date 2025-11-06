@@ -1,8 +1,10 @@
 ﻿
 
+using DataAccess.Entities.Base;
+
 namespace DataAccess.Entities;
 
-public partial class UserCompania
+public partial class UserCompania : IUserIdentity, IIdentity, ICompanyIdentity
 {
     public string? Id { get; set; } 
 

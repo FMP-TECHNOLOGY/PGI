@@ -1,9 +1,10 @@
-﻿using System;
+﻿using DataAccess.Entities.Base;
+using System;
 using System.Collections.Generic;
 
 namespace DataAccess.Entities;
 
-public partial class Fondo
+public partial class Fondo : IUserIdentity, IIdentity, ICompanyIdentity
 {
     public string? Id { get; set; } 
 

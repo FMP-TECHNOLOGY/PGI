@@ -11,7 +11,7 @@ namespace DataAccess.Repositories
     {
     }
 
-    public abstract class SystemDataRepository<T> : GenericRepo<T>, ISystemData<T> where T : BaseSystemData
+    public class SystemDataRepository<T> : GenericRepo<T>, ISystemData<T> where T : BaseSystemData
     {
 
         public SystemDataRepository(PGIContext context) : base(context)

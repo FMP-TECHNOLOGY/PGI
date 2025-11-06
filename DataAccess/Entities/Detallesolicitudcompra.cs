@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using DataAccess.Entities.Base;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataAccess.Entities;
 
-public partial class DetalleSolicitudCompra
+public partial class DetalleSolicitudCompra : IUserIdentity, IIdentity
 {
     public string? Id { get; set; } 
 
@@ -61,7 +62,7 @@ public partial class DetalleSolicitudCompra
     public List<DocumentosEvidencia> Files { get; set; } = new List<DocumentosEvidencia>();
 }
 
-public partial class DetalleOrdenCompra
+public partial class DetalleOrdenCompra : IUserIdentity, IIdentity
 {
     public string? Id { get; set; } 
 

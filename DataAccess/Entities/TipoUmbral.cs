@@ -8,5 +8,6 @@ namespace DataAccess.Entities
 {
     public class TipoUmbral : BaseSystemData
     {
+        public override int ObjectType => 70;
     }
 }

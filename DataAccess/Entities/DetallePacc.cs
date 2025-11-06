@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DataAccess.Entities.Base;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Entities
 {
-    public class DetallePacc
+    public class DetallePacc : IUserIdentity, IIdentity
     {
         public string? Id { get; set; }
         public string? PaccId { get; set; }

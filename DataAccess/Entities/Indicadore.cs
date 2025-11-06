@@ -1,9 +1,10 @@
-﻿using System;
+﻿using DataAccess.Entities.Base;
+using System;
 using System.Collections.Generic;
 
 namespace DataAccess.Entities;
 
-public partial class Indicadore
+public partial class Indicadore : IIdentity, ICompanyIdentity
 {
     public string? Id { get; set; }
     public string? Areas { get; set; }

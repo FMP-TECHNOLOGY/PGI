@@ -263,7 +263,7 @@ namespace PGI.DataAccess.Repositories.Auth
                 var userName = userToken?.Claims.SingleOrDefault(x => x.Type == JwtRegisteredClaimNames.UniqueName)?.Value;
                 //var companyTaxId = userToken?.Claims.SingleOrDefault(x => x.Type == CustomJwtClaimTypes.Company)?.Value;
 
-                var user = Users.FindValidByUsername(userName)
+                var user = Users.FindByUsername(userName)
                     ?? throw new UnauthorizedException();
 
                 if (tokenType.Equals(AppConstants.BEARER_TOKEN, StringComparison.InvariantCultureIgnoreCase)

@@ -8,5 +8,6 @@ namespace DataAccess.Entities
 {
     public class PeriodoEvidencia : BaseSystemData
     {
+        public override int ObjectType => 67;
     }
 }

@@ -1,10 +1,11 @@
-﻿using System;
+﻿using DataAccess.Entities.Base;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataAccess.Entities;
 
-public partial class Proyecto
+public partial class Proyecto : IUserIdentity, IIdentity, ICompanyIdentity
 {
     public string? Id { get; set; }
 

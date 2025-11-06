@@ -1,9 +1,10 @@
-﻿using System;
+﻿using DataAccess.Entities.Base;
+using System;
 using System.Collections.Generic;
 
 namespace DataAccess.Entities;
 
-public partial class Programa
+public partial class Programa : IUserIdentity, IIdentity, ICompanyIdentity
 {
     public string? Id { get; set; } 
 

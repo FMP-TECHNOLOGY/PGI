@@ -8,5 +8,6 @@ namespace DataAccess.Entities
 {
     public class Origen : BaseSystemData
     {
+        public override int ObjectType => 66;
     }
 }
