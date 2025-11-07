@@ -1,12 +1,13 @@
 ﻿using DataAccess.Entities.Base;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataAccess.Entities;
 
 public partial class Compania : IUserIdentity, IIdentity
 {
-    public string Id { get; set; } 
+    public string? Id { get; set; } 
 
     public string? Descripcion { get; set; } 
 
@@ -16,9 +17,9 @@ public partial class Compania : IUserIdentity, IIdentity
 
     public string? Rnc { get; set; } 
 
-    public TimeOnly? HoraInicialIntegracion { get; set; }
+    public DateTime? HoraInicialIntegracion { get; set; }
 
-    public TimeOnly? HoraFinalIntegracion { get; set; }
+    public DateTime? HoraFinalIntegracion { get; set; }
 
     public bool Active { get; set; }
 
@@ -26,5 +27,8 @@ public partial class Compania : IUserIdentity, IIdentity
 
     public DateTime Created { get; set; }
 
-    public int? ObjectType { get;  }
+    //public int? ObjectType { get;  }
+
+    [NotMapped]
+    public List<DireccionIntitucional> Direcciones { get; set; } = new();
 }

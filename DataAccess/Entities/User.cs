@@ -1,5 +1,4 @@
-﻿using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.ComponentModel.DataAnnotations;
 using System.Xml.Serialization;
 using System.Text.Json.Serialization;
@@ -10,7 +9,7 @@ namespace DataAccess.Entities;
 
 public partial class User : EqualityComparer<User>, IIdentity, ICompanyIdentity
 {
-    public string Id { get; set; }
+    public string? Id { get; set; }
 
     public bool Su { get; set; }
     //public string? CompaniaId { get; set; }
@@ -38,6 +37,7 @@ public partial class User : EqualityComparer<User>, IIdentity, ICompanyIdentity
     public bool EmailConfirmed { get; set; }
 
     public bool NotificationsEnabled { get; set; }
+
     [Required(AllowEmptyStrings = false), JsonIgnore]
 
     public string? PasswordHash { get; set; } = string.Empty;

@@ -147,5 +147,6 @@ namespace Utils.Extensions
                 childProp.SetValue(other, parentValue is null ? null : Convert.ChangeType(parentValue, childProp.PropertyType));
             }
         }
+    
     }
 }

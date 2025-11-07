@@ -1,6 +1,8 @@
-﻿using DataAccess.Entities;
+﻿using Common.Exceptions;
+using DataAccess.Entities;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace DataAccess.Repositories;
 
@@ -12,10 +14,49 @@ namespace DataAccess.Repositories;
 
 public class CompaniaRepository : GenericRepo<Compania>, ICompania
 {
-
-    public CompaniaRepository(PGIContext context) : base(context)
+    IDireccionIntitucional _DireccionIntitucional;
+    public CompaniaRepository(PGIContext context, IDireccionIntitucional direccionIntitucional) : base(context)
     {
+        _DireccionIntitucional = direccionIntitucional;
     }
 
+    public override Compania AddSaving(Compania entity)
+    {
+
+        ValidateOrThow(entity);
+
+        OnCreate(entity);
+
+        using var trans = context.Database.BeginTransaction();
+        try
+        {
+            var newCompany = Add(entity);
+
+            if (entity.Direcciones?.Count > 0)
+            {
+                entity.Direcciones.ForEach(x => x.CompaniaId = newCompany.Id);
+
+                _DireccionIntitucional.AddRange(entity.Direcciones);
+            }
+
+            Save();
+
+            trans.Commit();
+
+        }
+        catch 
+        {
+            trans.Rollback();
+            throw;
+        }
+        finally
+        {
+            trans.Dispose();
+        }
+
+        OnCreated(entity);
+
+        return entity;
+    }
 
 }

@@ -12,7 +12,7 @@ namespace DataAccess.Entities;
 
 public partial class PGIContext : DbContext
 {
-    private List<Tuple<object, object?, EntityState>> TrackedEntries { get; } = new();
+    private List<Tuple<EntityEntry, object?, EntityState>> TrackedEntries { get; } = new();
 
     public virtual DbSet<Log> Logs { get; set; }
 
@@ -58,9 +58,10 @@ public partial class PGIContext : DbContext
 
             if (trackedCount == 0) return;
 
-            Logs.AddRange(TrackedEntries.Select(x => new Log(x.Item1, x.Item2)
+            Logs.AddRange(TrackedEntries.Select(x => new Log(x.Item1.Entity, x.Item2)
             {
-                Action = Enum.GetName(x.Item3) ?? ""
+                Action = Enum.GetName(x.Item3) ?? "",
+                IdDocumento = string.Join("|", x.Item1.GetPrimaryKeys())
             }));
 
             TrackedEntries.Clear();
@@ -88,7 +89,7 @@ public partial class PGIContext : DbContext
             if (entry.State == EntityState.Modified)
                 GenerateOnUpdate(entry);
 
-            TrackedEntries.Add(new(entry.Entity, entry.GetDatabaseValues()?.ToObject(), entry.State));
+            TrackedEntries.Add(new(entry, entry.GetDatabaseValues()?.ToObject(), entry.State));
         }
     }
 
@@ -315,7 +316,7 @@ public partial class PGIContext : DbContext
 
             entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
             //entity.Property(e => e.Active).HasColumnName("active");
-            
+
             entity.Property(e => e.CompaniaId)
                 .HasMaxLength(36)
                 .HasColumnName("companiaId");
@@ -323,11 +324,11 @@ public partial class PGIContext : DbContext
             entity.Property(e => e.Created)
                 .HasColumnType("datetime")
                 .HasColumnName("created").HasValueGenerator<DateTimeValueGenerator>();
-            
+
             entity.Property(e => e.ObjectType)
                 //.HasDefaultValueSql("'1'")
                 .HasColumnName("objectType");
-            
+
             entity.Property(e => e.CompaniaId)
                 .HasColumnName("companiaId")
                 .HasValueGenerator<CompaniaSignValueGenerator>()
@@ -352,7 +353,7 @@ public partial class PGIContext : DbContext
                .ValueGeneratedOnAdd()
                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
-            entity.HasMany<DetalleRequisicion>(x=>x.Detalles).WithOne().HasForeignKey(x => x.RequisicionId);
+            entity.HasMany<DetalleRequisicion>(x => x.Detalles).WithOne().HasForeignKey(x => x.RequisicionId);
         });
 
         modelBuilder.Entity<DetalleRequisicion>(entity =>
@@ -369,15 +370,15 @@ public partial class PGIContext : DbContext
 
             entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
             //entity.Property(e => e.Active).HasColumnName("active");
-            
+
             entity.Property(e => e.Created)
                 .HasColumnType("datetime")
                 .HasColumnName("created").HasValueGenerator<DateTimeValueGenerator>();
-            
+
             entity.Property(e => e.ObjectType)
                 //.HasDefaultValueSql("'1'")
                 .HasColumnName("objectType");
-            
+
             entity.Property(e => e.Created)
                 .HasColumnType("datetime")
                 .HasColumnName("created").HasValueGenerator<DateTimeValueGenerator>();
@@ -755,14 +756,14 @@ public partial class PGIContext : DbContext
                 .HasMaxLength(100)
                 .HasColumnName("direccion");
             entity.Property(e => e.HoraFinalIntegracion)
-                .HasColumnType("time")
+                //.HasColumnType("time")
                 .HasColumnName("horaFinalIntegracion");
             entity.Property(e => e.HoraInicialIntegracion)
-                .HasColumnType("time")
+                //.HasColumnType("time")
                 .HasColumnName("horaInicialIntegracion");
-            entity.Property(e => e.ObjectType)
-                .HasDefaultValueSql("'7'")
-                .HasColumnName("objectType");
+            //entity.Property(e => e.ObjectType)
+            //    .HasDefaultValueSql("'7'")
+            //    .HasColumnName("objectType");
             entity.Property(e => e.Rnc)
                 .HasMaxLength(100)
                 .HasColumnName("rnc");
@@ -886,8 +887,8 @@ public partial class PGIContext : DbContext
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(45)
                 .HasColumnName("descripcion");
-            entity.Property(e => e.ObjectType)
-                .HasColumnName("objectType");
+            //entity.Property(e => e.ObjectType)
+            //    .HasColumnName("objectType");
             entity.Property(e => e.Rnc).HasColumnName("Rnc");
             entity.Property(e => e.Active).HasColumnName("Active");
             entity.Property(e => e.Telefono).HasColumnName("Telefono");
@@ -2323,9 +2324,9 @@ public partial class PGIContext : DbContext
             entity.Property(e => e.Nombre)
                 .HasMaxLength(45)
                 .HasColumnName("nombre");
-            entity.Property(e => e.ObjectType)
-                .HasDefaultValueSql("'45'")
-                .HasColumnName("objectType");
+            //entity.Property(e => e.ObjectType)
+            //    .HasDefaultValueSql("'45'")
+            //    .HasColumnName("objectType");
             entity.Property(e => e.Rnc)
                 .HasMaxLength(45)
                 .HasColumnName("rnc");
@@ -3059,7 +3060,7 @@ public partial class PGIContext : DbContext
                 .HasColumnType("datetime")
                 //.HasColumnName("createdAt")
                 .HasValueGenerator<DateTimeValueGenerator>();
-            
+
             entity.Property(e => e.Description)
                 .HasMaxLength(100)
                 //.HasColumnName("descripcion")

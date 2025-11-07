@@ -17,5 +17,5 @@ public partial class Sucursal : IIdentity, ICompanyIdentity
 
     public string? CompaniaId { get; set; } 
 
-    public int? ObjectType { get; }
+    //public int? ObjectType { get; }
 }

@@ -100,8 +100,8 @@ namespace DataAccess
 
             Add(entity);
 
-            if (!IsValid(entity, out List<ValidationResult> results))
-                throw new BadRequestException(string.Join(" | ", results.Select(x => x.ErrorMessage)));
+            //if (!IsValid(entity, out List<ValidationResult> results))
+            //    throw new BadRequestException(string.Join(" | ", results.Select(x => x.ErrorMessage)));
 
             Save();
 
@@ -463,7 +463,7 @@ namespace DataAccess
 
         }
 
-        private static bool IsValid(T entity, out List<ValidationResult> results)
+        protected static bool IsValid(T entity, out List<ValidationResult> results)
         {
             results = new();
 
@@ -527,6 +527,7 @@ namespace DataAccess
             return context.SaveChanges();
         }
     }
+
 }
 
 public static class PaginatorExtension

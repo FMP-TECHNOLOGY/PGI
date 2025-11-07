@@ -31,4 +31,5 @@ namespace Common.Exceptions
 
         protected BaseException(SerializationInfo info, StreamingContext context) : base(info, context) { }
     }
+
 }
