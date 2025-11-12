@@ -546,18 +546,9 @@ public partial class PGIContext : DbContext
             //    .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
 
-            //entity.Property(e => e.Created)
-            //    .HasColumnType("datetime")
-            //    .HasColumnName("created").HasValueGenerator<DateTimeValueGenerator>();
-            entity.Property(e => e.DepartamentoId)
-                .HasMaxLength(36)
-                .HasColumnName("departamentoId");
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(100)
                 .HasColumnName("descripcion");
-            entity.Property(e => e.IdProyecto)
-                .HasMaxLength(10)
-                .HasColumnName("idProyecto");
             entity.Property(e => e.ObjectType)
                 .HasDefaultValueSql("'3'")
                 .HasColumnName("objectType");
@@ -924,6 +915,12 @@ public partial class PGIContext : DbContext
             entity.Property(e => e.ObjectType)
                 .HasDefaultValueSql("'10'")
                 .HasColumnName("objectType");
+
+            entity.Property(e => e.Active)
+                .HasColumnName("active");
+
+            entity.Property(e => e.CodigoPadre)
+                .HasColumnName("codigoPadre");
 
             //entity.Property(e => e.SucursalId)
             //    .HasMaxLength(36)

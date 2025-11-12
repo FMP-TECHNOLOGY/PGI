@@ -18,4 +18,8 @@ public partial class Departamento : IUserIdentity, IIdentity, ICompanyIdentity
 
     public int? ObjectType { get;  }
     public DateTime? Created { get; set; }
+    public bool Active { get; set; }
+    public string? CodigoPadre { get; set; }
+
+
 }

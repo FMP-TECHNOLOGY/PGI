@@ -20,11 +20,7 @@ public partial class Area : IUserIdentity, IIdentity, ICompanyIdentity
 
     public DateTime Created { get; set; }
 
-    public string?IdProyecto { get; set; }
-
     public string?CodigoPadre { get; set; }
-
-    public string?DepartamentoId { get; set; }
 
     public int? ObjectType { get; }
 }
