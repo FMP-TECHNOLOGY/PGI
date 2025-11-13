@@ -24,35 +24,3 @@ public partial class DireccionIntitucional : IUserIdentity, IIdentity, ICompanyI
     [NotMapped]
     public List<Sucursal> Sucursales { get; set; } = new();
 }
-
-class Circuito
-{
-    public int Id { get; set; }
-    public int DocumentoId { get; set; }
-    public string Nombre { get; set; }
-
-    //etapas
-    class Etapa
-    {
-        public int Id { get; set; }
-        public int CircuitoId { get; set; }
-        public string Nombre { get; set; }
-        public string Accion { get; set; }
-
-        public int MinAutorizaciones { get; set; }
-        public int MinimoRechazos { get; set; }
-
-        public int? EtapaRechazoId { get; set; }
-        //public int? EtapaAprobacionId { get; set; }
-        public int Orden { get; set; } = 1;
-
-        //aprobadores
-        class Aprobador
-        {
-            //public int Id { get; set; }
-            public int EtapaId { get; set; }
-            public int AprobadorId { get; set; }
-            public string Tipo { get; set; }
-        }
-    }
-}

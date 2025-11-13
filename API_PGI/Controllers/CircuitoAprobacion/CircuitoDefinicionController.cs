@@ -1,4 +1,5 @@
 ﻿using API_PGI.Auth;
+using DataAccess;
 using DataAccess.Entities;
 using DataAccess.Repositories;
 using Gridify;
@@ -6,8 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 using Model;
 using PGI.DataAccess.Repositories.Auth;
 
-namespace API_PGI.Controllers.Paccs
+namespace API_PGI.Controllers.CircuitoAprobacion
 {
+
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -17,23 +19,25 @@ namespace API_PGI.Controllers.Paccs
     [Route("[controller]")]
     [ApiController]
     [JwtAuthorize]
-    public class PaccController : ControllerBase
+
+    public class CircuitoDefinicionController : ControllerBase
     {
-        private readonly IPacc _Pacc;
+        private readonly ICircuitoDefinicion _Repo;
         private IAuth _Auth { get; }
 
-        public PaccController(IPacc Pacc, IAuth auth)
+        public CircuitoDefinicionController(ICircuitoDefinicion BaseSystemData, IAuth auth)
         {
-            _Pacc = Pacc;
+            _Repo = BaseSystemData;
             _Auth = auth;
         }
 
+
         [HttpPost]
-        public IActionResult post([FromBody] Pacc entity)
+        public IActionResult post([FromBody] CircuitoDefinicion entity)
         {
             try
             {
-                _Pacc.AddSaving( entity);
+                _Repo.AddSaving(entity);
 
 
                 return Ok(new ResponseModel()
@@ -52,12 +56,12 @@ namespace API_PGI.Controllers.Paccs
 
         }
         [HttpPut]
-        public IActionResult Put([FromBody] Pacc entity)
+        public IActionResult Put([FromBody] CircuitoDefinicion entity)
         {
             try
             {
 
-                _Pacc.UpdateSaving( entity);
+                _Repo.UpdateSaving(entity);
 
                 return Ok(new ResponseModel()
                 {
@@ -79,14 +83,14 @@ namespace API_PGI.Controllers.Paccs
         {
             try
             {
-                var builder = new QueryBuilder<Pacc>()
+                var builder = new QueryBuilder<CircuitoDefinicion>()
                              .AddQuery(gridifyQuery)
-                             .AddCondition($"{nameof(Pacc.CompaniaId)}={_Auth.CurrentUser?.CompaniaId}")
+                             .AddCondition($"{nameof(CircuitoDefinicion.CompaniaId)}={_Auth.CurrentUser?.CompaniaId}")
                 ;
                 if (gridifyQuery.PageSize == 0) gridifyQuery.PageSize = int.MaxValue;
                 if (gridifyQuery.Page == 0) gridifyQuery.Page = 1;
 
-                var items = _Pacc.GetPaginated(gridifyQuery);
+                var items = _Repo.GetPaginated(gridifyQuery);
                 return Ok(new ResponseModel()
                 {
 
@@ -112,7 +116,7 @@ namespace API_PGI.Controllers.Paccs
         {
             try
             {
-                var valor = _Pacc.Find(x => x.Id == id);
+                var valor = _Repo.Find(x => x.Id == id);
 
                 return Ok(new ResponseModel()
                 {
