@@ -2650,6 +2650,37 @@ public partial class PGIContext : DbContext
                   .WithMany()
                   .HasForeignKey(x => x.UserId);
         });
+        
+        modelBuilder.Entity<Programa>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("programa");
+
+            entity.Property(e => e.Id).HasValueGenerator<StringGuidValueGenerator>().ValueGeneratedOnAdd().HasMaxLength(36);
+            //entity.Property(e => e.CompaniaId).HasColumnName("companiaId");
+
+            entity.Property(e => e.CompaniaId)
+                .HasColumnName("companiaId")
+                .HasValueGenerator<CompaniaSignValueGenerator>()
+                .ValueGeneratedOnAdd();
+
+            //entity.Property(e => e.UserId).HasColumnName("UserId");
+
+            entity.Property(e => e.UserId)
+                .HasColumnName("userId")
+                .HasValueGenerator<UserSignValueGenerator>()
+                .ValueGeneratedOnAdd()
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
+
+            entity.Property(e => e.Created)
+                .HasColumnType("datetime")
+                .HasColumnName("created").HasValueGenerator<DateTimeValueGenerator>();
+            entity.Property(e => e.ObjectType)
+                .HasDefaultValueSql("'50'")
+                .HasColumnName("objectType");
+            
+        });
 
         modelBuilder.Entity<UserDireccionInstitucional>(entity =>
         {
