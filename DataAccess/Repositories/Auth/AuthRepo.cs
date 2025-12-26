@@ -90,9 +90,7 @@ namespace PGI.DataAccess.Repositories.Auth
 
 
         IUserDireccionInstitucional userDireccionInstitucionalRepo { get; }
-        IDireccionIntitucional DireccionInstitucionalRepo { get; }
         IUserSucursal userSucursalRepo { get; }
-        ISucursal SucursalRepo { get; }
         //public IUserApiKeyPermission UserApiKeyPermissions { get; }
 
         private readonly JwtConfig jwtConfig;
@@ -109,9 +107,7 @@ namespace PGI.DataAccess.Repositories.Auth
                         IRolePermission rolePermissions,
                         IUserPermission userPermissions,
                         IUserDireccionInstitucional userDireccionInstitucionalRepo,
-                        IDireccionIntitucional direccionRepo,
                         IUserSucursal userSucursalRepo,
-                        ISucursal sucursalRepo,
                         //IUserApiKeyPermission userApiKeyPermissions,
                         IOptionsMonitor<JwtConfig> options)
         {
@@ -132,9 +128,6 @@ namespace PGI.DataAccess.Repositories.Auth
             this.userSucursalRepo = userSucursalRepo;
 
             jwtConfig = options.CurrentValue;
-
-            this.DireccionInstitucionalRepo = direccionRepo;
-            this.SucursalRepo = sucursalRepo;
         }
 
         public void SetCurrentCredentials(string authToken, string location, IPAddress? ipAddress = null, string? userAgent = null)
@@ -176,7 +169,7 @@ namespace PGI.DataAccess.Repositories.Auth
                     return;
                 try
                 {
-                    if(string.Equals(CurrentUser?.Company?.Id, compId, StringComparison.InvariantCultureIgnoreCase))
+                    if (string.Equals(CurrentUser?.Company?.Id, compId, StringComparison.InvariantCultureIgnoreCase))
                     {
                         CurrentCompany = CurrentUser?.Company;
 
@@ -188,7 +181,7 @@ namespace PGI.DataAccess.Repositories.Auth
                         Users.UpdateSaving(CurrentUser);
 
                     }
-                    
+
                 }
                 catch { }
             }
@@ -263,7 +256,7 @@ namespace PGI.DataAccess.Repositories.Auth
                 var userName = userToken?.Claims.SingleOrDefault(x => x.Type == JwtRegisteredClaimNames.UniqueName)?.Value;
                 //var companyTaxId = userToken?.Claims.SingleOrDefault(x => x.Type == CustomJwtClaimTypes.Company)?.Value;
 
-                var user = Users.FindByUsername(userName)
+                var user = Users.FindValidByUsername(userName)
                     ?? throw new UnauthorizedException();
 
                 if (tokenType.Equals(AppConstants.BEARER_TOKEN, StringComparison.InvariantCultureIgnoreCase)
@@ -384,6 +377,7 @@ namespace PGI.DataAccess.Repositories.Auth
 
             try
             {
+               
                 if (login == null) throw new UnauthorizedException();
 
                 user = Users.FindByUsername(login.UserName)
@@ -584,9 +578,9 @@ namespace PGI.DataAccess.Repositories.Auth
 
             var claims = userToken.Claims;
 
-            var curCompania = userToken.Claims.FirstOrDefault(x => x.Type == CustomJwtClaimTypes.Company);
-            if (curCompania != null)
-                claims = claims.Except([curCompania]);
+            var curSucursal = userToken.Claims.FirstOrDefault(x => x.Type == CustomJwtClaimTypes.Company);
+            if (curSucursal != null)
+                claims = claims.Except([curSucursal]);
 
             var token = GenerateUserToken(CurrentUser, null, [.. claims, new Claim(CustomJwtClaimTypes.Company, id)], out JwtSecurityToken? securityToken);
 
@@ -613,9 +607,9 @@ namespace PGI.DataAccess.Repositories.Auth
 
             var claims = userToken.Claims;
 
-            var curDireccion = userToken.Claims.FirstOrDefault(x => x.Type == CustomJwtClaimTypes.DireccionInstitucional);
-            if (curDireccion != null)
-                claims = claims.Except([curDireccion]);
+            var curSucursal = userToken.Claims.FirstOrDefault(x => x.Type == CustomJwtClaimTypes.DireccionInstitucional);
+            if (curSucursal != null)
+                claims = claims.Except([curSucursal]);
 
             var token = GenerateUserToken(CurrentUser, null, [.. claims, new Claim(CustomJwtClaimTypes.DireccionInstitucional, id)], out JwtSecurityToken? securityToken);
 
@@ -633,17 +627,8 @@ namespace PGI.DataAccess.Repositories.Auth
             if (CurrentUser is null)
                 throw new UnauthorizedException();
 
-            var sucursal = userSucursalRepo.Find(x => x.SucursalId == id 
-            //&& x.UserId == CurrentUser.Id
-            ) 
-                ?? throw new NotFoundException();
-            var suculsar = SucursalRepo.Find(x => x.Id == sucursal.SucursalId);
-            //sucursal.Sucursal.DireccionId
-            var direccion = DireccionInstitucionalRepo.Find(x => x.Id == suculsar.DireccionId)
-                ?? throw new NotFoundException();
-
-            var compania = UserCompanies.Find(x => x.CompaniaId == direccion.CompaniaId)
-                ?? throw new NotFoundException();
+            var sucursal = userSucursalRepo.Find(x => x.SucursalId == id && x.UserId == CurrentUser.Id) ??
+                throw new NotFoundException();
 
             var tokenHandler = new JwtSecurityTokenHandler();
 
@@ -651,25 +636,11 @@ namespace PGI.DataAccess.Repositories.Auth
 
             var claims = userToken.Claims;
 
-            var curCompania = userToken.Claims.FirstOrDefault(x => x.Type == CustomJwtClaimTypes.Company);
-            if (curCompania != null)
-                claims = claims.Except([curCompania]);
-            
-            var curDireccion = userToken.Claims.FirstOrDefault(x => x.Type == CustomJwtClaimTypes.DireccionInstitucional);
-            if (curDireccion != null)
-                claims = claims.Except([curDireccion]);
-
             var curSucursal = userToken.Claims.FirstOrDefault(x => x.Type == CustomJwtClaimTypes.BranchOffice);
             if (curSucursal != null)
                 claims = claims.Except([curSucursal]);
 
-            var token = GenerateUserToken(CurrentUser, null, 
-                [.. claims, 
-            new Claim(CustomJwtClaimTypes.Company, compania.Id), 
-            new Claim(CustomJwtClaimTypes.DireccionInstitucional, direccion.Id),
-                new Claim(CustomJwtClaimTypes.BranchOffice, id),
-            ], 
-                out JwtSecurityToken? securityToken);
+            var token = GenerateUserToken(CurrentUser, null, [.. claims, new Claim(CustomJwtClaimTypes.BranchOffice, id)], out JwtSecurityToken? securityToken);
 
             UserTokens.SaveToken(CurrentUser, securityToken!, token, null);
 
@@ -679,6 +650,89 @@ namespace PGI.DataAccess.Repositories.Auth
                 Expiration = securityToken!.ValidTo.ToLocalTime()
             };
         }
+
+
+        public void PP()
+        {
+            /*
+
+                        <form action="https://pruebas.azul.com.do/PaymentPage/" method="post" id="paymentForm" 
+            name="paymentForm"> 
+              <input id="MerchantId" name="MerchantId" value="39038540035"> 
+              <input  id="MerchantName" name="MerchantName" value="Fuceca"> 
+              <input  id="MerchantType" name="MerchantType" value="ECommerce"> 
+              <input  id="CurrencyCode" name="CurrencyCode" value="$"> 
+              <input  id="OrderNumber" name="OrderNumber" value="1234"> 
+              <input  id="Amount" name="Amount" value="15000"> 
+              <input  id="ITBIS" name="ITBIS" value="2057"> 
+              <input  id="ApprovedUrl" name="ApprovedUrl" 
+            value="https://comercioprueba.com/aprobada/"> 
+              <input  id="DeclinedUrl" name="DeclinedUrl" 
+            value="https://comercioprueba.com/declinada/">  
+              <input  id="CancelUrl" name="CancelUrl" value="https://comercioprueba.com/cancelada/"> 
+              <input  id="UseCustomField1" name="UseCustomField1" value="0"> 
+              <input  id="CustomField1Label" name="CustomField1Label" value=""> 
+              <input  id="CustomField1Value" name="CustomField1Value" value=""> 
+              <input  id="UseCustomField2" name="UseCustomField2" value="0"> 
+              <input  id="CustomField2Label" name="CustomField2Label" value=""> 
+              <input  id="CustomField2Value" name="CustomField2Value" value=""> 
+              <input  id="AuthHash" name="AuthHash" value="8d6ebb6ac0718599a30dbbae27f4771cf167449ce5e2910524a0f8f85005683d5068b769b5bfbd979056f23561917b50bcc423e2da04d54c39d421d0ae7be14b"> 
+              <input type="submit" name="submit" value="Enviar" style="font-size: 20px;"> 
+            </form>
+
+             */
+
+            var key = "asdhakjshdkjasdasmndajksdkjaskldga8odya9d8yoasyd98asdyaisdhoaisyd0a8sydoashd8oasydoiahdpiashd09ayusidhaos8dy0a8dya08syd0a8ssdsax";
+            var keyBytes = Encoding.Unicode.GetBytes(key);
+
+            var all = new StringBuilder();
+            all.Append("39038540035");
+            all.Append("Fuceca");
+            all.Append("ECommerce");
+            all.Append("$");
+            all.Append("1234");
+            all.Append("15000");
+            all.Append("2057");
+            all.Append("https://comercioprueba.com/aprobada/");
+            all.Append("https://comercioprueba.com/declinada/");
+            all.Append("https://comercioprueba.com/cancelada/");
+            all.Append("0");
+            all.Append("");
+            all.Append("");
+            all.Append("0");
+            all.Append("");
+            all.Append("");
+            all.Append(key);  //Popocionado por SDP (no viaja en el POST) 
+
+            var textToHashBytes = Encoding.Unicode.GetBytes(all.ToString());
+
+            var hashResult =
+                //new System.Security.Cryptography.HMACSHA512().ComputeHash(textToHashBytes); // INVALID_AUTH:AuthHash
+                new System.Security.Cryptography.HMACSHA512(keyBytes).ComputeHash(textToHashBytes); // INVALID_AUTH:AuthHash
+                                                                                                    //CryptoHelper.Hash(all.ToString(), HashAlg.SHA512); // INVALID_AUTH:AuthHash
+                                                                                                    // SHA512.Create() 
+            /*
+                var pswBytes = algorithm.ComputeHash(Encoding.Unicode.GetBytes(value));
+                hashedValue = string.Concat(Array.ConvertAll(pswBytes, b => b.ToString("x2")));
+             */
+
+            //Siendo encriptor del tipo System.Security.Cryptography. HMACSHA512() 
+            string txtHash = "";
+            //Para hacer la conversión de bytes a string. 
+            for (int i = 0; i < hashResult.Length; i++)
+                txtHash += string.Format("{0:x2}", hashResult[i]);
+
+
+            //var textToHashBytes = Encoding.Unicode.GetBytes(all.ToString());
+
+
+            //Siendo encriptor del tipo System.Security.Cryptography. HMACSHA512() 
+
+            //Para hacer la conversión de bytes a string. 
+            //for (int i = 0; i < hashResult.Length; i++)
+            //    txtHash.Text += string.Format("{0:x2}", hashResult[i]);
+        }
+
 
     }
 }

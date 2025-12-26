@@ -1676,7 +1676,7 @@ public partial class PGIContext : DbContext
             entity.Property(e => e.PoaId).HasMaxLength(36);
             entity.Property(e => e.ProyectoId).HasMaxLength(36);
 
-            entity.HasOne<GrupoDePacc>().WithMany().HasForeignKey(x => x.GrupoId);
+            //entity.HasOne<GrupoDePacc>().WithMany().HasForeignKey(x => x.GrupoId);
         });
 
         modelBuilder.Entity<Parametro>(entity =>
